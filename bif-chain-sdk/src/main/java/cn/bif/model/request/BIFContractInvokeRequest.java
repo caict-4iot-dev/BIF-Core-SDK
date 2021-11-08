@@ -25,8 +25,16 @@ public class BIFContractInvokeRequest {
     private Long BIFAmount;
     private String input;
     private Long ceilLedgerSeq;
-    private String metadata;
+    private String remarks;
     private String privateKey;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     /**
      * @Method getSenderAddress
@@ -96,23 +104,6 @@ public class BIFContractInvokeRequest {
         this.ceilLedgerSeq = ceilLedgerSeq;
     }
 
-    /**
-     * @Method getMetadata
-     * @Params []
-     * @Return String
-     */
-    public String getMetadata() {
-        return metadata;
-    }
-
-    /**
-     * @Method setMetadata
-     * @Params [metadata]
-     * @Return void
-     */
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
-    }
 
     public String getPrivateKey() {
         return privateKey;

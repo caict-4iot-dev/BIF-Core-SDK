@@ -88,7 +88,7 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             }
 
             Long ceilLedgerSeq = bifTransactionSerializeRequest.getCeilLedgerSeq();
-            if (!Tools.isEmpty(ceilLedgerSeq) && ceilLedgerSeq < Constant.INIT_ZERO) {
+            if (!Tools.isEmpty(ceilLedgerSeq) && ceilLedgerSeq <= Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_CEILLEDGERSEQ_ERROR);
             }
             // check metadata
@@ -230,7 +230,7 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
      */
     @Override
     public String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, BIFBaseOperation operation,
-                                   Long ceilLedgerSeq, String metadata, String senderPrivateKey) {
+                                   Long ceilLedgerSeq, String remarks, String senderPrivateKey) {
         BIFAccountServiceImpl accountService = new BIFAccountServiceImpl();
         // 一、获取交易发起的账号nonce值
         BIFAccountGetNonceRequest getNonceRequest = new BIFAccountGetNonceRequest();
@@ -251,8 +251,9 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
         serializeRequest.setGasPrice(gasPrice);
         serializeRequest.setOperation(operation);
         serializeRequest.setCeilLedgerSeq(ceilLedgerSeq);
-        serializeRequest.setMetadata(metadata);
+
         // 调用BIFSerializable接口
+        serializeRequest.setMetadata(remarks);
         BIFTransactionSerializeResponse serializeResponse = BIFSerializable(serializeRequest);
         if (serializeResponse.getErrorCode() != Constant.SUCCESS) {
             throw new SDKException(serializeResponse.getErrorCode(), serializeResponse.getErrorDesc());
@@ -326,7 +327,7 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
                 throw new SDKException(SdkError.PRIVATEKEY_NULL_ERROR);
             }
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
 
             BIFGasSendOperation operation = new BIFGasSendOperation();
             String destAddress = request.getDestAddress();
@@ -342,7 +343,7 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
 
             // 广播交易
             String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq,
-                    metadata, privateKey);
+                    remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -388,9 +389,9 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             operation.setTo(to);
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
             // 广播交易
-            String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, metadata, privateKey);
+            String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -439,9 +440,9 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             operation.setFrom(from);
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
             // 广播交易
-            String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, metadata, privateKey);
+            String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {

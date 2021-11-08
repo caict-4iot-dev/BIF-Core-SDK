@@ -62,9 +62,9 @@ public enum SdkError {
     CONNECTNETWORK_ERROR(11007, "Failed to connect to the network"),
 
     /*
-     * NO_METADATA_ERROR
+     * NO_METADATAS_ERROR
      */
-    NO_METADATA_ERROR(11010, "The account does not have this metadata"),
+    NO_METADATAS_ERROR(11010, "The account does not have this metadatas"),
     /*
      * INVALID_DATAKEY_ERROR
      */

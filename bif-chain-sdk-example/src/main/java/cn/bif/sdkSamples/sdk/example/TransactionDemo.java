@@ -19,17 +19,13 @@
 package cn.bif.sdkSamples.sdk.example;
 
 import cn.bif.api.BIFSDK;
+import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
 import cn.bif.common.ToBaseUnit;
-import cn.bif.model.request.BIFTransactionGasSendRequest;
-import cn.bif.model.request.BIFTransactionGetInfoRequest;
-import cn.bif.model.request.BIFTransactionPrivateContractCallRequest;
-import cn.bif.model.request.BIFTransactionPrivateContractCreateRequest;
-import cn.bif.model.response.BIFTransactionGasSendResponse;
-import cn.bif.model.response.BIFTransactionGetInfoResponse;
-import cn.bif.model.response.BIFTransactionPrivateContractCallResponse;
-import cn.bif.model.response.BIFTransactionPrivateContractCreateResponse;
-import com.alibaba.fastjson.JSON;
+import cn.bif.model.request.*;
+import cn.bif.model.response.*;
+import cn.bif.module.encryption.key.PrivateKeyManager;
+import cn.bif.utils.hex.HexFormat;
 import org.junit.Test;
 
 public class TransactionDemo {
@@ -41,12 +37,12 @@ public class TransactionDemo {
     @Test
     public void getTransactionInfo() {
         BIFTransactionGetInfoRequest request = new BIFTransactionGetInfoRequest();
-        request.setHash("80483f9f1bba9a37f7de2e0aa9c8796be6b1b6d5853fa56e24e6219d79e84e22");
+        request.setHash("0cfb0242e90d9b0df42e2f050ef8be75290615c3e0b83e287df81c3427e69ede");
         BIFTransactionGetInfoResponse response = sdk.getBIFTransactionService().getTransactionInfo(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -67,14 +63,14 @@ public class TransactionDemo {
         request.setPrivateKey(senderPrivateKey);
         request.setDestAddress(destAddress);
         request.setAmount(amount);
-        request.setMetadata("gas send");
+        request.setRemarks("gas send");
 
         // 调用 gasSend 接口
         BIFTransactionGasSendResponse response = sdk.getBIFTransactionService().gasSend(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -100,14 +96,14 @@ public class TransactionDemo {
         request.setFrom(from);
         request.setTo(to);
         request.setDestAddress(destAddress);
-        request.setMetadata("private Contract Call");
+        request.setRemarks("private Contract Call");
 
         // 调用 privateContractCall 接口
         BIFTransactionPrivateContractCallResponse response = sdk.getBIFTransactionService().privateContractCall(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println("error:      " + JsonUtils.toJSONString(response));
             return;
         }
 
@@ -118,9 +114,9 @@ public class TransactionDemo {
         // 调用getTransactionInfo接口
         BIFTransactionGetInfoResponse transactionResponse = sdk.getBIFTransactionService().getTransactionInfo(transactionRequest);
         if (transactionResponse.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(transactionResponse.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(transactionResponse.getResult()));
         } else {
-            System.out.println("error: " + transactionResponse.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(transactionResponse));
         }
     }
 
@@ -130,26 +126,27 @@ public class TransactionDemo {
     @Test
     public void privateContractCreate() throws InterruptedException {
         // 初始化参数
-        String senderAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
-        String senderPrivateKey = "priSPKqvAwSG3cp63GAuWfXASGXUSokYeA5nNkuWxKeBF54yEC";
+        String senderAddress = "did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
+        String senderPrivateKey = "priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
         String payload = "\"use strict\";function queryBanance(address)\r\n{return \" test query private contract sdk_3\";}\r\nfunction sendTx(to,amount)\r\n{return Chain.payCoin(to,amount);}\r\nfunction init(input)\r\n{return;}\r\nfunction main(input)\r\n{let args=JSON.parse(input);if(args.method===\"sendTx\"){return sendTx(args.params.address,args.params.amount);}}\r\nfunction query(input)\r\n{let args=JSON.parse(input);if(args.method===\"queryBanance\"){return queryBanance(args.params.address);}}";
         String from = "bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=";
-        String[] to = {"0VEtPRytTaDEf0g62KyAVeEHnwfd6ZM59/YQXfngaRs="};
+        String[] to = {"bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw="};
 
         BIFTransactionPrivateContractCreateRequest request = new BIFTransactionPrivateContractCreateRequest();
+        request.setType(5);
         request.setSenderAddress(senderAddress);
         request.setPrivateKey(senderPrivateKey);
         request.setPayload(payload);
         request.setFrom(from);
         request.setTo(to);
-        request.setMetadata("init account");
+        request.setRemarks("init account");
 
         // 调用 privateContractCreate 接口
         BIFTransactionPrivateContractCreateResponse response = sdk.getBIFTransactionService().privateContractCreate(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + JSON.toJSONString(response));
+            System.out.println("error:      " + JsonUtils.toJSONString(response));
             return;
         }
         Thread.sleep(5000);
@@ -159,9 +156,35 @@ public class TransactionDemo {
         // 调用getTransactionInfo接口
         BIFTransactionGetInfoResponse transactionResponse = sdk.getBIFTransactionService().getTransactionInfo(transactionRequest);
         if (transactionResponse.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(transactionResponse.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(transactionResponse.getResult()));
         } else {
-            System.out.println("error: " + transactionResponse.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(transactionResponse));
+        }
+    }
+
+    /**
+     * bifSubmit
+     */
+    @Test
+    public void bifSubmit() {
+        // 初始化参数
+        String senderPrivateKey = "priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
+        //序列化交易
+        String transactionBlob ="";
+        //签名
+        byte[] signBytes = PrivateKeyManager.sign(HexFormat.hexToByte(transactionBlob), senderPrivateKey);
+        String publicKey = PrivateKeyManager.getEncPublicKey(senderPrivateKey);
+        //提交交易
+        BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
+        submitRequest.setTransactionBlob(transactionBlob);
+        submitRequest.setPublicKey(publicKey);
+        submitRequest.setSignData(HexFormat.byteToHex(signBytes));
+        // 调用bifSubmit接口
+        BIFTransactionSubmitResponse response = sdk.getBIFTransactionService().BIFSubmit(submitRequest);
+        if (response.getErrorCode() == 0) {
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
+        } else {
+            System.out.println("error: " + response.getErrorDesc());
         }
     }
 }

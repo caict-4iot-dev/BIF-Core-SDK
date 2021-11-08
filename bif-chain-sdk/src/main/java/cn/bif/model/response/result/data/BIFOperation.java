@@ -45,7 +45,16 @@ public class BIFOperation {
 
     @JsonProperty(value = "set_privilege")
     private BIFAccountSetPrivilegeInfo setPrivilege;
+    @JsonProperty(value = "log")
+    private BIFLogInfo log;
 
+    public BIFLogInfo getLog() {
+        return log;
+    }
+
+    public void setLog(BIFLogInfo log) {
+        this.log = log;
+    }
 
     /**
      * @Method getType

@@ -1,6 +1,7 @@
 package cn.bif.common;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
@@ -76,6 +77,7 @@ public class JsonUtils {
             if (StringUtils.isBlank(value)) {
                 return defaultSupplier.get();
             }
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             return mapper.readValue(value, tClass);
         } catch (Throwable e) {
             log.error(String.format("toJavaObject exception: \n %s\n %s", value, tClass), e);

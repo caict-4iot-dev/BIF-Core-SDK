@@ -24,13 +24,21 @@ import cn.bif.model.response.result.data.BIFTypeThreshold;
 public class BIFAccountSetPrivilegeRequest {
     private String senderAddress;
     private Long ceilLedgerSeq;
-    private String metadata;
+    private String remarks;
     private String privateKey;
 
     private String masterWeight;
     private BIFSigner[] signers;
     private String txThreshold;
     private BIFTypeThreshold[] typeThresholds;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     /**
      * @Method getSenderAddress
@@ -66,24 +74,6 @@ public class BIFAccountSetPrivilegeRequest {
      */
     public void setCeilLedgerSeq(Long ceilLedgerSeq) {
         this.ceilLedgerSeq = ceilLedgerSeq;
-    }
-
-    /**
-     * @Method getMetadata
-     * @Params []
-     * @Return String
-     */
-    public String getMetadata() {
-        return metadata;
-    }
-
-    /**
-     * @Method setMetadata
-     * @Params [metadata]
-     * @Return void
-     */
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
     }
 
     public String getPrivateKey() {

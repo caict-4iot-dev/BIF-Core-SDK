@@ -19,6 +19,7 @@
 package cn.bif.sdkSamples.sdk.example;
 
 import cn.bif.api.BIFSDK;
+import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
 import cn.bif.model.request.BIFBlockGetInfoRequest;
 import cn.bif.model.request.BIFBlockGetTransactionsRequest;
@@ -28,7 +29,6 @@ import cn.bif.model.response.result.BIFBlockGetInfoResult;
 import cn.bif.model.response.result.BIFBlockGetLatestInfoResult;
 import cn.bif.model.response.result.BIFBlockGetLatestValidatorsResult;
 import cn.bif.model.response.result.BIFBlockGetValidatorsResult;
-import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 
 public class BlockDemo {
@@ -40,7 +40,7 @@ public class BlockDemo {
     @Test
     public void getBlockNumber() {
         BIFBlockGetNumberResponse response = sdk.getBIFBlockService().getBlockNumber();
-        System.out.println(JSON.toJSONString(response));
+        System.out.println(JsonUtils.toJSONString(response));
     }
 
     /**
@@ -55,9 +55,9 @@ public class BlockDemo {
         request.setBlockNumber(blockNumber);
         BIFBlockGetTransactionsResponse response = sdk.getBIFBlockService().getTransactions(request);
         if (0 == response.getErrorCode()) {
-            System.out.println(JSON.toJSONString(response, true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("失败\n" + JSON.toJSONString(response, true));
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -71,9 +71,9 @@ public class BlockDemo {
         BIFBlockGetInfoResponse lockGetInfoResponse = sdk.getBIFBlockService().getBlockInfo(blockGetInfoRequest);
         if (lockGetInfoResponse.getErrorCode() == 0) {
             BIFBlockGetInfoResult lockGetInfoResult = lockGetInfoResponse.getResult();
-            System.out.println(JSON.toJSONString(lockGetInfoResult, true));
+            System.out.println(JsonUtils.toJSONString(lockGetInfoResult));
         } else {
-            System.out.println("error: " + lockGetInfoResponse.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(lockGetInfoResponse));
         }
     }
 
@@ -85,9 +85,9 @@ public class BlockDemo {
         BIFBlockGetLatestInfoResponse lockGetLatestInfoResponse = sdk.getBIFBlockService().getBlockLatestInfo();
         if (lockGetLatestInfoResponse.getErrorCode() == 0) {
             BIFBlockGetLatestInfoResult lockGetLatestInfoResult = lockGetLatestInfoResponse.getResult();
-            System.out.println(JSON.toJSONString(lockGetLatestInfoResult, true));
+            System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResult));
         } else {
-            System.out.println(lockGetLatestInfoResponse.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResponse));
         }
     }
 
@@ -104,9 +104,9 @@ public class BlockDemo {
         BIFBlockGetValidatorsResponse response = sdk.getBIFBlockService().getValidators(request);
         if (response.getErrorCode() == 0) {
             BIFBlockGetValidatorsResult result = response.getResult();
-            System.out.println(JSON.toJSONString(result, true));
+            System.out.println(JsonUtils.toJSONString(result));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -119,9 +119,9 @@ public class BlockDemo {
         BIFBlockGetLatestValidatorsResponse response = sdk.getBIFBlockService().getLatestValidators();
         if (response.getErrorCode() == 0) {
             BIFBlockGetLatestValidatorsResult result = response.getResult();
-            System.out.println(JSON.toJSONString(result, true));
+            System.out.println(JsonUtils.toJSONString(result));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 }

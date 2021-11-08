@@ -216,6 +216,9 @@ public class BIFAccountServiceImpl implements BIFAccountService {
                 throw new SDKException(errorCode, (null == errorDesc ? "Account (" + address + ") not exist" : errorDesc));
             }
             SdkError.checkErrorCode(bifAccountGetInfoResponse);
+            if (bifAccountGetInfoResponse.getResult().getNonce() == null) {
+                bifAccountGetInfoResponse.getResult().setNonce(Constant.INIT_NONCE);
+            }
         } catch (SDKException apiException) {
             Integer errorCode = apiException.getErrorCode();
             String errorDesc = apiException.getErrorDesc();
@@ -318,23 +321,23 @@ public class BIFAccountServiceImpl implements BIFAccountService {
     }
 
     /**
-     * @Method getMetadata
+     * @Method getMetadatas
      * @Params [accountGetMetadataRequest]
      * @Return AccountGetMetadataResponse
      */
     @Override
-    public BIFAccountGetMetadataResponse getAccountMetadata(BIFAccountGetMetadataRequest bifAccountGetMetadataRequest) {
-        BIFAccountGetMetadataResponse bifAccountGetMetadataResponse = new BIFAccountGetMetadataResponse();
-        BIFAccountGetMetadataResult bifAccountGetMetadataResult = new BIFAccountGetMetadataResult();
+    public BIFAccountGetMetadatasResponse getAccountMetadatas(BIFAccountGetMetadatasRequest bifAccountGetMetadatasRequest) {
+        BIFAccountGetMetadatasResponse bifAccountGetMetadatasResponse = new BIFAccountGetMetadatasResponse();
+        BIFAccountGetMetadatasResult bifAccountGetMetadatasResult = new BIFAccountGetMetadatasResult();
         try {
-            if (Tools.isEmpty(bifAccountGetMetadataRequest)) {
+            if (Tools.isEmpty(bifAccountGetMetadatasRequest)) {
                 throw new SDKException(SdkError.REQUEST_NULL_ERROR);
             }
-            String address = bifAccountGetMetadataRequest.getAddress();
+            String address = bifAccountGetMetadatasRequest.getAddress();
             if (!PublicKeyManager.isAddressValid(address)) {
                 throw new SDKException(SdkError.INVALID_ADDRESS_ERROR);
             }
-            String key = bifAccountGetMetadataRequest.getKey();
+            String key = bifAccountGetMetadatasRequest.getKey();
             if (!Tools.isNULL(key) && (key.length() > Constant.METADATA_KEY_MAX || key.length() < 1)) {
                 throw new SDKException(SdkError.INVALID_DATAKEY_ERROR);
             }
@@ -343,28 +346,28 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             }
             String accountGetInfoUrl = General.getInstance().accountGetMetadataUrl(address, key);
             String result = HttpUtils.httpGet(accountGetInfoUrl);
-            bifAccountGetMetadataResponse = JsonUtils.toJavaObject(result, BIFAccountGetMetadataResponse.class);
-            Integer errorCode = bifAccountGetMetadataResponse.getErrorCode();
-            String errorDesc = bifAccountGetMetadataResponse.getErrorDesc();
+            bifAccountGetMetadatasResponse = JsonUtils.toJavaObject(result, BIFAccountGetMetadatasResponse.class);
+            Integer errorCode = bifAccountGetMetadatasResponse.getErrorCode();
+            String errorDesc = bifAccountGetMetadatasResponse.getErrorDesc();
             if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
                 throw new SDKException(errorCode, (null == errorDesc ? "Account (" + address + ") not exist" : errorDesc));
             }
-            SdkError.checkErrorCode(bifAccountGetMetadataResponse);
-            BIFMetadataInfo[] metadataInfos = bifAccountGetMetadataResponse.getResult().getMetadatas();
+            SdkError.checkErrorCode(bifAccountGetMetadatasResponse);
+            BIFMetadataInfo[] metadataInfos = bifAccountGetMetadatasResponse.getResult().getMetadatas();
             if (Tools.isEmpty(metadataInfos)) {
-                throw new SDKException(SdkError.NO_METADATA_ERROR);
+                throw new SDKException(SdkError.NO_METADATAS_ERROR);
             }
         } catch (SDKException apiException) {
             Integer errorCode = apiException.getErrorCode();
             String errorDesc = apiException.getErrorDesc();
-            bifAccountGetMetadataResponse.buildResponse(errorCode, errorDesc, bifAccountGetMetadataResult);
+            bifAccountGetMetadatasResponse.buildResponse(errorCode, errorDesc, bifAccountGetMetadatasResult);
         } catch (NoSuchAlgorithmException | KeyManagementException | NoSuchProviderException | IOException e) {
-            bifAccountGetMetadataResponse.buildResponse(SdkError.CONNECTNETWORK_ERROR, bifAccountGetMetadataResult);
+            bifAccountGetMetadatasResponse.buildResponse(SdkError.CONNECTNETWORK_ERROR, bifAccountGetMetadatasResult);
         } catch (Exception e) {
-            bifAccountGetMetadataResponse.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), bifAccountGetMetadataResult);
+            bifAccountGetMetadatasResponse.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), bifAccountGetMetadatasResult);
         }
 
-        return bifAccountGetMetadataResponse;
+        return bifAccountGetMetadatasResponse;
     }
 
     @Override
@@ -397,11 +400,11 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             }
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
             String hash = transactionService.radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation,
-                    ceilLedgerSeq, metadata, privateKey);
+                    ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -415,8 +418,8 @@ public class BIFAccountServiceImpl implements BIFAccountService {
     }
 
     @Override
-    public BIFAccountSetMetadataResponse setMetadata(BIFAccountSetMetadataRequest request) {
-        BIFAccountSetMetadataResponse response = new BIFAccountSetMetadataResponse();
+    public BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest request) {
+        BIFAccountSetMetadatasResponse response = new BIFAccountSetMetadatasResponse();
         BIFAccountSetMetadataResult result = new BIFAccountSetMetadataResult();
         try {
             if (Tools.isEmpty(request)) {
@@ -448,11 +451,11 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             }
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
             // 交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
             String hash = transactionService.radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation,
-                    ceilLedgerSeq, metadata, privateKey);
+                    ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -521,7 +524,7 @@ public class BIFAccountServiceImpl implements BIFAccountService {
                 throw new SDKException(SdkError.PRIVATEKEY_NULL_ERROR);
             }
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
 
             BIFAccountSetPrivilegeOperation operation = new BIFAccountSetPrivilegeOperation();
             BIFSigner[] signers = request.getSigners();
@@ -534,7 +537,7 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             operation.setTypeThresholds(typeThresholds);
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, metadata, privateKey);
+            String hash = transactionService.radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {

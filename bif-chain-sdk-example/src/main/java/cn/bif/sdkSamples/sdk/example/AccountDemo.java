@@ -19,16 +19,15 @@
 package cn.bif.sdkSamples.sdk.example;
 
 import cn.bif.api.BIFSDK;
+import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
 import cn.bif.common.ToBaseUnit;
-import cn.bif.model.crypto.KeyPairEntity;
 import cn.bif.model.request.*;
 import cn.bif.model.response.*;
-import cn.bif.model.response.result.BIFAccountGetMetadataResult;
+import cn.bif.model.response.result.BIFAccountGetMetadatasResult;
 import cn.bif.model.response.result.BIFAccountPrivResult;
 import cn.bif.model.response.result.data.BIFSigner;
 import cn.bif.model.response.result.data.BIFTypeThreshold;
-import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 
 public class AccountDemo {
@@ -40,17 +39,16 @@ public class AccountDemo {
     @Test
     public void getAccount() {
         // 初始化请求参数
-        String accountAddress = "did:bid:efwD895wkz42QTXKwoquw1RieEmzvfEz";
+        String accountAddress = "did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
         BIFAccountGetInfoRequest request = new BIFAccountGetInfoRequest();
         request.setAddress(accountAddress);
-
         // 调用getAccount接口
         BIFAccountGetInfoResponse response = sdk.getBIFAccountService().getAccount(request);
 
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -59,14 +57,14 @@ public class AccountDemo {
      */
     @Test
     public void getNonce() {
-        String accountAddress = "did:bid:efwD895wkz42QTXKwoquw1RieEmzvfEz";
+        String accountAddress = "did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
         BIFAccountGetNonceRequest request = new BIFAccountGetNonceRequest();
         request.setAddress(accountAddress);
-
         BIFAccountGetNonceResponse response = sdk.getBIFAccountService().getNonce(request);
-        System.out.println(JSON.toJSONString(response, true));
         if (0 == response.getErrorCode()) {
             System.out.println("Account nonce:" + response.getResult().getNonce());
+        }else {
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -75,15 +73,15 @@ public class AccountDemo {
      */
     @Test
     public void getAccountBalance() {
-        String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
+        String accountAddress = "did:bid:efzE8AcDgWUeNbgujA5hK3oUeuG9k19b";
         BIFAccountGetBalanceRequest request = new BIFAccountGetBalanceRequest();
         request.setAddress(accountAddress);
 
         BIFAccountGetBalanceResponse response = sdk.getBIFAccountService().getAccountBalance(request);
-
-        System.out.println(JSON.toJSONString(response, true));
         if (0 == response.getErrorCode()) {
             System.out.println("Gas balance：" + ToBaseUnit.ToGas(response.getResult().getBalance().toString()) + "Gas");
+        }else {
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -91,21 +89,21 @@ public class AccountDemo {
      * getAccountMetadata
      */
     @Test
-    public void getAccountMetadata() {
+    public void getAccountMetadatas() {
         // 初始化请求参数
-        String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
-        BIFAccountGetMetadataRequest request = new BIFAccountGetMetadataRequest();
+        String accountAddress = "did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc";
+        BIFAccountGetMetadatasRequest request = new BIFAccountGetMetadatasRequest();
         request.setAddress(accountAddress);
-        request.setKey("20210820-01");
+        //request.setKey("20210902-01");
 
-        // 调用getBIFMetadata接口
-        BIFAccountGetMetadataResponse response =
-                sdk.getBIFAccountService().getAccountMetadata(request);
+        // 调用getBIFMetadatas接口
+        BIFAccountGetMetadatasResponse response =
+                sdk.getBIFAccountService().getAccountMetadatas(request);
         if (response.getErrorCode() == 0) {
-            BIFAccountGetMetadataResult result = response.getResult();
-            System.out.println(JSON.toJSONString(result, true));
+            BIFAccountGetMetadatasResult result = response.getResult();
+            System.out.println(JsonUtils.toJSONString(result));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -115,10 +113,11 @@ public class AccountDemo {
     @Test
     public void createAccount() {
         // 初始化参数
-        String senderAddress = "did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
-        String senderPrivateKey = "priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
-        String destAddress = "did:bid:efwD895wkz42QTXKwoquw1RieEmzvfEz";
-       // String destAddress = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        String senderAddress = "did:bid:ef21AHDJWnFfYQ3Qs3kMxo64jD2KATwBz";
+        String senderPrivateKey = "priSPKkL8XpxHiRLuNoxph2ThSbexeRUGEETprvuVHkxy2yBDp";
+         String destAddress = "did:bid:efzE8AcDgWUeNbgujA5hK3oUeuG9k19b";
+       //  String destAddress = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        System.out.println(destAddress);
         Long initBalance = ToBaseUnit.ToUGas("0.01");
 
         BIFCreateAccountRequest request = new BIFCreateAccountRequest();
@@ -126,14 +125,13 @@ public class AccountDemo {
         request.setPrivateKey(senderPrivateKey);
         request.setDestAddress(destAddress);
         request.setInitBalance(initBalance);
-        request.setMetadata("init account");
-
+        request.setRemarks("init account");
         // 调用 createAccount 接口
         BIFCreateAccountResponse response = sdk.getBIFAccountService().createAccount(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -141,27 +139,27 @@ public class AccountDemo {
      * setMetadata
      */
     @Test
-    public void setMetadata() {
+    public void setMetadatas() {
         // 初始化参数
-        String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
-        String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
-        String key = "20210902-01";
-        String value = "metadata-20210902-01";
+        String senderAddress = "did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc";
+        String senderPrivateKey = "priSPKff1hvKVFYYFKSgfMb17wJ4dYZAHhLREarvh4Cy6fgn5b";
+        String key = "20211029-01";
+        String value = "metadata-20211029-01";
 
-        BIFAccountSetMetadataRequest request = new BIFAccountSetMetadataRequest();
+        BIFAccountSetMetadatasRequest request = new BIFAccountSetMetadatasRequest();
         request.setSenderAddress(senderAddress);
         request.setPrivateKey(senderPrivateKey);
         request.setKey(key);
         request.setValue(value);
-        request.setMetadata("set metadata");
+        request.setRemarks("set remarks");
 
         // 调用 setMetadata 接口
-        BIFAccountSetMetadataResponse response = sdk.getBIFAccountService().setMetadata(request);
+        BIFAccountSetMetadatasResponse response = sdk.getBIFAccountService().setMetadatas(request);
 
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -180,9 +178,9 @@ public class AccountDemo {
 
         if (response.getErrorCode() == 0) {
             BIFAccountPrivResult result = response.getResult();
-            System.out.println(JSON.toJSONString(result, true));
+            System.out.println(JsonUtils.toJSONString(result));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -215,14 +213,14 @@ public class AccountDemo {
         request.setTxThreshold(txThreshold);
         request.setMasterWeight(masterWeight);
         request.setTypeThresholds(typeThresholds);
-        request.setMetadata("set privilege");
+        request.setRemarks("set privilege");
 
         // 调用 setPrivilege 接口
         BIFAccountSetPrivilegeResponse response = sdk.getBIFAccountService().setPrivilege(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 }

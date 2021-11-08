@@ -49,7 +49,7 @@ public interface BIFAccountService {
      * @Params [accountGetMetadataRequest]
      * @Return AccountGetMetadataResponse
      */
-    BIFAccountGetMetadataResponse getAccountMetadata(BIFAccountGetMetadataRequest bifAccountGetMetadataRequest);
+    BIFAccountGetMetadatasResponse getAccountMetadatas(BIFAccountGetMetadatasRequest bifAccountGetMetadatasRequest);
 
     /**
      * @Method BIFCreateAccount
@@ -63,7 +63,7 @@ public interface BIFAccountService {
      * @Params [request]
      * @Return BIFAccountSetMetadataResponse
      */
-    BIFAccountSetMetadataResponse setMetadata(BIFAccountSetMetadataRequest request);
+    BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest request);
 
     /**
      * 获取账户权限

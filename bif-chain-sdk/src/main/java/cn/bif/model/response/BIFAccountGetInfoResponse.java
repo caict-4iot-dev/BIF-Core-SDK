@@ -37,7 +37,6 @@ public class BIFAccountGetInfoResponse extends BIFBaseResponse {
      * @Return void
      */
     public void setResult(BIFAccountGetInfoResult result) {
-        if(result.getNonce()==null) result.setNonce(Constant.INIT_NONCE);
         this.result = result;
     }
 

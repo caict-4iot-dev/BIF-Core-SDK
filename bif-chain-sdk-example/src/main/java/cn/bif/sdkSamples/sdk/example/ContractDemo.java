@@ -19,13 +19,13 @@
 package cn.bif.sdkSamples.sdk.example;
 
 import cn.bif.api.BIFSDK;
+import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
 import cn.bif.common.ToBaseUnit;
 import cn.bif.model.request.*;
 import cn.bif.model.response.*;
 import cn.bif.model.response.result.BIFContractCallResult;
 import cn.bif.model.response.result.BIFContractCheckValidResult;
-import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 
 /**
@@ -41,15 +41,18 @@ public class ContractDemo {
     public void checkContractAddress() {
         // Init request
         BIFContractCheckValidRequest request = new BIFContractCheckValidRequest();
-        request.setContractAddress("did:bid:efiBacNvVSnr5QxgB282XGWkg4RXLLxL");
+        request.setContractAddress("did:bid:efzE8AcDgWUeNbgujA5hK3oUeuG9k19b");
 
         // Call checkContractAddress
         BIFContractCheckValidResponse response = sdk.getBIFContractService().checkContractAddress(request);
+        String s=JsonUtils.toJSONString(response);
+        System.out.println(s);
+        System.out.println(JsonUtils.toJSONString(response,null,true));
         if (response.getErrorCode() == 0) {
             BIFContractCheckValidResult result = response.getResult();
             System.out.println(result.getValid());
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -65,9 +68,9 @@ public class ContractDemo {
         // Call getContractInfo
         BIFContractGetInfoResponse response = sdk.getBIFContractService().getContractInfo(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -77,16 +80,16 @@ public class ContractDemo {
     @Test
     public void getContractAddress() {
         // Init request
-        String hash = "4bb232fbe86e33b956ad5338103d4610b2b31d5bf6af742d7e55b9c6182abfee";
+        String hash = "ff6a9d1a0c0011fbb9f51cfb99e4cd5e7c31380046fda3fd6e0daae44d1d4648";
         BIFContractGetAddressRequest request = new BIFContractGetAddressRequest();
         request.setHash(hash);
 
         // Call getAddress
         BIFContractGetAddressResponse response = sdk.getBIFContractService().getContractAddress(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -107,9 +110,9 @@ public class ContractDemo {
         BIFContractCallResponse response = sdk.getBIFContractService().contractQuery(request);
         if (response.getErrorCode() == 0) {
             BIFContractCallResult result = response.getResult();
-            System.out.println(JSON.toJSONString(result, true));
+            System.out.println(JsonUtils.toJSONString(result));
         } else {
-            System.out.println("error: " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -119,26 +122,26 @@ public class ContractDemo {
     @Test
     public void contractCreate() {
         // 初始化参数
-        String senderAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
-        String senderPrivateKey = "priSPKqvAwSG3cp63GAuWfXASGXUSokYeA5nNkuWxKeBF54yEC";
+        String senderAddress = "did:bid:ef21AHDJWnFfYQ3Qs3kMxo64jD2KATwBz";
+        String senderPrivateKey = "priSPKkL8XpxHiRLuNoxph2ThSbexeRUGEETprvuVHkxy2yBDp";
         String payload = "\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n            {\n              let x = {\n                \'hello\' : \'world\'\n              };\n            }\n          }\n          \n          function query(input)\n          { \n            return input;\n          }\n        ";
-        Long initBalance = ToBaseUnit.ToUGas("0.01");
+        Long initBalance = ToBaseUnit.ToUGas("1");
 
         BIFContractCreateRequest request = new BIFContractCreateRequest();
         request.setSenderAddress(senderAddress);
         request.setPrivateKey(senderPrivateKey);
         request.setInitBalance(initBalance);
         request.setPayload(payload);
-        request.setMetadata("create contract");
-        request.setType(0);
-        request.setFeeLimit(1000000000L);
+        request.setRemarks("create contract");
+        request.setType(1);
+        request.setFeeLimit(10000000000L);
 
         // 调用bifContractCreate接口
         BIFContractCreateResponse response = sdk.getBIFContractService().contractCreate(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 
@@ -158,14 +161,14 @@ public class ContractDemo {
         request.setPrivateKey(senderPrivateKey);
         request.setContractAddress(contractAddress);
         request.setBIFAmount(amount);
-        request.setMetadata("contract invoke");
+        request.setRemarks("contract invoke");
 
         // 调用 bifContractInvoke 接口
         BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
         if (response.getErrorCode() == 0) {
-            System.out.println(JSON.toJSONString(response.getResult(), true));
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
-            System.out.println("error:      " + response.getErrorDesc());
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 }

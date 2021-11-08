@@ -63,7 +63,8 @@ public class BIFTransactionInfo {
      */
     public void setMetadata(String metadata) {
         if (metadata != null && metadata.length() != 0) {
-            this.metadata = new String(HexFormat.hexToByte(metadata));
+           // this.metadata = new String(HexFormat.hexToByte(metadata));
+            this.metadata = metadata;
         }
     }
 

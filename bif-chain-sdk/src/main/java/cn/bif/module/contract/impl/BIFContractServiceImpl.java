@@ -612,12 +612,12 @@ public class BIFContractServiceImpl implements BIFContractService {
             }
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
             String hash = transactionService.radioTransaction(senderAddress, feeLimit, Constant.GAS_PRICE, operation,
                     ceilLedgerSeq,
-                    metadata, privateKey);
+                    remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -669,11 +669,11 @@ public class BIFContractServiceImpl implements BIFContractService {
             }
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
-            String metadata = request.getMetadata();
+            String remarks = request.getRemarks();
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
             String hash = transactionService.radioTransaction(senderAddress, feeLimit, Constant.GAS_PRICE, operation,
-                    ceilLedgerSeq, metadata, privateKey);
+                    ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {

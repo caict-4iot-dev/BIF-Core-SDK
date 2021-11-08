@@ -21,35 +21,38 @@ package cn.bif.sdkSamples.encryption.example;
 import cn.bif.module.encryption.crypto.mnemonic.Mnemonic;
 import cn.bif.module.encryption.key.PrivateKeyManager;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TestMnemonic {
     public static void main(String[] argv) {
-//        byte[] aesIv = new byte[16];
-//        SecureRandom randomIv = new SecureRandom();
-//        randomIv.nextBytes(aesIv);
-//
-//        List<String> mnemonicCodes = Mnemonic.generateMnemonicCode(aesIv);
-//        for (String mnemonicCode : mnemonicCodes) {
-//            System.out.print(mnemonicCode + " ");
-//        }
-//        System.out.println();
+        //生成助记词
+        byte[] aesIv = new byte[16];
+        SecureRandom randomIv = new SecureRandom();
+        randomIv.nextBytes(aesIv);
 
+        List<String> mnemonicCodes1 = Mnemonic.generateMnemonicCode(aesIv);
+        for (String mnemonicCode : mnemonicCodes1) {
+            System.out.println(mnemonicCode + " ");
+        }
+        System.out.println();
+
+        //根据助记词生成私钥
         // field resemble board rain amazing gap aisle debris clay frequent usage industry
         List<String> mnemonicCodes = new ArrayList<>();
-        mnemonicCodes.add("field");
-        mnemonicCodes.add("resemble");
-        mnemonicCodes.add("board");
-        mnemonicCodes.add("rain");
-        mnemonicCodes.add("amazing");
-        mnemonicCodes.add("gap");
-        mnemonicCodes.add("aisle");
-        mnemonicCodes.add("debris");
-        mnemonicCodes.add("clay");
-        mnemonicCodes.add("frequent");
-        mnemonicCodes.add("usage");
-        mnemonicCodes.add("industry");
+        mnemonicCodes.add("style");
+        mnemonicCodes.add("orchard");
+        mnemonicCodes.add("science");
+        mnemonicCodes.add("puppy");
+        mnemonicCodes.add("place");
+        mnemonicCodes.add("differ");
+        mnemonicCodes.add("benefit");
+        mnemonicCodes.add("thing");
+        mnemonicCodes.add("wrap");
+        mnemonicCodes.add("type");
+        mnemonicCodes.add("build");
+        mnemonicCodes.add("scare");
 
 
         List<String> hdPaths = new ArrayList<>();

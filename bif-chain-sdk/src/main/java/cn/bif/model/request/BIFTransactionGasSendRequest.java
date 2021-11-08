@@ -22,9 +22,17 @@ public class BIFTransactionGasSendRequest {
     private String senderAddress;
     private String privateKey;
     private Long ceilLedgerSeq;
-    private String metadata;
+    private String remarks;
     private String destAddress;
     private Long amount;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     /**
      * @Method getSenderAddress
@@ -62,23 +70,6 @@ public class BIFTransactionGasSendRequest {
         this.ceilLedgerSeq = ceilLedgerSeq;
     }
 
-    /**
-     * @Method getMetadata
-     * @Params []
-     * @Return String
-     */
-    public String getMetadata() {
-        return metadata;
-    }
-
-    /**
-     * @Method setMetadata
-     * @Params [metadata]
-     * @Return void
-     */
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
-    }
 
     public String getPrivateKey() {
         return privateKey;

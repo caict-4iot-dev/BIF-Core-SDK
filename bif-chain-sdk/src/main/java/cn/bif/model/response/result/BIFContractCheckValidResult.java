@@ -22,23 +22,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BIFContractCheckValidResult {
      @JsonProperty(value =  "is_valid")
-    private Boolean isValid;
+    private Boolean valid;
 
-    /**
-     * @Method getValid
-     * @Params []
-     * @Return java.lang.Boolean
-     */
     public Boolean getValid() {
-        return isValid;
+        return valid;
     }
 
-    /**
-     * @Method setValid
-     * @Params [valid]
-     * @Return void
-     */
     public void setValid(Boolean valid) {
-        isValid = valid;
+        this.valid = valid;
     }
 }

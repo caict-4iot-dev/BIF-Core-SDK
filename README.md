@@ -2,8 +2,18 @@
 
 BIF-Core-SDK通过API调用的方式提供了星火链网-底层区块链平台公私钥对生成、星火链网-底层区块链平台私钥签名公钥验签、账号服务、区块服务、交易服务等接口，同时还提供了接口使用示例说明，开发者可以调用该SDK方便快捷的生成星火链网主链的快速接入。中国信通院秉持开源开放的理念，将星火“BID-Core-SDK”面向社区和公众完全开源，助力全行业伙伴提升数据价值流通的效率，实现数据价值转化。
 
+<img src=".\images\image-20211012184224056.png" alt="image-20211012184224056" style="zoom:80%;" />
+
+​                                                                                   **图1 BIF-Core-SDK 逻辑架构图**
+
 ## 环境要求 
-- BIF-Core-SDK需要JDK1.8以上的版本。
+- JDK1.8以上的版本(本SDK使用256位密钥加解密,需去官方下载JCE无限制权限策略文件，替换local_policy.jar，US_export_policy.jar文件）。更多信息，请参见[安装JDK](https://www.oracle.com/java/technologies/javase-downloads.html)。
+
+- 安装Maven。更多信息，请参见[安装Maven](https://maven.apache.org/download.cgi)。
+
+- 查看Java版本
+
+  执行命令`java -version`查看Java版本
 
 ## BIF-Core-SDK使用  
 - bif-chain-sdk目录：BIF-Core-SDK开源代码  
@@ -15,7 +25,7 @@ BIF-Core-SDK通过API调用的方式提供了星火链网-底层区块链平台�
 
 - [CHANGELOG](./CHANGELOG.md)
 - [LICENSE](./LICENSE)
-- [BIF-Core-SDK](./docs/BIF-Core-SDK.md)
+- [BIF-Core-SDK](https://bif-core-dev-doc.readthedocs.io/zh_CN/v1.0.0/index.html)
 
 ## 问题反馈
 

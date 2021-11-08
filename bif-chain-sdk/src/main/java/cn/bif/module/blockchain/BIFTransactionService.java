@@ -43,7 +43,7 @@ public interface BIFTransactionService {
      *
      * @return
      */
-    String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, BIFBaseOperation operation, Long ceilLedgerSeq, String metadata, String privateKey);
+    String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, BIFBaseOperation operation, Long ceilLedgerSeq, String remarks, String privateKey);
 
     /**
      * @Method getInfo
