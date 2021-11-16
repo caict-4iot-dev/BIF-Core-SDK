@@ -37,7 +37,7 @@ public class TransactionDemo {
     @Test
     public void getTransactionInfo() {
         BIFTransactionGetInfoRequest request = new BIFTransactionGetInfoRequest();
-        request.setHash("0cfb0242e90d9b0df42e2f050ef8be75290615c3e0b83e287df81c3427e69ede");
+        request.setHash("8f3d53f0dfb5ae652d6ed93ca9512f57c2203fe0ffefdc7649908945ad96a730");
         BIFTransactionGetInfoResponse response = sdk.getBIFTransactionService().getTransactionInfo(request);
         if (response.getErrorCode() == 0) {
             System.out.println(JsonUtils.toJSONString(response.getResult()));
@@ -133,7 +133,7 @@ public class TransactionDemo {
         String[] to = {"bwPdcwfUEtSZnaDmi2Nvj9HTwOcRvCRDh0cRdvX9BFw="};
 
         BIFTransactionPrivateContractCreateRequest request = new BIFTransactionPrivateContractCreateRequest();
-        request.setType(5);
+        request.setType(1);
         request.setSenderAddress(senderAddress);
         request.setPrivateKey(senderPrivateKey);
         request.setPayload(payload);
@@ -149,16 +149,17 @@ public class TransactionDemo {
             System.out.println("error:      " + JsonUtils.toJSONString(response));
             return;
         }
-        Thread.sleep(5000);
+        Thread.sleep(10000);
 
-        BIFTransactionGetInfoRequest transactionRequest = new BIFTransactionGetInfoRequest();
-        transactionRequest.setHash(response.getResult().getHash());
-        // 调用getTransactionInfo接口
-        BIFTransactionGetInfoResponse transactionResponse = sdk.getBIFTransactionService().getTransactionInfo(transactionRequest);
-        if (transactionResponse.getErrorCode() == 0) {
-            System.out.println(JsonUtils.toJSONString(transactionResponse.getResult()));
+        BIFContractGetAddressRequest addressRequest = new BIFContractGetAddressRequest();
+        addressRequest.setHash(response.getResult().getHash());
+
+        // Call getAddress
+        BIFContractGetAddressResponse addressResponse = sdk.getBIFContractService().getContractAddress(addressRequest);
+        if (addressResponse.getErrorCode() == 0) {
+            System.out.println(JsonUtils.toJSONString(addressResponse.getResult()));
         } else {
-            System.out.println(JsonUtils.toJSONString(transactionResponse));
+            System.out.println(JsonUtils.toJSONString(addressResponse));
         }
     }
 
