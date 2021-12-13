@@ -21,6 +21,5 @@ package cn.bif.common;
 
 public class SampleConstant {
 
-       //public static final String SDK_INSTANCE_URL = "http://test-bif-core.xinghuo.space";
-       public static final String SDK_INSTANCE_URL = "http://172.19.6.6:37005";
+       public static final String SDK_INSTANCE_URL = "http://test-bif-core.xinghuo.space";
 }
