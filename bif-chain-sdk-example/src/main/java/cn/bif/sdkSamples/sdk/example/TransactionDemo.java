@@ -23,7 +23,9 @@ import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
 import cn.bif.common.ToBaseUnit;
 import cn.bif.model.request.*;
+import cn.bif.model.request.operation.BIFGasSendOperation;
 import cn.bif.model.response.*;
+import cn.bif.model.response.result.BIFTransactionEvaluateFeeResult;
 import cn.bif.module.encryption.key.PrivateKeyManager;
 import cn.bif.utils.hex.HexFormat;
 import org.junit.Test;
@@ -162,7 +164,38 @@ public class TransactionDemo {
             System.out.println(JsonUtils.toJSONString(addressResponse));
         }
     }
+    /**
+     * evaluateFee
+     */
+    @Test
+    public void evaluateFee() {
+        // 初始化变量
+        String senderAddresss = "did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK";
+        String destAddress = "did:bid:ef14uPsX7XYLzsU4t2rnRrsK2zfUbW3r";
+        Long bifAmount = ToBaseUnit.ToUGas("10.9");
 
+        // 构建sendGas操作
+        BIFGasSendOperation gasSendOperation = new BIFGasSendOperation();
+        gasSendOperation.setSourceAddress(senderAddresss);
+        gasSendOperation.setDestAddress(destAddress);
+        gasSendOperation.setAmount(bifAmount);
+
+        // 初始化评估交易请求参数
+        BIFTransactionEvaluateFeeRequest request = new BIFTransactionEvaluateFeeRequest();
+        request.setOperation(gasSendOperation);
+        request.setSourceAddress(senderAddresss);
+        request.setSignatureNumber(1);
+        request.setRemarks(HexFormat.byteToHex("evaluate fees".getBytes()));
+
+       // 调用evaluateFee接口
+        BIFTransactionEvaluateFeeResponse response = sdk.getBIFTransactionService().evaluateFee(request);
+        if (response.getErrorCode() == 0) {
+            BIFTransactionEvaluateFeeResult result = response.getResult();
+            System.out.println(JsonUtils.toJSONString(result));
+        } else {
+            System.out.println("error: " + response.getErrorDesc());
+        }
+    }
     /**
      * bifSubmit
      */
@@ -171,13 +204,13 @@ public class TransactionDemo {
         // 初始化参数
         String senderPrivateKey = "priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
         //序列化交易
-        String transactionBlob ="";
+        String serialization ="";
         //签名
-        byte[] signBytes = PrivateKeyManager.sign(HexFormat.hexToByte(transactionBlob), senderPrivateKey);
+        byte[] signBytes = PrivateKeyManager.sign(HexFormat.hexToByte(serialization), senderPrivateKey);
         String publicKey = PrivateKeyManager.getEncPublicKey(senderPrivateKey);
         //提交交易
         BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
-        submitRequest.setTransactionBlob(transactionBlob);
+        submitRequest.setSerialization(serialization);
         submitRequest.setPublicKey(publicKey);
         submitRequest.setSignData(HexFormat.byteToHex(signBytes));
         // 调用bifSubmit接口

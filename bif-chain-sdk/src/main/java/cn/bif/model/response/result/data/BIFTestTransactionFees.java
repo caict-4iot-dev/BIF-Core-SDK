@@ -16,34 +16,37 @@
  * © COPYRIGHT 2021 Corporation CAICT All rights reserved.
  * http://www.caict.ac.cn
  */
-package cn.bif.model.request;
+package cn.bif.model.response.result.data;
 
-public class BIFTransactionSubmitRequest {
-    private String serialization;
-    private String signData;
-    private String publicKey;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public String getSerialization() {
-        return serialization;
+/**
+ *
+ *
+ */
+public class BIFTestTransactionFees {
+    @JsonProperty(value = "transaction")
+    private BIFTransactionFees transactionFees;
+
+    /**
+     *
+     * @Method getTransactionFees
+     * @Params []
+     * @Return TransactionFees
+     *
+     */
+    public BIFTransactionFees getTransactionFees() {
+        return transactionFees;
     }
 
-    public void setSerialization(String serialization) {
-        this.serialization = serialization;
-    }
-
-    public String getSignData() {
-        return signData;
-    }
-
-    public void setSignData(String signData) {
-        this.signData = signData;
-    }
-
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    /**
+     *
+     * @Method setTransactionFees
+     * @Params [transactionFees]
+     * @Return void
+     *
+     */
+    public void setTransactionFees(BIFTransactionFees transactionFees) {
+        this.transactionFees = transactionFees;
     }
 }

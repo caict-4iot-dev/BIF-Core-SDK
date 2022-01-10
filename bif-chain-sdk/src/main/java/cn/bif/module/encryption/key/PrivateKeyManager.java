@@ -126,16 +126,27 @@ public class PrivateKeyManager {
      *
      * @param seed the seed
      */
-    public PrivateKeyManager(byte[] seed, String chainCode) {
-        EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("ed25519-sha-512");
-        EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(seed, spec);
-        EdDSAPublicKeySpec spec2 = new EdDSAPublicKeySpec(privKey.getA(), spec);
-        EdDSAPublicKey pDsaPublicKey = new EdDSAPublicKey(spec2);
-        publicKey.setRawPublicKey(pDsaPublicKey.getAbyte());
-        keyMember.setRawSKey(seed);
-        setKeyType(KeyType.ED25519);
-        publicKey.setKeyType(KeyType.ED25519);
-        publicKey.setChainCode(chainCode);
+    public PrivateKeyManager(byte[] seed, KeyType type) {
+        switch (type) {
+            case ED25519: {
+                EdDSAParameterSpec spec = EdDSANamedCurveTable.getByName("ed25519-sha-512");
+                EdDSAPrivateKeySpec privKey = new EdDSAPrivateKeySpec(seed, spec);
+                EdDSAPublicKeySpec spec2 = new EdDSAPublicKeySpec(privKey.getA(), spec);
+                EdDSAPublicKey pDsaPublicKey = new EdDSAPublicKey(spec2);
+                publicKey.setRawPublicKey(pDsaPublicKey.getAbyte());
+                keyMember.setRawSKey(seed);
+                setKeyType(KeyType.ED25519);
+                publicKey.setKeyType(KeyType.ED25519);
+                break;
+            }
+            case SM2: {
+                keyMember.setRawSKey(seed);
+                setKeyType(KeyType.SM2);
+                break;
+            }
+            default:
+                throw new EncException("type does not exist");
+        }
     }
 
     public PrivateKeyManager(byte[] seed) {

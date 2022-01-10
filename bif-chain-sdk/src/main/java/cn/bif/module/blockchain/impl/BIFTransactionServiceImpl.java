@@ -40,6 +40,7 @@ import cn.bif.utils.hex.HexFormat;
 import cn.bif.protobuf.Chain;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.googlecode.protobuf.format.JsonFormat;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -163,7 +164,7 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             if (Tools.isEmpty(bifTransactionSubmitRequest)) {
                 throw new SDKException(SdkError.REQUEST_NULL_ERROR);
             }
-            String blob = bifTransactionSubmitRequest.getTransactionBlob();
+            String blob = bifTransactionSubmitRequest.getSerialization();
             if (Tools.isEmpty(blob)) {
                 throw new SDKException(SdkError.INVALID_SERIALIZATION_ERROR);
             }
@@ -266,7 +267,7 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
 
         //四、提交交易
         BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
-        submitRequest.setTransactionBlob(transactionBlob);
+        submitRequest.setSerialization(transactionBlob);
         submitRequest.setPublicKey(publicKey);
         submitRequest.setSignData(HexFormat.byteToHex(signBytes));
         // 调用bifSubmit接口
@@ -454,7 +455,94 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
         }
         return response;
     }
+    /**
+     * @Method evaluateFee
+     * @Params [TransactionEvaluateFeeRequest]
+     * @Return TransactionEvaluateFeeResponse
+     */
+    @Override
+    public BIFTransactionEvaluateFeeResponse evaluateFee(BIFTransactionEvaluateFeeRequest BIFTransactionEvaluateFeeRequest) {
+        BIFTransactionEvaluateFeeResponse BIFTransactionEvaluateFeeResponse = new BIFTransactionEvaluateFeeResponse();
+        BIFTransactionEvaluateFeeResult BIFTransactionEvaluateFeeResult = new BIFTransactionEvaluateFeeResult();
+        try {
+            if (Tools.isEmpty(General.getInstance().getUrl())) {
+                throw new SDKException(SdkError.URL_EMPTY_ERROR);
+            }
+            if (Tools.isEmpty(BIFTransactionEvaluateFeeRequest)) {
+                throw new SDKException(SdkError.REQUEST_NULL_ERROR);
+            }
+            // check sourceAddress
+            String sourceAddress = BIFTransactionEvaluateFeeRequest.getSourceAddress();
 
+            if (!PublicKeyManager.isAddressValid(sourceAddress)) {
+                throw new SDKException(SdkError.INVALID_SOURCEADDRESS_ERROR);
+            }
+            // check nonce
+            BIFAccountServiceImpl accountService = new BIFAccountServiceImpl();
+            // 一、获取交易发起的账号nonce值
+            BIFAccountGetNonceRequest getNonceRequest = new BIFAccountGetNonceRequest();
+            getNonceRequest.setAddress(sourceAddress);
+            // 调用getBIFNonce接口
+            BIFAccountGetNonceResponse nonceResponse = accountService.getNonce(getNonceRequest);
+            if (nonceResponse.getErrorCode() != Constant.SUCCESS) {
+                throw new SDKException(nonceResponse.getErrorCode(), nonceResponse.getErrorDesc());
+            }
+            Long nonce = nonceResponse.getResult().getNonce();
+            if (Tools.isEmpty(nonce) || nonce < 1) {
+                throw new SDKException(SdkError.INVALID_NONCE_ERROR);
+            }
+            // check signatureNum
+            Integer signatureNum = BIFTransactionEvaluateFeeRequest.getSignatureNumber();
+            if (Tools.isEmpty(signatureNum) || signatureNum < 1) {
+                throw new SDKException(SdkError.INVALID_SIGNATURENUMBER_ERROR);
+            }
+
+            // check metadata
+            String metadata = BIFTransactionEvaluateFeeRequest.getRemarks();
+            // build transaction
+            Chain.Transaction.Builder transaction = Chain.Transaction.newBuilder();
+            BIFBaseOperation baseOperations = BIFTransactionEvaluateFeeRequest.getOperation();
+            if (Tools.isEmpty(baseOperations)) {
+                throw new SDKException(SdkError.OPERATIONS_EMPTY_ERROR);
+            }
+            buildOperations(baseOperations, sourceAddress, transaction);
+            transaction.setSourceAddress(sourceAddress);
+            transaction.setNonce(nonce+1);
+            transaction.setFeeLimit(1);
+            transaction.setGasPrice(1);
+            if (!Tools.isEmpty(metadata)) {
+                transaction.setMetadata(ByteString.copyFromUtf8(metadata));
+            }
+
+            // protocol buffer to json
+            JsonFormat jsonFormat = new JsonFormat();
+            String transactionStr = jsonFormat.printToString(transaction.build());
+
+            Map<String, Object> transactionJson = JsonUtils.toMap(transactionStr);
+
+            // build testTransaction request
+            Map<String, Object> testTransactionRequest = new HashMap<>();;
+            List<Object> transactionItems = new ArrayList<>();
+            Map<String, Object> transactionItem =  new HashMap<>();
+            transactionItem.put("transaction_json", transactionJson);
+            transactionItems.add(transactionItem);
+            testTransactionRequest.put("items", transactionItems);
+
+            String evaluationFeeUrl = General.getInstance().transactionEvaluationFee();
+            String result = HttpUtils.httpPost(evaluationFeeUrl, JsonUtils.toJSONString(testTransactionRequest));
+            BIFTransactionEvaluateFeeResponse = JsonUtils.toJavaObject(result, BIFTransactionEvaluateFeeResponse.class);
+
+        } catch (SDKException apiException) {
+            Integer errorCode = apiException.getErrorCode();
+            String errorDesc = apiException.getErrorDesc();
+            BIFTransactionEvaluateFeeResponse.buildResponse(errorCode, errorDesc, BIFTransactionEvaluateFeeResult);
+        } catch (NoSuchAlgorithmException | KeyManagementException | NoSuchProviderException | IOException e) {
+            BIFTransactionEvaluateFeeResponse.buildResponse(SdkError.CONNECTNETWORK_ERROR, BIFTransactionEvaluateFeeResult);
+        } catch (Exception e) {
+            BIFTransactionEvaluateFeeResponse.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), BIFTransactionEvaluateFeeResult);
+        }
+        return  BIFTransactionEvaluateFeeResponse;
+    }
     /**
      * @Method buildOperations
      * @Params [operationBase, transaction]

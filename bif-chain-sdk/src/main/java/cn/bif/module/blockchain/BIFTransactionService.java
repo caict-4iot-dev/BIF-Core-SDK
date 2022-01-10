@@ -72,4 +72,11 @@ public interface BIFTransactionService {
      * @return
      */
     BIFTransactionPrivateContractCreateResponse privateContractCreate(BIFTransactionPrivateContractCreateRequest request);
+
+    /**
+     * 交易的费用评估
+     * @param BIFTransactionEvaluateFeeRequest
+     * @return
+     */
+    BIFTransactionEvaluateFeeResponse evaluateFee(BIFTransactionEvaluateFeeRequest BIFTransactionEvaluateFeeRequest);
 }

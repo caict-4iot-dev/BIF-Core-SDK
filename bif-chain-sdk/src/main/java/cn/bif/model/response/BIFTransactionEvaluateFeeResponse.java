@@ -16,59 +16,43 @@
  * © COPYRIGHT 2021 Corporation CAICT All rights reserved.
  * http://www.caict.ac.cn
  */
-package cn.bif.model.response.result.data;
+package cn.bif.model.response;
 
+import cn.bif.exception.SdkError;
+import cn.bif.model.response.result.BIFTransactionEvaluateFeeResult;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BIFTransactionFees {
-
-    @JsonProperty(value = "fee_limit")
-    private Long feeLimit;
-
-    @JsonProperty(value = "gas_price")
-    private Long gasPrice;
+public class BIFTransactionEvaluateFeeResponse extends BIFBaseResponse {
+    @JsonProperty(value = "result")
+    private BIFTransactionEvaluateFeeResult result;
 
     /**
-     *
-     * @Method getFeeLimit
-     * @Params []
-     * @Return java.lang.Long
-     *
+     * @Method
+     * @Params
+     * @Return
      */
-    public Long getFeeLimit() {
-        return feeLimit;
+    public BIFTransactionEvaluateFeeResult getResult() {
+        return result;
     }
 
     /**
-     *
-     * @Method setFeeLimit
-     * @Params [feeLimit]
+     * @Method setResult
+     * @Params [result]
      * @Return void
-     *
      */
-    public void setFeeLimit(Long feeLimit) {
-        this.feeLimit = feeLimit;
+    public void setResult(BIFTransactionEvaluateFeeResult result) {
+        this.result = result;
     }
 
-    /**
-     *
-     * @Method getGasPrice
-     * @Params []
-     * @Return java.lang.Long
-     *
-     */
-    public Long getGasPrice() {
-        return gasPrice;
+    public void buildResponse(SdkError sdkError, BIFTransactionEvaluateFeeResult result) {
+        this.errorCode = sdkError.getCode();
+        this.errorDesc = sdkError.getDescription();
+        this.result = result;
     }
 
-    /**
-     *
-     * @Method setGasPrice
-     * @Params [gasPrice]
-     * @Return void
-     *
-     */
-    public void setGasPrice(Long gasPrice) {
-        this.gasPrice = gasPrice;
+    public void buildResponse(int errorCode, String errorDesc, BIFTransactionEvaluateFeeResult result) {
+        this.errorCode = errorCode;
+        this.errorDesc = errorDesc;
+        this.result = result;
     }
 }

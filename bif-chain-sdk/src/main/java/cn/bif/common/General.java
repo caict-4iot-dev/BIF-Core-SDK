@@ -105,4 +105,8 @@ public class General {
     public String priTxReceive(String priTxHash) {
         return url + "/priTxReceive?pri_tx_hash=" + priTxHash;
     }
+
+    public String transactionEvaluationFee() {
+        return url + "/testTransaction";
+    }
 }

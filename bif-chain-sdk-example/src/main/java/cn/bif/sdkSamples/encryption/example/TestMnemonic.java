@@ -20,6 +20,7 @@ package cn.bif.sdkSamples.encryption.example;
 
 import cn.bif.module.encryption.crypto.mnemonic.Mnemonic;
 import cn.bif.module.encryption.key.PrivateKeyManager;
+import cn.bif.module.encryption.model.KeyType;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -57,13 +58,31 @@ public class TestMnemonic {
 
         List<String> hdPaths = new ArrayList<>();
         hdPaths.add("M/44H/526H/1H/0/0");
+        List<String> privateKeysBySM2 = Mnemonic.generatePrivateKeysByCrypto(KeyType.SM2,mnemonicCodes, hdPaths);
+        for (String privateKey : privateKeysBySM2) {
+            if (!PrivateKeyManager.isPrivateKeyValid(privateKey)) {
+                System.out.println("private is invalid");
+                return;
+            }
+            System.out.println("SM2 { privateKey : "+privateKey + " \n encAddress : " + PrivateKeyManager.getEncAddress(PrivateKeyManager.getEncPublicKey(privateKey))+" \n }");
+        }
+
+        List<String> privateKeysByED25519 = Mnemonic.generatePrivateKeysByCrypto(KeyType.ED25519,mnemonicCodes, hdPaths);
+        for (String privateKey : privateKeysByED25519) {
+            if (!PrivateKeyManager.isPrivateKeyValid(privateKey)) {
+                System.out.println("private is invalid");
+                return;
+            }
+            System.out.println("ED25519  { privateKey : "+privateKey + " \n encAddress : " + PrivateKeyManager.getEncAddress(PrivateKeyManager.getEncPublicKey(privateKey))+" \n }");
+        }
+
         List<String> privateKeys = Mnemonic.generatePrivateKeys(mnemonicCodes, hdPaths);
         for (String privateKey : privateKeys) {
             if (!PrivateKeyManager.isPrivateKeyValid(privateKey)) {
                 System.out.println("private is invalid");
                 return;
             }
-            System.out.print(privateKey + " " + PrivateKeyManager.getEncAddress(PrivateKeyManager.getEncPublicKey(privateKey)));
+            System.out.println(privateKey + " " + PrivateKeyManager.getEncAddress(PrivateKeyManager.getEncPublicKey(privateKey)));
         }
         System.out.println();
     }
