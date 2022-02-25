@@ -462,8 +462,23 @@ public class BIFContractServiceImpl implements BIFContractService {
                 throw new SDKException(SdkError.SOURCEADDRESS_EQUAL_CONTRACTADDRESS_ERROR);
             }
             String input = contractCallRequest.getInput();
-            contractCallResponse = callContract(sourceAddress, contractAddress, Constant.CONTRACT_QUERY_OPT_TYPE, input, Constant.GAS_PRICE,
-                    Constant.FEE_LIMIT);
+            Long feeLimit = contractCallRequest.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+
+            Long gasPrice = contractCallRequest.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
+            contractCallResponse = callContract(sourceAddress, contractAddress, Constant.CONTRACT_QUERY_OPT_TYPE, input,gasPrice,
+                    feeLimit);
         } catch (SDKException sdkException) {
             Integer errorCode = sdkException.getErrorCode();
             String errorDesc = sdkException.getErrorDesc();
