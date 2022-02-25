@@ -18,6 +18,13 @@
  */
 package cn.bif.module.blockchain.impl;
 
+import cn.ac.caict.iiiiot.id.client.core.BaseResponse;
+import cn.ac.caict.iiiiot.id.client.core.ResolutionResponse;
+import cn.ac.caict.iiiiot.id.client.data.IdentifierValue;
+import cn.ac.caict.iiiiot.id.client.data.MsgSettings;
+import cn.ac.caict.iiiiot.id.client.service.IChannelManageService;
+import cn.ac.caict.iiiiot.id.client.service.IIDManageServiceChannel;
+import cn.ac.caict.iiiiot.id.client.service.impl.ChannelManageServiceImpl;
 import cn.bif.api.BIFSDK;
 import cn.bif.common.*;
 import cn.bif.exception.SDKException;
@@ -342,8 +349,23 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             operation.setDestAddress(destAddress);
             operation.setAmount(amount);
 
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             // 广播交易
-            String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq,
+            String hash = radioTransaction(senderAddress, feeLimit, gasPrice, operation, ceilLedgerSeq,
                     remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
@@ -391,8 +413,24 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
             String remarks = request.getRemarks();
+
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             // 广播交易
-            String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, remarks, privateKey);
+            String hash = radioTransaction(senderAddress, feeLimit, gasPrice, operation, ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -442,8 +480,24 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
             String remarks = request.getRemarks();
+
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             // 广播交易
-            String hash = radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, remarks, privateKey);
+            String hash = radioTransaction(senderAddress, feeLimit, gasPrice, operation, ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -586,6 +640,29 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
         transaction.addOperations(operation);
     }
 
+    public static BIFTransactionGetInfoResponse getTransactionInfoByCache(String hash) throws Exception {
+        BIFTransactionGetInfoResponse response=new BIFTransactionGetInfoResponse();
+        int port = BIFSDK.getSdk().getCachePort();
+        String ip=BIFSDK.getSdk().getCacheIp();
+        String protocol=BIFSDK.getSdk().getProtocol();
+
+        // 实例化通道管理服务
+        IChannelManageService chnnlManage = new ChannelManageServiceImpl();
+        IIDManageServiceChannel channel =  chnnlManage.generateChannel(ip, port, protocol);
+        if(channel != null){
+            MsgSettings msgSettings = new MsgSettings();
+            msgSettings.setTruestyQuery(true);
+            ResolutionResponse result  = (ResolutionResponse) channel.lookupIdentifier(hash, null, null, msgSettings);
+            //System.out.println(protocol+" ：ip"+ip+" transactionInfo: "+ result);
+            if(result != null && result.responseCode == 1){
+                response=JsonUtils.toJavaObject(result.getValuesByIndex(0).getDataStr(), BIFTransactionGetInfoResponse.class);
+            }
+        }
+        //关闭channel
+        chnnlManage.closeChannel(channel);
+        return response;
+
+    }
     public static BIFTransactionGetInfoResponse getTransactionInfo(String hash) throws Exception {
         if (Tools.isEmpty(General.getInstance().getUrl())) {
             throw new SDKException(SdkError.URL_EMPTY_ERROR);

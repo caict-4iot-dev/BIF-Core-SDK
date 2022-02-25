@@ -32,11 +32,21 @@ import cn.bif.module.blockchain.impl.BIFTransactionServiceImpl;
 import cn.bif.module.contract.BIFContractService;
 import cn.bif.module.contract.impl.BIFContractServiceImpl;
 
-
 public class BIFSDK {
     private static BIFSDK sdk = null;
     private String url;
     private long chainId = 0;
+    private String cacheIp;
+    private int cachePort;
+    private String protocol="UDP";
+
+    public String getCacheIp() {
+        return cacheIp;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
 
     /**
      * @Method Structure
@@ -60,14 +70,24 @@ public class BIFSDK {
 
     /**
      * @Method getInstance
-     * @Params [url]
+     * @Params [url,port]
      * @Return SDK
      */
-    public synchronized static BIFSDK getInstance(BIFSDKConfigure sdkConfigure) throws SDKException {
+    public synchronized static BIFSDK getInstance(String url,int port) throws SDKException {
         if (sdk == null) {
             sdk = new BIFSDK();
         }
-        sdk.init(sdkConfigure);
+        if (Tools.isEmpty(url) || Tools.isEmpty(port)) {
+            throw new SDKException(SdkError.URL_EMPTY_ERROR);
+        }
+        sdk.url=url;
+        sdk.cacheIp=url.replaceAll("http://","").replaceAll("https://","");
+        if (Tools.isEmpty(sdk.cacheIp)) {
+            throw new SDKException(SdkError.URL_EMPTY_ERROR);
+        }
+        if (port > 0) {
+            sdk.cachePort = port;
+        }
         return sdk;
     }
 
@@ -125,7 +145,14 @@ public class BIFSDK {
     public String getUrl() {
         return url;
     }
-
+    /**
+     * @Method getCachePort
+     * @Params []
+     * @Return java.lang.int
+     */
+    public int getCachePort() {
+        return cachePort;
+    }
     /**
      * @Method getChainId
      * @Params []

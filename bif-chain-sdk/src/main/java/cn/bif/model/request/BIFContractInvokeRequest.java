@@ -27,6 +27,15 @@ public class BIFContractInvokeRequest {
     private Long ceilLedgerSeq;
     private String remarks;
     private String privateKey;
+    private Long gasPrice;
+
+    public Long getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(Long gasPrice) {
+        this.gasPrice = gasPrice;
+    }
 
     public String getRemarks() {
         return remarks;

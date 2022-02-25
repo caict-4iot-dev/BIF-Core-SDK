@@ -31,6 +31,24 @@ public class BIFAccountSetPrivilegeRequest {
     private BIFSigner[] signers;
     private String txThreshold;
     private BIFTypeThreshold[] typeThresholds;
+    private Long feeLimit;
+    private Long gasPrice;
+
+    public Long getFeeLimit() {
+        return feeLimit;
+    }
+
+    public void setFeeLimit(Long feeLimit) {
+        this.feeLimit = feeLimit;
+    }
+
+    public Long getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(Long gasPrice) {
+        this.gasPrice = gasPrice;
+    }
 
     public String getRemarks() {
         return remarks;

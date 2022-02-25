@@ -398,12 +398,26 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(privateKey)) {
                 throw new SDKException(SdkError.PRIVATEKEY_NULL_ERROR);
             }
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
 
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
             String remarks = request.getRemarks();
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation,
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
                     ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
@@ -452,9 +466,24 @@ public class BIFAccountServiceImpl implements BIFAccountService {
 
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
             String remarks = request.getRemarks();
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             // 交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation,
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
                     ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
@@ -535,9 +564,25 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             operation.setTxThreshold(txThreshold);
             operation.setMasterWeight(masterWeight);
             operation.setTypeThresholds(typeThresholds);
+
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, Constant.FEE_LIMIT, Constant.GAS_PRICE, operation, ceilLedgerSeq, remarks, privateKey);
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation, ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {

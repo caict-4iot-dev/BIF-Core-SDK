@@ -258,12 +258,18 @@ public enum SdkError {
      * INVALID_PRITX_TO_ERROR
      */
     INVALID_PRITX_TO_ERROR(12005, "Invalid Private Transaction recipient list"),
+    /*
+     * INVALID_PROTOCOL_ERROR
+     */
+    INVALID_PROTOCOL_ERROR(12007, "Invalid protocol"),
 
     /*
      * INVALID_PRITX_HASH_ERROR
      */
     INVALID_PRITX_HASH_ERROR(12006, "Invalid Private Transaction Hash"),
     ;
+
+
 
     private final Integer code;
     private final String description;

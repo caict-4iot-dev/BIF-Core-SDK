@@ -29,6 +29,16 @@ public class BIFContractCreateRequest {
     private String remarks;
     private String privateKey;
 
+    public Long getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(Long gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
+    private Long gasPrice;
+
     public String getRemarks() {
         return remarks;
     }

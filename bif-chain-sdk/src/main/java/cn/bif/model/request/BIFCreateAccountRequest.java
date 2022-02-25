@@ -25,6 +25,26 @@ public class BIFCreateAccountRequest {
     private Long ceilLedgerSeq;
     private String remarks;
     private String privateKey;
+
+    private Long feeLimit;
+    private Long gasPrice;
+
+    public Long getFeeLimit() {
+        return feeLimit;
+    }
+
+    public void setFeeLimit(Long feeLimit) {
+        this.feeLimit = feeLimit;
+    }
+
+    public Long getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(Long gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
     /**
      * Metadata  --> remarks
      * @return

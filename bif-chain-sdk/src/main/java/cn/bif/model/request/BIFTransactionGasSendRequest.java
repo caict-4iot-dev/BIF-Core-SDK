@@ -25,6 +25,24 @@ public class BIFTransactionGasSendRequest {
     private String remarks;
     private String destAddress;
     private Long amount;
+    private Long feeLimit;
+    private Long gasPrice;
+
+    public Long getFeeLimit() {
+        return feeLimit;
+    }
+
+    public void setFeeLimit(Long feeLimit) {
+        this.feeLimit = feeLimit;
+    }
+
+    public Long getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(Long gasPrice) {
+        this.gasPrice = gasPrice;
+    }
 
     public String getRemarks() {
         return remarks;

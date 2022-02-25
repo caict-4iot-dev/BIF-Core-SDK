@@ -614,11 +614,18 @@ public class BIFContractServiceImpl implements BIFContractService {
                 throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
             }
 
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
             String remarks = request.getRemarks();
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, feeLimit, Constant.GAS_PRICE, operation,
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
                     ceilLedgerSeq,
                     remarks, privateKey);
             result.setHash(hash);
@@ -670,12 +677,18 @@ public class BIFContractServiceImpl implements BIFContractService {
             if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
             }
-
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
             String remarks = request.getRemarks();
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, feeLimit, Constant.GAS_PRICE, operation,
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
                     ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
