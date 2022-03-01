@@ -249,7 +249,9 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             throw new SDKException(nonceResponse.getErrorCode(), nonceResponse.getErrorDesc());
         }
         Long nonce = nonceResponse.getResult().getNonce();
-
+        if (Tools.isEmpty(nonce) || nonce < 1) {
+            nonce=0L;
+        }
         // 二、构建操作、序列化交易
         // 初始化请求参数
         BIFTransactionSerializeRequest serializeRequest = new BIFTransactionSerializeRequest();
@@ -543,7 +545,7 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             }
             Long nonce = nonceResponse.getResult().getNonce();
             if (Tools.isEmpty(nonce) || nonce < 1) {
-                throw new SDKException(SdkError.INVALID_NONCE_ERROR);
+                nonce=0L;
             }
             // check signatureNum
             Integer signatureNum = BIFTransactionEvaluateFeeRequest.getSignatureNumber();
