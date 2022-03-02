@@ -25,6 +25,24 @@ public class BIFTransactionEvaluateFeeRequest {
     private BIFBaseOperation operation;
     private int signatureNumber = 1;
     private String remarks;
+    private Long feeLimit;
+    private Long gasPrice;
+
+    public Long getFeeLimit() {
+        return feeLimit;
+    }
+
+    public void setFeeLimit(Long feeLimit) {
+        this.feeLimit = feeLimit;
+    }
+
+    public Long getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(Long gasPrice) {
+        this.gasPrice = gasPrice;
+    }
 
     /**
      * @Method getAddress

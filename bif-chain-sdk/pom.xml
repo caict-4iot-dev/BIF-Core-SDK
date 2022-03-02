@@ -108,13 +108,5 @@
             <artifactId>lombok</artifactId>
             <version>1.16.20</version>
         </dependency>
-        <dependency>
-            <groupId>cn.ac.caict.iiiiot</groupId>
-            <artifactId>ID-SDK</artifactId>
-            <version>2.0.3</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/ID-SDK-2.0.3.jar</systemPath>
-        </dependency>
     </dependencies>
-
 </project>
