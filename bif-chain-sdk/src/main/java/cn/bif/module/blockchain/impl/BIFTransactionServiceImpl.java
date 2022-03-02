@@ -556,26 +556,17 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
                 throw new SDKException(SdkError.OPERATIONS_EMPTY_ERROR);
             }
             Long feeLimit = BIFTransactionEvaluateFeeRequest.getFeeLimit();
-            if (Tools.isEmpty(feeLimit)) {
-                feeLimit = Constant.FEE_LIMIT;
-            }
-            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
-                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
-            }
-
             Long gasPrice = BIFTransactionEvaluateFeeRequest.getGasPrice();
-            if (Tools.isEmpty(gasPrice)) {
-                gasPrice = Constant.GAS_PRICE;
-            }
-            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
-                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
-            }
 
             buildOperations(baseOperations, sourceAddress, transaction);
             transaction.setSourceAddress(sourceAddress);
             transaction.setNonce(nonce+1);
-            transaction.setFeeLimit(feeLimit);
-            transaction.setGasPrice(gasPrice);
+            if (!Tools.isEmpty(feeLimit)) {
+                transaction.setFeeLimit(feeLimit);
+            }
+            if (!Tools.isEmpty(gasPrice)) {
+                transaction.setGasPrice(gasPrice);
+            }
             if (!Tools.isEmpty(metadata)) {
                 transaction.setMetadata(ByteString.copyFromUtf8(metadata));
             }

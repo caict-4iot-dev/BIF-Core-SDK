@@ -23,10 +23,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class BIFTransactionFees {
 
     @JsonProperty(value = "fee_limit")
-    private Long feeLimit;
+    private Long feeLimit=0L;
 
     @JsonProperty(value = "gas_price")
-    private Long gasPrice;
+    private Long gasPrice=0L;
 
     /**
      *
