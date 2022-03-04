@@ -25,7 +25,7 @@ BIF-Core-SDK通过API调用的方式提供了星火链网-底层区块链平台�
 
 - [CHANGELOG](./CHANGELOG.md)
 - [LICENSE](./LICENSE)
-- [BIF-Core-SDK](https://bif-core-dev-doc.readthedocs.io/zh_CN/v1.0.0/index.html)
+- [Documentation](doc/SDK_CN.md)
 
 ## 问题反馈
 
