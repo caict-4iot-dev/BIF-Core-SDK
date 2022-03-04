@@ -19,8 +19,6 @@ BIF-Core-SDK通过API调用的方式提供了星火链网-底层区块链平台�
 - bif-chain-sdk目录：BIF-Core-SDK开源代码  
 - bif-chain-sdk-example目录：BIF-Core-SDK开发包演示example 
 
-详见[BIF-Core-SDK](./docs/BIF-Core-SDK.md)
-
 ## 文档
 
 - [CHANGELOG](./CHANGELOG.md)
