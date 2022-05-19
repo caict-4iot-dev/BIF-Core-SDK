@@ -109,4 +109,8 @@ public class General {
     public String transactionEvaluationFee() {
         return url + "/testTransaction";
     }
+
+    public String getTxCacheSize() {
+        return url + "/getTxCacheSize";
+    }
 }

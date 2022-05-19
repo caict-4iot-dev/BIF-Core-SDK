@@ -79,4 +79,10 @@ public interface BIFTransactionService {
      * @return
      */
     BIFTransactionEvaluateFeeResponse evaluateFee(BIFTransactionEvaluateFeeRequest BIFTransactionEvaluateFeeRequest);
+
+    /**
+     * 获取交易池中交易条数
+     * @return
+     */
+    BIFTransactionGetTxCacheSizeResponse getTxCacheSize();
 }

@@ -651,5 +651,32 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
         String result = HttpUtils.httpGet(getInfoUrl);
         return JsonUtils.toJavaObject(result, BIFTransactionGetInfoResponse.class);
     }
+    /**
+     * @Method getTxCacheSize
+     * @Return BIFTransactionGetTxCacheSizeResponse
+     */
+    @Override
+    public BIFTransactionGetTxCacheSizeResponse getTxCacheSize() {
+        BIFTransactionGetTxCacheSizeResponse response = new BIFTransactionGetTxCacheSizeResponse();
+        Long queueSize=0L;
+        try {
+            if (Tools.isEmpty(General.getInstance().getUrl())) {
+                throw new SDKException(SdkError.URL_EMPTY_ERROR);
+            }
+            String getInfoUrl = General.getInstance().getTxCacheSize();
+            String result = HttpUtils.httpGet(getInfoUrl);
+            response = JsonUtils.toJavaObject(result, BIFTransactionGetTxCacheSizeResponse.class);
+            response.buildResponse(SdkError.SUCCESS,response.getQueueSize());
+        } catch (SDKException apiException) {
+            Integer errorCode = apiException.getErrorCode();
+            String errorDesc = apiException.getErrorDesc();
+            response.buildResponse(errorCode, errorDesc, queueSize);
+        } catch (NoSuchAlgorithmException | KeyManagementException | NoSuchProviderException | IOException e) {
+            response.buildResponse(SdkError.CONNECTNETWORK_ERROR, queueSize);
+        } catch (Exception e) {
+            response.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), queueSize);
+        }
+        return response;
+    }
 }
 

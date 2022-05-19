@@ -1,12 +1,12 @@
-# 4. BIF-Core-SDK使用说明
+# 1. BIF-Core-SDK使用说明
 
 ​		本节详细说明BIF-Core-SDK常用接口文档。星火链提供 JAVA SDK供开发者使用。
 
 ​        **github**代码库地址：https://github.com/CAICT-DEV/BIF-Core-SDK
 
-## 4.1 SDK概述
+## 1.1 SDK概述
 
-### 4.1.1 名词解析
+### 1.1.1 名词解析
 
 + 账户服务： 提供账户相关的有效性校验、创建与查询接口
 
@@ -18,7 +18,7 @@
 
 + 账户nonce值： 每个账户都维护一个序列号，用于用户提交交易时标识交易执行顺序的
 
-### 4.1.2 请求参数与相应数据格式
+### 1.1.2 请求参数与相应数据格式
 
 + **请求参数**
 
@@ -56,13 +56,13 @@ Class BIFAccountGetNonceResult {
 }
 ```
 
-## 4.2 SDK使用方法
+## 1.2 SDK使用方法
 
 ​		本节介绍SDK的使用流程。
 
 ​		首先需要生成SDK实现，然后调用相应服务的接口，其中服务包括账户服务、合约服务、交易服务和区块服务。
 
-### 4.2.1 生成SDK实例
+### 1.2.1 生成SDK实例
 
 ​		调用SDK的接口getInstance来实现，调用如下：
 
@@ -71,7 +71,7 @@ String url = "http://test-bif-core.xinghuo.space";
 BIFSDK sdk = BIFSDK.getInstance(url);
 ```
 
-### 4.2.2 生成公私钥地址
+### 1.2.2 生成公私钥地址
 
 + **Ed25519算法生成**
 
@@ -95,7 +95,7 @@ byte[] rawPublicKey = keypair.getRawPublicKey();
 byte[] rawPrivateKey = keypair.getRawPrivateKey();
 ```
 
-### 4.2.3 私钥对象使用
+### 1.2.3 私钥对象使用
 
 + **构造对象**
 
@@ -157,7 +157,7 @@ String privateKey = "privbsDGan4sA9ZYpEERhMe25k4K5tnJu1fNqfEHbyKfaV9XSYq7uMcy";
 byte[] sign = PrivateKeyManager.sign(HexFormat.hexStringToBytes(src), privateKey);
 ```
 
-### 4.2.4 公钥对象使用
+### 1.2.4 公钥对象使用
 
 + **构造对象**
 
@@ -206,7 +206,7 @@ String sign = "59bda0c85e354ba4690b9bd8079a8e97dd18461c5d67128e46b693aef71d391ad
 Boolean verifyResult = PublicKeyManager.verify(HexFormat.hexStringToBytes(src), HexFormat.hexToByte(sign), publicKey);
 ```
 
-### 4.2.5 密钥存储器
+### 1.2.5 密钥存储器
 
 + **生成密钥存储器**
 
@@ -279,7 +279,7 @@ System.out.println(encPrivateKey);
 
 ```
 
-### 4.2.6 助记词
+### 1.2.6 助记词
 
 + **生成助记词**
 
@@ -375,7 +375,7 @@ List<String> privateKeys = Mnemonic.generatePrivateKeys(mnemonicCodes, hdPaths);
 System.out.println();
 ```
 
-## 4.3 账户服务接口列表
+## 1.3 账户服务接口列表
 
 ​		账户服务接口主要是账户相关的接口，目前有8个接口：
 
@@ -390,7 +390,7 @@ System.out.println();
 | 7    | setPrivilege        | 设置权限                              |
 | 8    | getAccountPriv      | 获取账户权限                          |
 
-### 4.3.1 createAccount
+### 1.3.1 createAccount
 
 > 接口说明
 
@@ -461,7 +461,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.3.2 getAccount
+### 1.3.2 getAccount
 
 > 接口说明
 
@@ -513,7 +513,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.3.3 getNonce
+### 1.3.3 getNonce
 
 > 接口说明
 
@@ -561,7 +561,7 @@ if (0 == response.getErrorCode()) {
 }
 ```
 
-### 4.3.4 getAccountBalance
+### 1.3.4 getAccountBalance
 
 > 接口说明
 
@@ -610,7 +610,7 @@ if (0 == response.getErrorCode()) {
 }
 ```
 
-### 4.3.5 setMetadatas
+### 1.3.5 setMetadatas
 
 > 接口说明
 
@@ -681,7 +681,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.3.6 getAccountMetadatas
+### 1.3.6 getAccountMetadatas
 
 > 接口说明
 
@@ -742,7 +742,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.3.7 setPrivilege
+### 1.3.7 setPrivilege
 
 > 接口说明
 
@@ -819,7 +819,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.3.8 getAccountPriv
+### 1.3.8 getAccountPriv
 
 > 接口说明
 
@@ -880,7 +880,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-## 4.4 合约服务接口列表
+## 1.4 合约服务接口列表
 
 ​		合约服务接口主要是合约相关的接口，目前有6个接口：
 
@@ -893,7 +893,7 @@ if (response.getErrorCode() == 0) {
 | 5    | contractQuery        | 该接口用于调试合约代码             |
 | 6    | contractInvoke       | 合约调用                           |
 
-### 4.4.1 checkContractAddress
+### 1.4.1 checkContractAddress
 
 > 接口说明
 
@@ -942,7 +942,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.4.2 contractCreate
+### 1.4.2 contractCreate
 
 > 接口说明
 
@@ -1016,7 +1016,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.4.3 getContractInfo
+### 1.4.3 getContractInfo
 
 > 接口说明
 
@@ -1069,7 +1069,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.4.4 getContractAddress
+### 1.4.4 getContractAddress
 
 > 接口说明
 
@@ -1124,7 +1124,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.4.5 contractQuery
+### 1.4.5 contractQuery
 
 > 接口说明
 
@@ -1182,7 +1182,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.4.6 contractInvoke
+### 1.4.6 contractInvoke
 
 > 接口说明
 
@@ -1253,7 +1253,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-## 4.5 交易服务接口列表
+## 1.5 交易服务接口列表
 
 ​		交易服务接口主要是交易相关的接口，目前有6个接口：
 
@@ -1266,7 +1266,7 @@ if (response.getErrorCode() == 0) {
 | 5    | evaluateFee           | 该接口实现交易的费用评估           |
 | 6    | BIFSubmit             | 提交交易                           |
 
-### 4.5.1 gasSend
+### 1.5.1 gasSend
 
 > 接口说明
 
@@ -1335,7 +1335,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.5.2 privateContractCreate
+### 1.5.2 privateContractCreate
 
 > 接口说明
 
@@ -1422,7 +1422,7 @@ if (transactionResponse.getErrorCode() == 0) {
 }
 ```
 
-### 4.5.3 privateContractCall
+### 1.5.3 privateContractCall
 
 > 接口说明
 
@@ -1510,7 +1510,7 @@ if (transactionResponse.getErrorCode() == 0) {
 }
 ```
 
-### 4.5.4 getTransactionInfo
+### 1.5.4 getTransactionInfo
 
 > 接口说明
 
@@ -1571,7 +1571,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.5.5 evaluateFee
+### 1.5.5 evaluateFee
 
 > 接口说明
 
@@ -1675,7 +1675,7 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 
 
 
-### 4.5.6 BIFSubmit
+### 1.5.6 BIFSubmit
 
 > 接口说明
 
@@ -1737,9 +1737,43 @@ BIFTransactionSubmitResponse BIFSubmit(BIFTransactionSubmitRequest);
 
 ```
 
+### 1.5.7 getTxCacheSize
 
+> 接口说明
 
-## 4.6 区块服务接口列表 
+   	该接口用于获取交易池中交易条数。
+
+> 调用方法
+
+```java
+BIFTransactionGetTxCacheSizeResponse getTxCacheSize();
+```
+
+> 响应数据
+
+| 参数       | 类型 | 描述                 |
+| ---------- | ---- | -------------------- |
+| queue_size | Long | 返回交易池中交易条数 |
+
+> 错误码
+
+| 异常                 | 错误码 | 描述                             |
+| -------------------- | ------ | -------------------------------- |
+| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
+| SYSTEM_ERROR         | 20000  | System error                     |
+
+> 示例
+
+```java
+     BIFTransactionGetTxCacheSizeResponse response = sdk.getBIFTransactionService().getTxCacheSize();
+     if (response.getErrorCode() == 0) {
+            System.out.println("txCacheSize: "+JsonUtils.toJSONString(response.getQueueSize()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+```
+
+## 1.6 区块服务接口列表 
 
 ​		区块服务接口主要是区块相关的接口，目前有6个接口：
 
@@ -1752,7 +1786,7 @@ BIFTransactionSubmitResponse BIFSubmit(BIFTransactionSubmitRequest);
 | 5    | getValidators       | 该接口用于获取指定区块中所有验证节点数  |
 | 6    | getLatestValidators | 该接口用于获取最新区块中所有验证节点数  |
 
-### 4.6.1 getBlockNumber
+### 1.6.1 getBlockNumber
 
 > 接口说明
 
@@ -1790,7 +1824,7 @@ if(0 == response.getErrorCode()){
 }
 ```
 
-### 4.6.2 getTransactions
+### 1.6.2 getTransactions
 
 > 接口说明
 
@@ -1840,7 +1874,7 @@ if (0 == response.getErrorCode()) {
 }
 ```
 
-### 4.6.3 getBlockInfo
+### 1.6.3 getBlockInfo
 
 > 接口说明
 
@@ -1893,7 +1927,7 @@ if (lockGetInfoResponse.getErrorCode() == 0) {
 }
 ```
 
-### 4.6.4 getBlockLatestInfo
+### 1.6.4 getBlockLatestInfo
 
 > 接口说明
 
@@ -1938,7 +1972,7 @@ if (lockGetLatestInfoResponse.getErrorCode() == 0) {
 }
 ```
 
-### 4.6.5 getValidators
+### 1.6.5 getValidators
 
 > 接口说明
 
@@ -1989,7 +2023,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 4.6.6 getLatestValidators
+### 1.6.6 getLatestValidators
 
 > 接口说明
 
@@ -2028,13 +2062,13 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-## 4.7 SDK智能合约开发流程
+## 1.7 SDK智能合约开发流程
 
 本节给出一个基于Java SDK的完整智能合约开发流程。
 
 **一定要灵活使用星火区块链浏览器 http://test-explorer.bitfactory.cn/, 账户，交易，合约hash都可以在上面搜索查询。**
 
-### 4.7.1 概述
+### 1.7.1 概述
 
 做合约开发，一般需要以下几个步骤：
 
@@ -2043,7 +2077,7 @@ if (response.getErrorCode() == 0) {
 3. 编译和部署合约
 4. 调用和读取合约
 
-### 4.7.2 账号创建
+### 1.7.2 账号创建
 
 通过调用getBidAndKeyPair()就可以离线创建一个随机地址。
 
@@ -2056,7 +2090,7 @@ System.out.printf("private key %s\n", entity.getEncPrivateKey());
 ```
 建议将得到的地址和对应私钥都稳妥保存，之后就用这个地址开始后续的开发，私钥一定不能泄露。
 
-### 4.7.3 初始化星火链SDK
+### 1.7.3 初始化星火链SDK
 
 **之后的操作都需要链网进行，需要初始化星火链SDK链接到星火链。**
 
@@ -2070,7 +2104,7 @@ public staitc BIFSDK sdk = BIFSDK.getInstance(NODE_URL);
 
 sdk初始化之后，我们可以通过sdk对象调用链上方法进行开发。
 
-### 4.7.4 查看账户状态
+### 1.7.4 查看账户状态
 
 1. 首先我们记录了最开始生成的账户地址和私钥
 
@@ -2104,7 +2138,7 @@ if (infoRsp.getErrorCode() == 0) {
 {"address":"did:bid:efKkF5uKsopAishxkYja4ULRJhrhrJQU","balance":10000000000,"nonce":0}
 ```
 
-### 4.7.5 合约开发
+### 1.7.5 合约开发
 
 做一个完整的链上合约开发主要包括以下几个部分：
 
@@ -2290,7 +2324,7 @@ if (cCallRsp.getErrorCode() == 0) {
 至此，我们就完成了一个完整的合约编写，部署，调用和读取的过程。
 
 
-## 4.8 错误码
+## 1.8 错误码
 
 | 异常                                      | 错误码 | 描述                                                         |
 | ----------------------------------------- | ------ | ------------------------------------------------------------ |

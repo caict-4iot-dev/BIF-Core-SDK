@@ -221,5 +221,19 @@ public class TransactionDemo {
             System.out.println("error: " + response.getErrorDesc());
         }
     }
+
+    /**
+     * getTxCacheSize
+     */
+    @Test
+    public void getTxCacheSize() {
+
+        BIFTransactionGetTxCacheSizeResponse response = sdk.getBIFTransactionService().getTxCacheSize();
+        if (response.getErrorCode() == 0) {
+            System.out.println("txCacheSize: "+JsonUtils.toJSONString(response.getQueueSize()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+    }
 }
 
