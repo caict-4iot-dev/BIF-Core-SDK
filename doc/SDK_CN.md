@@ -1196,6 +1196,79 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 
 > 请求参数
 
+| 参数            | 类型                           | 描述                                                         |
+| --------------- | ------------------------------ | ------------------------------------------------------------ |
+| senderAddress   | string                         | 必填，交易源账号，即交易的发起方                             |
+| gasPrice        | Long                           | 选填，打包费用 (单位是PT)默认，默认100L                      |
+| feeLimit        | Long                           | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| privateKey      | String                         | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq   | Long                           | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks         | String                         | 选填，用户自定义给交易的备注                                 |
+| contractAddress | String                         | 必填，合约账户地址                                           |
+| BIFAmount       | Long                           | 必填，转账金额                                               |
+| input           | 选填，待触发的合约的main()入参 |                                                              |
+
+> 响应数据
+
+| 参数 | 类型   | 描述     |
+| ---- | ------ | -------- |
+| hash | string | 交易hash |
+
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                          |
+| ----------------------------- | ------ | --------------------------------------------- |
+| INVALID_ADDRESS_ERROR         | 11006  | Invalid address                               |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null              |
+| PRIVATEKEY_NULL_ERROR         | 11057  | PrivateKeys cannot be empty                   |
+| INVALID_CONTRACTADDRESS_ERROR | 11037  | Invalid contract address                      |
+| INVALID_AMOUNT_ERROR          | 11024  | Amount must be between 0 and Long.MAX_VALUE   |
+| INVALID_FEELIMIT_ERROR        | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE |
+| SYSTEM_ERROR                  | 20000  | System error                                  |
+
+
+> 示例
+
+```java
+// 初始化参数
+        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
+        String contractAddress = "did:bid:eftzENB3YsWymQnvsLyF4T2ENzjgEg41";
+        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
+        Long amount = 0L;
+        String destAddress = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        String input = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress+"\", \"version\": \"1\"}}}";
+        BIFContractInvokeRequest request = new BIFContractInvokeRequest();
+        request.setSenderAddress(senderAddress);
+        request.setPrivateKey(senderPrivateKey);
+        request.setContractAddress(contractAddress);
+        request.setBIFAmount(amount);
+        request.setRemarks("contract invoke");
+        request.setInput(input);
+        // 调用 bifContractInvoke 接口
+        BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
+        if (response.getErrorCode() == 0) {
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+```
+
+### 1.4.7 batchContractInvoke
+
+> 接口说明
+
+   	该接口用于批量合约调用。
+
+> 调用方法
+
+```java
+BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest);
+```
+
+> 请求参数
+
 | 参数          | 类型                             | 描述                                                         |
 | ------------- | -------------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
@@ -1264,14 +1337,14 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
         operations.add(operation1);
         operations.add(operation2);
 
-        BIFContractInvokeRequest request = new BIFContractInvokeRequest();
+        BIFBatchContractInvokeRequest request = new BIFBatchContractInvokeRequest();
         request.setSenderAddress(senderAddress);
         request.setPrivateKey(senderPrivateKey);
         request.setOperations(operations);
         request.setRemarks("contract invoke");
 
         // 调用 bifContractInvoke 接口
-        BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
+        BIFContractInvokeResponse response = sdk.getBIFContractService().batchContractInvoke(request);
         if (response.getErrorCode() == 0) {
             System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
