@@ -48,7 +48,6 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -657,7 +656,7 @@ public class BIFContractServiceImpl implements BIFContractService {
     }
 
     @Override
-    public BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest request) {
+    public BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest request) {
         BIFContractInvokeResponse response = new BIFContractInvokeResponse();
         BIFContractInvokeResult result = new BIFContractInvokeResult();
         try {
@@ -715,5 +714,65 @@ public class BIFContractServiceImpl implements BIFContractService {
         }
         return response;
     }
+    @Override
+    public BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest request) {
+        BIFContractInvokeResponse response = new BIFContractInvokeResponse();
+        BIFContractInvokeResult result = new BIFContractInvokeResult();
+        try {
+            if (Tools.isEmpty(request)) {
+                throw new SDKException(SdkError.REQUEST_NULL_ERROR);
+            }
+            String senderAddress = request.getSenderAddress();
+            if (!PublicKeyManager.isAddressValid(senderAddress)) {
+                throw new SDKException(SdkError.INVALID_ADDRESS_ERROR);
+            }
+            BIFContractInvokeOperation operation = new BIFContractInvokeOperation();
+            String contractAddress = request.getContractAddress();
+            if (!PublicKeyManager.isAddressValid(contractAddress)) {
+                throw new SDKException(SdkError.INVALID_CONTRACTADDRESS_ERROR);
+            }
+            Long bifAmount = request.getBIFAmount();
+            if (Tools.isEmpty(bifAmount) || bifAmount < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_AMOUNT_ERROR);
+            }
+            String input = request.getInput();
+            operation.setContractAddress(contractAddress);
+            operation.setBIFAmount(bifAmount);
+            operation.setInput(input);
 
+            String privateKey = request.getPrivateKey();
+            if (Tools.isEmpty(privateKey)) {
+                throw new SDKException(SdkError.PRIVATEKEY_NULL_ERROR);
+            }
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
+            Long ceilLedgerSeq = request.getCeilLedgerSeq();
+            String remarks = request.getRemarks();
+            // 广播交易
+            BIFTransactionService transactionService = new BIFTransactionServiceImpl();
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
+                    ceilLedgerSeq, remarks, privateKey);
+            result.setHash(hash);
+            response.buildResponse(SdkError.SUCCESS, result);
+        } catch (SDKException apiException) {
+            Integer errorCode = apiException.getErrorCode();
+            String errorDesc = apiException.getErrorDesc();
+            response.buildResponse(errorCode, errorDesc, result);
+        } catch (Exception e) {
+            response.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), result);
+        }
+        return response;
+    }
 }

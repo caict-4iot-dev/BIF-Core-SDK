@@ -59,6 +59,14 @@ public interface BIFContractService {
     BIFContractCreateResponse contractCreate(BIFContractCreateRequest request);
 
     /**
+     * bifbatchInvokeByGas
+     *
+     * @param request
+     * @return
+     */
+    BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest request);
+
+    /**
      * bifInvokeByGas
      *
      * @param request

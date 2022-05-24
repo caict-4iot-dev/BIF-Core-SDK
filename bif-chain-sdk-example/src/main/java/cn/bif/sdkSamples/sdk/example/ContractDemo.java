@@ -160,6 +160,34 @@ public class ContractDemo {
         String contractAddress = "did:bid:eftzENB3YsWymQnvsLyF4T2ENzjgEg41";
         String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
         Long amount = 0L;
+        String destAddress = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        String input = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress+"\", \"version\": \"1\"}}}";
+        BIFContractInvokeRequest request = new BIFContractInvokeRequest();
+        request.setSenderAddress(senderAddress);
+        request.setPrivateKey(senderPrivateKey);
+        request.setContractAddress(contractAddress);
+        request.setBIFAmount(amount);
+        request.setRemarks("contract invoke");
+        request.setInput(input);
+        // 调用 bifContractInvoke 接口
+        BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
+        if (response.getErrorCode() == 0) {
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+    }
+    /**
+     * batchContractInvoke
+     */
+    @Test
+    public void batchContractInvoke() {
+        // 初始化参数
+        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
+        String contractAddress = "did:bid:eftzENB3YsWymQnvsLyF4T2ENzjgEg41";
+        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
+        Long amount = 0L;
         String destAddress1 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
         String destAddress2 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
         String input1 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
@@ -182,18 +210,19 @@ public class ContractDemo {
         operations.add(operation1);
         operations.add(operation2);
 
-        BIFContractInvokeRequest request = new BIFContractInvokeRequest();
+        BIFBatchContractInvokeRequest request = new BIFBatchContractInvokeRequest();
         request.setSenderAddress(senderAddress);
         request.setPrivateKey(senderPrivateKey);
         request.setOperations(operations);
         request.setRemarks("contract invoke");
 
         // 调用 bifContractInvoke 接口
-        BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
+        BIFContractInvokeResponse response = sdk.getBIFContractService().batchContractInvoke(request);
         if (response.getErrorCode() == 0) {
             System.out.println(JsonUtils.toJSONString(response.getResult()));
         } else {
             System.out.println(JsonUtils.toJSONString(response));
         }
     }
+
 }
