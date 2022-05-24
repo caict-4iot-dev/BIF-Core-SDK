@@ -1196,17 +1196,23 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 
 > 请求参数
 
-| 参数            | 类型   | 描述                                                         |
-| --------------- | ------ | ------------------------------------------------------------ |
-| senderAddress   | string | 必填，交易源账号，即交易的发起方                             |
-| gasPrice        | Long   | 选填，打包费用 (单位是PT)默认，默认100L                      |
-| feeLimit        | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
-| privateKey      | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq   | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks         | String | 选填，用户自定义给交易的备注                                 |
-| contractAddress | String | 必填，合约账户地址                                           |
-| BIFAmount       | Long   | 必填，转账金额                                               |
-| input           | String | 选填，待触发的合约的main()入参                               |
+| 参数          | 类型                             | 描述                                                         |
+| ------------- | -------------------------------- | ------------------------------------------------------------ |
+| senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
+| gasPrice      | Long                             | 选填，打包费用 (单位是PT)默认，默认100L                      |
+| feeLimit      | Long                             | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| privateKey    | String                           | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String                           | 选填，用户自定义给交易的备注                                 |
+| operations    | List<BIFContractInvokeOperation> | 必填，合约调用集合                                           |
+
+| BIFContractInvokeOperation |        |                                |
+| -------------------------- | ------ | ------------------------------ |
+| contractAddress            | String | 必填，合约账户地址             |
+| BIFAmount                  | Long   | 必填，转账金额                 |
+| input                      | String | 选填，待触发的合约的main()入参 |
+
+
 
 > 响应数据
 
@@ -1231,26 +1237,46 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 > 示例
 
 ```java
-// 初始化请求参数
-String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
-String contractAddress = "did:bid:ef2gAT82SGdnhj87wQWb9suPKLbnk9NP";
-String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
-Long amount = 0L;
+// 初始化参数
+        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
+        String contractAddress = "did:bid:eftzENB3YsWymQnvsLyF4T2ENzjgEg41";
+        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
+        Long amount = 0L;
+        String destAddress1 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        String destAddress2 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        String input1 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress1+"\", \"version\": \"1\"}}}";
+        String input2 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress2+"\", \"version\": \"1\"}}}";
 
-BIFContractInvokeRequest request = new BIFContractInvokeRequest();
-request.setSenderAddress(senderAddress);
-request.setPrivateKey(senderPrivateKey);
-request.setContractAddress(contractAddress);
-request.setBIFAmount(amount);
-request.setRemarks("contract invoke");
+        List<BIFContractInvokeOperation> operations = new ArrayList<BIFContractInvokeOperation>();
+        //操作对象1
+        BIFContractInvokeOperation operation1=new BIFContractInvokeOperation();
+        operation1.setContractAddress(contractAddress);
+        operation1.setBIFAmount(amount);
+        operation1.setInput(input1);
+        //操作对象2
+        BIFContractInvokeOperation operation2=new BIFContractInvokeOperation();
+        operation2.setContractAddress(contractAddress);
+        operation2.setBIFAmount(amount);
+        operation2.setInput(input2);
 
-// 调用 contractInvoke 接口
-BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
-if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
-} else {
-    System.out.println("error:      " + response.getErrorDesc());
-}
+        operations.add(operation1);
+        operations.add(operation2);
+
+        BIFContractInvokeRequest request = new BIFContractInvokeRequest();
+        request.setSenderAddress(senderAddress);
+        request.setPrivateKey(senderPrivateKey);
+        request.setOperations(operations);
+        request.setRemarks("contract invoke");
+
+        // 调用 bifContractInvoke 接口
+        BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
+        if (response.getErrorCode() == 0) {
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
 ```
 
 ## 1.5 交易服务接口列表
