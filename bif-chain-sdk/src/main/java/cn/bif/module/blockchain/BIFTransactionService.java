@@ -20,7 +20,10 @@ package cn.bif.module.blockchain;
 
 import cn.bif.model.request.*;
 import cn.bif.model.request.operation.BIFBaseOperation;
+import cn.bif.model.request.operation.BIFContractInvokeOperation;
 import cn.bif.model.response.*;
+
+import java.util.List;
 
 public interface BIFTransactionService {
     /**
@@ -44,7 +47,7 @@ public interface BIFTransactionService {
      * @return
      */
     String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, BIFBaseOperation operation, Long ceilLedgerSeq, String remarks, String privateKey);
-
+    String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFContractInvokeOperation> operations, Long ceilLedgerSeq, String remarks, String privateKey);
     /**
      * @Method getInfo
      * @Params [transactionGetInfoRequest]

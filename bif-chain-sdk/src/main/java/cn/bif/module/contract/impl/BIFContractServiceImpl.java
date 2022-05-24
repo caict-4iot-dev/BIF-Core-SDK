@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -667,20 +668,18 @@ public class BIFContractServiceImpl implements BIFContractService {
             if (!PublicKeyManager.isAddressValid(senderAddress)) {
                 throw new SDKException(SdkError.INVALID_ADDRESS_ERROR);
             }
-            BIFContractInvokeOperation operation = new BIFContractInvokeOperation();
-            String contractAddress = request.getContractAddress();
-            if (!PublicKeyManager.isAddressValid(contractAddress)) {
-                throw new SDKException(SdkError.INVALID_CONTRACTADDRESS_ERROR);
-            }
-            Long bifAmount = request.getBIFAmount();
-            if (Tools.isEmpty(bifAmount) || bifAmount < Constant.INIT_ZERO) {
-                throw new SDKException(SdkError.INVALID_AMOUNT_ERROR);
-            }
-            String input = request.getInput();
-            operation.setContractAddress(contractAddress);
-            operation.setBIFAmount(bifAmount);
-            operation.setInput(input);
+            List<BIFContractInvokeOperation> operations = request.getOperations();
 
+            for (BIFContractInvokeOperation opt: operations) {
+                String contractAddress = opt.getContractAddress();
+                if (!PublicKeyManager.isAddressValid(contractAddress)) {
+                    throw new SDKException(SdkError.INVALID_CONTRACTADDRESS_ERROR);
+                }
+                Long bifAmount = opt.getBIFAmount();
+                if (Tools.isEmpty(bifAmount) || bifAmount < Constant.INIT_ZERO) {
+                    throw new SDKException(SdkError.INVALID_AMOUNT_ERROR);
+                }
+            }
             String privateKey = request.getPrivateKey();
             if (Tools.isEmpty(privateKey)) {
                 throw new SDKException(SdkError.PRIVATEKEY_NULL_ERROR);
@@ -703,7 +702,7 @@ public class BIFContractServiceImpl implements BIFContractService {
             String remarks = request.getRemarks();
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operations,
                     ceilLedgerSeq, remarks, privateKey);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);

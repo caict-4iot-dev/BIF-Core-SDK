@@ -18,16 +18,26 @@
  */
 package cn.bif.model.request;
 
+import cn.bif.model.request.operation.BIFContractInvokeOperation;
+
+import java.util.List;
+
 public class BIFContractInvokeRequest {
     private String senderAddress;
     private Long feeLimit;
-    private String contractAddress;
-    private Long BIFAmount;
-    private String input;
+    private List<BIFContractInvokeOperation> operations;
     private Long ceilLedgerSeq;
     private String remarks;
     private String privateKey;
     private Long gasPrice;
+
+    public List<BIFContractInvokeOperation> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(List<BIFContractInvokeOperation> operations) {
+        this.operations = operations;
+    }
 
     public Long getGasPrice() {
         return gasPrice;
@@ -71,29 +81,6 @@ public class BIFContractInvokeRequest {
         this.feeLimit = feeLimit;
     }
 
-    public String getContractAddress() {
-        return contractAddress;
-    }
-
-    public void setContractAddress(String contractAddress) {
-        this.contractAddress = contractAddress;
-    }
-
-    public Long getBIFAmount() {
-        return BIFAmount;
-    }
-
-    public void setBIFAmount(Long bifAmount) {
-        this.BIFAmount = bifAmount;
-    }
-
-    public String getInput() {
-        return input;
-    }
-
-    public void setInput(String input) {
-        this.input = input;
-    }
 
     /**
      * @Method getCeilLedgerSeq

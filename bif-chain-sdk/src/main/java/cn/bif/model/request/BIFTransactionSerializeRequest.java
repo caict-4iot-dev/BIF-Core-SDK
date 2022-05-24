@@ -20,15 +20,47 @@ package cn.bif.model.request;
 
 import cn.bif.model.request.operation.BIFBaseOperation;
 
+import java.util.Arrays;
+
 public class BIFTransactionSerializeRequest {
     private String sourceAddress;
     private Long nonce;
     private Long gasPrice;
     private Long feeLimit;
-    private BIFBaseOperation operation;
+    private BIFBaseOperation[] operations;
     private Long ceilLedgerSeq;
     private String metadata;
 
+    public BIFBaseOperation[] getOperations() {
+        return operations;
+    }
+    /**
+     * @Method setOperations
+     * @Params [operations]
+     * @Return void
+     */
+    public void setOperation(BIFBaseOperation operation) {
+        if (null == this.operations) {
+            this.operations = new BIFBaseOperation[1];
+        } else {
+            operations = Arrays.copyOf(operations, 1);
+        }
+        this.operations[0] = operation;
+    }
+
+    /**
+     * @Method addOperation
+     * @Params [operation]
+     * @Return void
+     */
+    public void addOperation(BIFBaseOperation operation) {
+        if (null == operations) {
+            operations = new BIFBaseOperation[1];
+        } else {
+            operations = Arrays.copyOf(operations, operations.length + 1);
+        }
+        operations[operations.length - 1] = operation;
+    }
     /**
      * @Method getAddress
      * @Params []
@@ -101,13 +133,6 @@ public class BIFTransactionSerializeRequest {
         this.feeLimit = feeLimit;
     }
 
-    public BIFBaseOperation getOperation() {
-        return operation;
-    }
-
-    public void setOperation(BIFBaseOperation operation) {
-        this.operation = operation;
-    }
 
     /**
      * @Method getCeilLedgerSeq

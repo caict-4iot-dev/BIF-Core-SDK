@@ -102,11 +102,11 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
                 transaction.setMetadata(ByteString.copyFromUtf8(metadata));
             }
             // check operation
-            BIFBaseOperation operation = bifTransactionSerializeRequest.getOperation();
-            if (Tools.isEmpty(operation)) {
+            BIFBaseOperation[] operations = bifTransactionSerializeRequest.getOperations();
+            if (Tools.isEmpty(operations)) {
                 throw new SDKException(SdkError.OPERATIONS_EMPTY_ERROR);
             }
-            buildOperations(operation, sourceAddress, transaction);
+            buildOperations(operations, sourceAddress, transaction);
             // add other information
             transaction.setSourceAddress(sourceAddress);
             transaction.setNonce(nonce);
@@ -146,8 +146,6 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
 
         return bifTransactionSerializeResponse;
     }
-
-
 
     /**
      * @Method submit
@@ -281,6 +279,65 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
         return transactionSubmitResponse.getResult().getHash();
     }
 
+
+    /**
+     * 广播交易
+     *
+     * @return
+     */
+    @Override
+    public String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFContractInvokeOperation> operations,
+                                   Long ceilLedgerSeq, String remarks, String senderPrivateKey) {
+        BIFAccountServiceImpl accountService = new BIFAccountServiceImpl();
+        // 一、获取交易发起的账号nonce值
+        BIFAccountGetNonceRequest getNonceRequest = new BIFAccountGetNonceRequest();
+        getNonceRequest.setAddress(senderAddress);
+        // 调用getBIFNonce接口
+        BIFAccountGetNonceResponse nonceResponse = accountService.getNonce(getNonceRequest);
+        if (nonceResponse.getErrorCode() != Constant.SUCCESS) {
+            throw new SDKException(nonceResponse.getErrorCode(), nonceResponse.getErrorDesc());
+        }
+        Long nonce = nonceResponse.getResult().getNonce();
+        if (Tools.isEmpty(nonce) || nonce < 1) {
+            nonce=0L;
+        }
+        // 二、构建操作、序列化交易
+        // 初始化请求参数
+        BIFTransactionSerializeRequest serializeRequest = new BIFTransactionSerializeRequest();
+        serializeRequest.setSourceAddress(senderAddress);
+        serializeRequest.setNonce(nonce + 1);
+        serializeRequest.setFeeLimit(feeLimit);
+        serializeRequest.setGasPrice(gasPrice);
+        for (BIFContractInvokeOperation opt: operations
+        ) {
+            serializeRequest.addOperation(opt);
+        }
+        serializeRequest.setCeilLedgerSeq(ceilLedgerSeq);
+
+        // 调用BIFSerializable接口
+        serializeRequest.setMetadata(remarks);
+        BIFTransactionSerializeResponse serializeResponse = BIFSerializable(serializeRequest);
+        if (serializeResponse.getErrorCode() != Constant.SUCCESS) {
+            throw new SDKException(serializeResponse.getErrorCode(), serializeResponse.getErrorDesc());
+        }
+        String transactionBlob = serializeResponse.getResult().getTransactionBlob();
+
+        // 三、签名
+        byte[] signBytes = PrivateKeyManager.sign(HexFormat.hexToByte(transactionBlob), senderPrivateKey);
+        String publicKey = PrivateKeyManager.getEncPublicKey(senderPrivateKey);
+
+        //四、提交交易
+        BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
+        submitRequest.setSerialization(transactionBlob);
+        submitRequest.setPublicKey(publicKey);
+        submitRequest.setSignData(HexFormat.byteToHex(signBytes));
+        // 调用bifSubmit接口
+        BIFTransactionSubmitResponse transactionSubmitResponse = BIFSubmit(submitRequest);
+        if (transactionSubmitResponse.getErrorCode() != Constant.SUCCESS) {
+            throw new SDKException(transactionSubmitResponse.getErrorCode(), transactionSubmitResponse.getErrorDesc());
+        }
+        return transactionSubmitResponse.getResult().getHash();
+    }
     /**
      * @Method getInfo
      * @Params [transactionGetInfoRequest]
@@ -557,8 +614,10 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             }
             Long feeLimit = BIFTransactionEvaluateFeeRequest.getFeeLimit();
             Long gasPrice = BIFTransactionEvaluateFeeRequest.getGasPrice();
+            BIFBaseOperation[] operations = new BIFBaseOperation[1];
+            operations[0]=baseOperations;
 
-            buildOperations(baseOperations, sourceAddress, transaction);
+            buildOperations(operations, sourceAddress, transaction);
             transaction.setSourceAddress(sourceAddress);
             transaction.setNonce(nonce+1);
             if (!Tools.isEmpty(feeLimit)) {
@@ -605,44 +664,45 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
      * @Params [operationBase, transaction]
      * @Return void
      */
-    private void buildOperations(BIFBaseOperation operationBase, String transSourceAddress, Chain.Transaction.Builder transaction) throws SDKException {
-        Chain.Operation operation;
-        OperationType operationType = operationBase.getOperationType();
-        switch (operationType) {
-            case ACCOUNT_ACTIVATE:
-                operation = BIFAccountServiceImpl.activate((BIFAccountActivateOperation) operationBase, transSourceAddress);
-                break;
-            case ACCOUNT_SET_METADATA:
-                operation = BIFAccountServiceImpl.accountSetMetadata((BIFAccountSetMetadataOperation) operationBase);
-                break;
-            case ACCOUNT_SET_PRIVILEGE:
-                operation =
-                        BIFAccountServiceImpl.accountSetPrivilege((BIFAccountSetPrivilegeOperation) operationBase);
-                break;
-            case GAS_SEND:
-                operation = BIFGasServiceImpl.send((BIFGasSendOperation) operationBase, transSourceAddress);
-                break;
-            case CONTRACT_CREATE:
-                operation = BIFContractServiceImpl.create((BIFContractCreateOperation) operationBase);
-                break;
-            case CONTRACT_INVOKE:
-                operation = BIFContractServiceImpl.invokeByGas((BIFContractInvokeOperation) operationBase, transSourceAddress);
-                break;
-            case PRIVATE_CONTRACT_CREATE:
-                operation = BIFContractServiceImpl.createPrivateContract((BIFPrivateContractCreateOperation) operationBase);
-                break;
-            case PRIVATE_CONTRACT_CALL:
-                operation = BIFContractServiceImpl.callPrivateContract((BIFPrivateContractCallOperation) operationBase);
-                break;
-            default:
+    private void buildOperations(BIFBaseOperation[] operationBase, String transSourceAddress, Chain.Transaction.Builder transaction) throws SDKException {
+        for (int i = 0; i < operationBase.length; i++) {
+            Chain.Operation operation;
+            OperationType operationType = operationBase[i].getOperationType();
+            switch (operationType) {
+                case ACCOUNT_ACTIVATE:
+                    operation = BIFAccountServiceImpl.activate((BIFAccountActivateOperation) operationBase[i], transSourceAddress);
+                    break;
+                case ACCOUNT_SET_METADATA:
+                    operation = BIFAccountServiceImpl.accountSetMetadata((BIFAccountSetMetadataOperation) operationBase[i]);
+                    break;
+                case ACCOUNT_SET_PRIVILEGE:
+                    operation =
+                            BIFAccountServiceImpl.accountSetPrivilege((BIFAccountSetPrivilegeOperation) operationBase[i]);
+                    break;
+                case GAS_SEND:
+                    operation = BIFGasServiceImpl.send((BIFGasSendOperation) operationBase[i], transSourceAddress);
+                    break;
+                case CONTRACT_CREATE:
+                    operation = BIFContractServiceImpl.create((BIFContractCreateOperation) operationBase[i]);
+                    break;
+                case CONTRACT_INVOKE:
+                    operation = BIFContractServiceImpl.invokeByGas((BIFContractInvokeOperation) operationBase[i], transSourceAddress);
+                    break;
+                case PRIVATE_CONTRACT_CREATE:
+                    operation = BIFContractServiceImpl.createPrivateContract((BIFPrivateContractCreateOperation) operationBase[i]);
+                    break;
+                case PRIVATE_CONTRACT_CALL:
+                    operation = BIFContractServiceImpl.callPrivateContract((BIFPrivateContractCallOperation) operationBase[i]);
+                    break;
+                default:
+                    throw new SDKException(SdkError.OPERATIONS_ONE_ERROR);
+            }
+            if (Tools.isEmpty(operation)) {
                 throw new SDKException(SdkError.OPERATIONS_ONE_ERROR);
+            }
+            transaction.addOperations(operation);
         }
-        if (Tools.isEmpty(operation)) {
-            throw new SDKException(SdkError.OPERATIONS_ONE_ERROR);
-        }
-        transaction.addOperations(operation);
     }
-
     public static BIFTransactionGetInfoResponse getTransactionInfo(String hash) throws Exception {
         if (Tools.isEmpty(General.getInstance().getUrl())) {
             throw new SDKException(SdkError.URL_EMPTY_ERROR);
