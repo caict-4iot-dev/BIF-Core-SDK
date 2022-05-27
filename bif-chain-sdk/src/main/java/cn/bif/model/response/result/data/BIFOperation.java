@@ -48,6 +48,18 @@ public class BIFOperation {
     @JsonProperty(value = "log")
     private BIFLogInfo log;
 
+
+    @JsonProperty(value = "input")
+    private String input;
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
+    }
+
     public BIFLogInfo getLog() {
         return log;
     }
