@@ -18,6 +18,10 @@ import cn.bif.utils.hex.HexFormat;
 import org.redisson.Redisson;
 import org.redisson.api.RMap;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 /**
  * 获取分布式锁
  */
@@ -27,34 +31,46 @@ public class TransactionDemo {
 
     public static void main(String[] args) {
         int N = 4;
+        //参数
         String senderAddress="did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
         String senderPrivateKey="priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
+
+        String senderAddress1="did:bid:efLrPu7LNR4YwA5M1Kfx6BYb1JP7aPKp";
+        String senderPrivateKey1="priSPKteVqGoNgtKE68ZjNHAbGJsNvV9nTBkTLMYTGhVjsBY5R";
+
+        String senderAddress2="did:bid:efBdagu8sVkJWEw5kLt1w69bxa85Kuag";
+        String senderPrivateKey2="priSPKmCQMrjCcRgV3u2VsYhujf7QsG7Kr6Tgm94AbzCge46d8";
+        //账号集合
+        List<String> availableAccAddr = new ArrayList<String>();
+        availableAccAddr.add(senderAddress+";"+senderPrivateKey);
+        availableAccAddr.add(senderAddress1+";"+senderPrivateKey1);
+        availableAccAddr.add(senderAddress2+";"+senderPrivateKey2);
+        //目的地址
         String destAddress="did:bid:efXkBsC2nQN6PJLjT9nv3Ah7S3zJt2WW";
         Long feeLimit=1000000L;
         Long gasPrice=100L;
+        //交易对象
         BIFGasSendOperation gasSendOperation= new BIFGasSendOperation();
         gasSendOperation.setAmount(1L);
         gasSendOperation.setDestAddress(destAddress);
         for(int i=0;i<N;i++){
-            new transaction(senderAddress,senderPrivateKey,feeLimit,gasPrice,0,gasSendOperation).start();
+            new transaction(availableAccAddr,feeLimit,gasPrice,0,gasSendOperation).start();
         }
 
         for(int i=0;i<N;i++){
-            new transaction(senderAddress,senderPrivateKey,feeLimit,gasPrice,0,gasSendOperation).start();
+            new transaction(availableAccAddr,feeLimit,gasPrice,0,gasSendOperation).start();
         }
         System.out.println("END");
     }
 
     static class transaction extends Thread{
-        String senderAddress;
-        String senderPrivateKey;
+        List<String> availableAccAddr;
         Long feeLimit;
         Long gasPrice;
         BIFBaseOperation operation;
         Integer domainId;
-        public transaction(String senderAddress, String senderPrivateKey,Long feeLimit,Long gasPrice,Integer domainId,BIFBaseOperation operation ) {
-            this.senderAddress = senderAddress;
-            this.senderPrivateKey = senderPrivateKey;
+        public transaction(List<String> availableAccAddr,Long feeLimit,Long gasPrice,Integer domainId,BIFBaseOperation operation ) {
+            this.availableAccAddr = availableAccAddr;
             this.feeLimit = feeLimit;
             this.gasPrice = gasPrice;
             this.domainId = domainId;
@@ -63,9 +79,13 @@ public class TransactionDemo {
 
         @Override
         public void run() {
+            //随机获取交易账号
+            int index = new Random().nextInt(availableAccAddr.size());
+            String senderAddress=availableAccAddr.get(index).split(";")[0];
+            String senderPrivateKey=availableAccAddr.get(index).split(";")[1];
             //加锁
             RedissonLock.acquire(senderAddress);
-            System.out.println("线程"+ Thread.currentThread().getName() +"获得分布式锁");
+            System.out.println("线程"+ Thread.currentThread().getName() +"获得分布式锁:"+senderAddress);
             try {
                 //获取账号nonce值
                 Long nonce=0L;
@@ -107,6 +127,7 @@ public class TransactionDemo {
                 // 调用bifSubmit接口
                 BIFTransactionSubmitResponse transactionSubmitResponse = sdk.getBIFTransactionService().BIFSubmit(submitRequest);
                 if (transactionSubmitResponse.getErrorCode() == 0) {
+                    System.out.println(senderAddress+ " ,hash: "+transactionSubmitResponse.getResult().getHash());
                     //更新nonce值
                     nonce=nonce+1;
                     redisHash.put("nonce",Long.toString(nonce));
