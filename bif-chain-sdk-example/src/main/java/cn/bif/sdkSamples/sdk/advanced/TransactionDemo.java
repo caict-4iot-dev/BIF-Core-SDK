@@ -5,14 +5,10 @@ import cn.bif.common.Constant;
 import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
 import cn.bif.exception.SDKException;
-import cn.bif.model.request.BIFAccountGetNonceRequest;
-import cn.bif.model.request.BIFTransactionSerializeRequest;
-import cn.bif.model.request.BIFTransactionSubmitRequest;
+import cn.bif.model.request.*;
 import cn.bif.model.request.operation.BIFBaseOperation;
 import cn.bif.model.request.operation.BIFGasSendOperation;
-import cn.bif.model.response.BIFAccountGetNonceResponse;
-import cn.bif.model.response.BIFTransactionSerializeResponse;
-import cn.bif.model.response.BIFTransactionSubmitResponse;
+import cn.bif.model.response.*;
 import cn.bif.module.encryption.key.PrivateKeyManager;
 import cn.bif.utils.hex.HexFormat;
 import org.redisson.Redisson;
@@ -21,6 +17,7 @@ import org.redisson.api.RMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 获取分布式锁
@@ -30,11 +27,8 @@ public class TransactionDemo {
     private static Redisson redisson = RedissonManager.getRedisson();
 
     public static void main(String[] args) {
-        int N = 4;
-        //参数
-        String senderAddress="did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
-        String senderPrivateKey="priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
 
+        //参数
         String senderAddress1="did:bid:efLrPu7LNR4YwA5M1Kfx6BYb1JP7aPKp";
         String senderPrivateKey1="priSPKteVqGoNgtKE68ZjNHAbGJsNvV9nTBkTLMYTGhVjsBY5R";
 
@@ -42,23 +36,24 @@ public class TransactionDemo {
         String senderPrivateKey2="priSPKmCQMrjCcRgV3u2VsYhujf7QsG7Kr6Tgm94AbzCge46d8";
         //账号集合
         List<String> availableAccAddr = new ArrayList<String>();
-        availableAccAddr.add(senderAddress+";"+senderPrivateKey);
         availableAccAddr.add(senderAddress1+";"+senderPrivateKey1);
         availableAccAddr.add(senderAddress2+";"+senderPrivateKey2);
         //目的地址
-        String destAddress="did:bid:efXkBsC2nQN6PJLjT9nv3Ah7S3zJt2WW";
+        String destAddress="did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
         Long feeLimit=1000000L;
         Long gasPrice=100L;
         //交易对象
         BIFGasSendOperation gasSendOperation= new BIFGasSendOperation();
         gasSendOperation.setAmount(1L);
         gasSendOperation.setDestAddress(destAddress);
-        for(int i=0;i<N;i++){
-            new transaction(availableAccAddr,feeLimit,gasPrice,0,gasSendOperation).start();
-        }
-
-        for(int i=0;i<N;i++){
-            new transaction(availableAccAddr,feeLimit,gasPrice,0,gasSendOperation).start();
+        while (true) {
+            try {
+                Thread.sleep(1000);
+                new transaction(availableAccAddr,feeLimit,gasPrice,0,gasSendOperation).start();
+            }catch (Exception e) {
+                e.printStackTrace();
+                break;
+            }
         }
         System.out.println("END");
     }
@@ -93,6 +88,8 @@ public class TransactionDemo {
                 request.setAddress(senderAddress);
                 RMap<Object, Object> redisHash = redisson.getMap(senderAddress);
                 if(!redisHash.isEmpty()){
+                    //设置过期时间
+                    redisHash.expire(60, TimeUnit.SECONDS);
                     nonce=Long.parseLong(redisHash.get("nonce").toString());
                 }else{
 //                    // 调用getNonce接口
@@ -128,6 +125,47 @@ public class TransactionDemo {
                 BIFTransactionSubmitResponse transactionSubmitResponse = sdk.getBIFTransactionService().BIFSubmit(submitRequest);
                 if (transactionSubmitResponse.getErrorCode() == 0) {
                     System.out.println(senderAddress+ " ,hash: "+transactionSubmitResponse.getResult().getHash());
+
+                    BIFTransactionGetInfoRequest requestHash = new BIFTransactionGetInfoRequest();
+                    requestHash.setHash(transactionSubmitResponse.getResult().getHash());
+                    BIFTransactionGetInfoResponse response = sdk.getBIFTransactionService().getTransactionInfo(requestHash);
+                    int num=0;
+                    while (response.getErrorCode() != 0) {
+                        try{
+                            Thread.sleep(1000);
+                            response= sdk.getBIFTransactionService().getTransactionInfo(requestHash);
+                            num++;
+                            System.out.println("num    "+num);
+                            if(num>=120){
+                                break;
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    while (response.getErrorCode() != 0) {
+                        try{
+                            Thread.sleep(300000);
+                            BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
+                            cacheRequest.setHash(transactionSubmitResponse.getResult().getHash());
+                            BIFTransactionCacheResponse responseTxCacheDataHash = sdk.getBIFTransactionService().getTxCacheData(cacheRequest);
+                            if (responseTxCacheDataHash.getErrorCode() != 0) {
+                                response= sdk.getBIFTransactionService().getTransactionInfo(requestHash);
+                                if(response.getErrorCode()!=0){
+                                    break;
+                                }
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(response.getErrorCode() == 99){
+                        // 调用getNonce接口
+                        BIFAccountGetNonceResponse  nonceResponse = sdk.getBIFAccountService().getNonce(request);
+                        if (0 == nonceResponse.getErrorCode()) {
+                            nonce=nonceResponse.getResult().getNonce();
+                        }
+                    }
                     //更新nonce值
                     nonce=nonce+1;
                     redisHash.put("nonce",Long.toString(nonce));

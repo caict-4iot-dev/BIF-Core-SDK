@@ -113,4 +113,7 @@ public class General {
     public String getTxCacheSize() {
         return url + "/getTxCacheSize";
     }
+    public String getTxCacheData(String hash) throws UnsupportedEncodingException {
+        return url + "/getTransactionCache"+(Tools.isEmpty(hash) ? "" : "?hash=" +  URLEncoder.encode(hash, "utf8"));
+    }
 }

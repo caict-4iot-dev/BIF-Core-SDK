@@ -1872,6 +1872,59 @@ BIFTransactionGetTxCacheSizeResponse getTxCacheSize();
         }
 ```
 
+### 1.5.8 getTxCacheData
+
+> 接口说明
+
+   	该接口用于获取交易池中交易数据。
+
+> 调用方法
+
+```java
+BIFTransactionCacheResponse getTxCacheData(BIFTransactionCacheRequest);
+```
+
+> 请求参数
+
+| 参数 | 类型   | 描述           |
+| ---- | ------ | -------------- |
+| hash | String | 选填，交易hash |
+
+> 响应数据
+
+| 参数                           | 类型     | 描述                 |
+| ------------------------------ | -------- | -------------------- |
+| transactions                   | Object[] | 返回交易池中交易数据 |
+| transactionsp[i].hash          | String   | 交易hash             |
+| transactionsp[i].incoming_time | String   | 进入时间             |
+| transactionsp[i].status        | String   | 状态                 |
+| transactionsp[i].transaction   | Object   |                      |
+
+> 错误码
+
+| 异常                 | 错误码 | 描述                             |
+| -------------------- | ------ | -------------------------------- |
+| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
+| SYSTEM_ERROR         | 20000  | System error                     |
+| INVALID_HASH_ERROR   | 11055  | Invalid transaction hash         |
+
+> 示例
+
+```java
+    //请求参数  
+	BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
+        cacheRequest.setHash("8f3d53f0dfb5ae652d6ed93ca9512f57c2203fe0ffefdc7649908945ad96a730");
+
+    BIFTransactionCacheResponse response = sdk.getBIFTransactionService().getTxCacheData(cacheRequest);
+    if (response.getErrorCode() == 0) {
+            System.out.println("txCacheData: "+JsonUtils.toJSONString(response.getResult().getTransactions()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+```
+
+## 
+
 ## 1.6 区块服务接口列表 
 
 ​		区块服务接口主要是区块相关的接口，目前有6个接口：

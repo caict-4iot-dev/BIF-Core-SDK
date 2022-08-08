@@ -88,4 +88,9 @@ public interface BIFTransactionService {
      * @return
      */
     BIFTransactionGetTxCacheSizeResponse getTxCacheSize();
+    /**
+     * 获取交易池交易数据
+     * @return
+     */
+    BIFTransactionCacheResponse  getTxCacheData(BIFTransactionCacheRequest request);
 }

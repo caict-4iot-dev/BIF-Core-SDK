@@ -738,5 +738,37 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
         }
         return response;
     }
+    /**
+     * @Method getTxCacheData
+     * @Return BIFTransactionCacheRequest
+     */
+    @Override
+    public BIFTransactionCacheResponse getTxCacheData(BIFTransactionCacheRequest request) {
+        BIFTransactionCacheResponse response = new BIFTransactionCacheResponse();
+        BIFTransactionCacheResult bifTransactionCacheResult = new BIFTransactionCacheResult();
+        try {
+            if (Tools.isEmpty(General.getInstance().getUrl())) {
+                throw new SDKException(SdkError.URL_EMPTY_ERROR);
+            }
+            String hash = request.getHash();
+            if (!Tools.isEmpty(hash) && hash.length() != Constant.HASH_HEX_LENGTH) {
+                throw new SDKException(SdkError.INVALID_HASH_ERROR);
+            }
+
+            String getInfoUrl = General.getInstance().getTxCacheData(hash);
+            String result = HttpUtils.httpGet(getInfoUrl);
+            response = JsonUtils.toJavaObject(result, BIFTransactionCacheResponse.class);
+            response.buildResponse(SdkError.SUCCESS, response.getResult());
+        } catch (SDKException apiException) {
+            Integer errorCode = apiException.getErrorCode();
+            String errorDesc = apiException.getErrorDesc();
+            response.buildResponse(errorCode, errorDesc, bifTransactionCacheResult);
+        } catch (NoSuchAlgorithmException | KeyManagementException | NoSuchProviderException | IOException e) {
+            response.buildResponse(SdkError.CONNECTNETWORK_ERROR, bifTransactionCacheResult);
+        } catch (Exception e) {
+            response.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), bifTransactionCacheResult);
+        }
+        return response;
+    }
 }
 

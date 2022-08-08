@@ -235,5 +235,19 @@ public class TransactionDemo {
             System.out.println(JsonUtils.toJSONString(response));
         }
     }
+    @Test
+    public void getTxCacheData() {
+        BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
+        cacheRequest.setHash("");
+
+        BIFTransactionCacheResponse response = sdk.getBIFTransactionService().getTxCacheData(cacheRequest);
+        if (response.getErrorCode() == 0) {
+            System.out.println("txCacheData: "+JsonUtils.toJSONString(response.getResult().getTransactions()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+    }
+
+
 }
 
