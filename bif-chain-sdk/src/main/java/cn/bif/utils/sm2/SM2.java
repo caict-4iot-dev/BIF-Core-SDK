@@ -365,7 +365,7 @@ public class SM2 {
         if (pubKeyYBytes.length == 33)
             System.arraycopy(pubKeyYBytes, 1, pubKeyBytes, 33, 32);
         else
-            System.arraycopy(pubKeyYBytes, 0, pubKeyBytes, 33, 32);
+            System.arraycopy(pubKeyYBytes, 0, pubKeyBytes,  (pubKeyBytes.length-pubKeyYBytes.length),pubKeyYBytes.length);
         return pubKeyBytes;
     }
 
