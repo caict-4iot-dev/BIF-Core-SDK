@@ -19,7 +19,6 @@
 package cn.bif.model.response.result.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
@@ -37,6 +36,48 @@ public class BIFBlockHeader {
 
     @JsonProperty(value = "version")
     private String version;
+
+    @JsonProperty(value = "account_tree_hash")
+    private String accountTreeHash;
+    @JsonProperty(value = "consensus_value_hash")
+    private String consensusValueHash;
+    @JsonProperty(value = "hash")
+    private String hash;
+    @JsonProperty(value = "previous_hash")
+    private String previousHash;
+
+
+    public String getAccountTreeHash() {
+        return accountTreeHash;
+    }
+
+    public void setAccountTreeHash(String accountTreeHash) {
+        this.accountTreeHash = accountTreeHash;
+    }
+
+    public String getConsensusValueHash() {
+        return consensusValueHash;
+    }
+
+    public void setConsensusValueHash(String consensusValueHash) {
+        this.consensusValueHash = consensusValueHash;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public String getPreviousHash() {
+        return previousHash;
+    }
+
+    public void setPreviousHash(String previousHash) {
+        this.previousHash = previousHash;
+    }
 
     public Long getConfirmTime() {
         return confirmTime;
