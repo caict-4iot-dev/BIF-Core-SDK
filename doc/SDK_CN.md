@@ -2046,17 +2046,20 @@ BIFBlockGetInfoResponse getBlockInfo(BIFBlockGetInfoRequest);
 
 > 响应数据
 
-| 参数                        | 类型           | 描述         |
-| --------------------------- | -------------- | ------------ |
-| header                      | BIFBlockHeader | 区块信息     |
-| header.close_time           | Long           | 区块确认时间 |
-| header.seq                  | Long           | 区块高度     |
-| header.tx_count             | Long           | 交易总量     |
-| header.version              | String         | 区块版本     |
-| header.account_tree_hash    | String         | 账户树哈希   |
-| header.consensus_value_hash | String         | 共识信息哈希 |
-| header.hash                 | String         | 区块哈希     |
-| header.previous_hash        | String         | 上一区块哈希 |
+| 参数                        | 类型           | 描述              |
+| --------------------------- | -------------- | ----------------- |
+| header                      | BIFBlockHeader | 区块信息          |
+| header.close_time           | Long           | 区块确认时间      |
+| header.seq                  | Long           | 区块高度          |
+| header.tx_count             | Long           | 交易总量          |
+| header.version              | String         | 区块版本          |
+| header.account_tree_hash    | String         | 账户树哈希        |
+| header.consensus_value_hash | String         | 共识信息哈希      |
+| header.hash                 | String         | 区块哈希          |
+| header.previous_hash        | String         | 上一区块哈希      |
+| header.fees_hash            | String         | 费用hash          |
+| header.validators_hash      | String         | 共识列表hash      |
+| ledger_length               | Long           | 区块头大小(bytes) |
 
 > 错误码
 
@@ -2100,17 +2103,21 @@ BIFBlockGetLatestInfoResponse getBlockLatestInfo();
 > 响应数据
 >
 
-| 参数                        | 类型           | 描述         |
-| --------------------------- | -------------- | ------------ |
-| header                      | BIFBlockHeader | 区块信息     |
-| header.close_time           | Long           | 区块确认时间 |
-| header.seq                  | Long           | 区块高度     |
-| header.tx_count             | Long           | 交易总量     |
-| header.version              | String         | 区块版本     |
-| header.account_tree_hash    | String         | 账户树哈希   |
-| header.consensus_value_hash | String         | 共识信息哈希 |
-| header.hash                 | String         | 区块哈希     |
-| header.previous_hash        | String         | 上一区块哈希 |
+| 参数                        | 类型           | 描述              |
+| --------------------------- | -------------- | ----------------- |
+| header                      | BIFBlockHeader | 区块信息          |
+| header.close_time           | Long           | 区块确认时间      |
+| header.seq                  | Long           | 区块高度          |
+| header.tx_count             | Long           | 交易总量          |
+| header.version              | String         | 区块版本          |
+| header.account_tree_hash    | String         | 账户树哈希        |
+| header.consensus_value_hash | String         | 共识信息哈希      |
+| header.hash                 | String         | 区块哈希          |
+| header.previous_hash        | String         | 上一区块哈希      |
+| header.fees_hash            | String         | 费用hash          |
+| header.validators_hash      | String         | 共识列表hash      |
+| ledger_length               | Long           | 区块头大小(bytes) |
+
 
 > 错误码
 

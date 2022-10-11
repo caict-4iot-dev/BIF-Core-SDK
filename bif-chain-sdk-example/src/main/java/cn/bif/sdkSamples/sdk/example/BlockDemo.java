@@ -50,7 +50,7 @@ public class BlockDemo {
      */
     @Test
     public void getTransactions() {
-        Long blockNumber = 1L;// 第617247区块
+        Long blockNumber = 1440137L;// 第617247区块
         BIFBlockGetTransactionsRequest request = new BIFBlockGetTransactionsRequest();
         request.setBlockNumber(blockNumber);
         BIFBlockGetTransactionsResponse response = sdk.getBIFBlockService().getTransactions(request);
@@ -67,7 +67,7 @@ public class BlockDemo {
     @Test
     public void getBlockInfo() {
         BIFBlockGetInfoRequest blockGetInfoRequest = new BIFBlockGetInfoRequest();
-        blockGetInfoRequest.setBlockNumber(10L);
+        blockGetInfoRequest.setBlockNumber(1440137L);
         BIFBlockGetInfoResponse lockGetInfoResponse = sdk.getBIFBlockService().getBlockInfo(blockGetInfoRequest);
         if (lockGetInfoResponse.getErrorCode() == 0) {
             BIFBlockGetInfoResult lockGetInfoResult = lockGetInfoResponse.getResult();
