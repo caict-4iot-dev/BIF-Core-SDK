@@ -45,7 +45,26 @@ public class BIFBlockHeader {
     private String hash;
     @JsonProperty(value = "previous_hash")
     private String previousHash;
+    @JsonProperty(value = "fees_hash")
+    private String feesHash;
+    @JsonProperty(value = "validators_hash")
+    private String validatorsHash;
 
+    public String getFeesHash() {
+        return feesHash;
+    }
+
+    public void setFeesHash(String feesHash) {
+        this.feesHash = feesHash;
+    }
+
+    public String getValidatorsHash() {
+        return validatorsHash;
+    }
+
+    public void setValidatorsHash(String validatorsHash) {
+        this.validatorsHash = validatorsHash;
+    }
 
     public String getAccountTreeHash() {
         return accountTreeHash;

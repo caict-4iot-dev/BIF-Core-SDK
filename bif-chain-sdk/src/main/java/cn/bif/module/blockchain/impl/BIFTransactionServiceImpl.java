@@ -23,6 +23,11 @@ import cn.bif.api.BIFSDK;
 import cn.bif.common.*;
 import cn.bif.exception.SDKException;
 import cn.bif.exception.SdkError;
+import cn.bif.model.response.bid.BID;
+import cn.bif.model.response.result.data.BIFGasSendInfo;
+import cn.bif.model.response.result.data.BIFOperation;
+import cn.bif.model.response.result.data.BIFTransactionHistory;
+import cn.bif.model.response.result.data.BIFTransactionInfo;
 import cn.bif.utils.http.HttpUtils;
 import cn.bif.model.request.*;
 import cn.bif.model.request.operation.*;
@@ -767,6 +772,65 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             response.buildResponse(SdkError.CONNECTNETWORK_ERROR, bifTransactionCacheResult);
         } catch (Exception e) {
             response.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), bifTransactionCacheResult);
+        }
+        return response;
+    }
+
+    /**
+     * @Method getTxCacheData
+     * @Return BIFTransactionCacheRequest
+     */
+    @Override
+    public BIFTransactionGetBidResponse getBidByHash(String hash) {
+        BIFTransactionGetInfoResponse transactionGetInfoResponse = new BIFTransactionGetInfoResponse();
+        BIFTransactionGetInfoResult transactionGetInfoResult = new BIFTransactionGetInfoResult();
+        List<String> result=new ArrayList<>();
+        try {
+            if (Tools.isEmpty(General.getInstance().getUrl())) {
+                throw new SDKException(SdkError.URL_EMPTY_ERROR);
+            }
+            if (Tools.isEmpty(hash) || hash.length() != Constant.HASH_HEX_LENGTH) {
+                throw new SDKException(SdkError.INVALID_HASH_ERROR);
+            }
+            transactionGetInfoResponse = getTransactionInfo(hash);
+        }catch (SDKException apiException) {
+            Integer errorCode = apiException.getErrorCode();
+            String errorDesc = apiException.getErrorDesc();
+            transactionGetInfoResponse.buildResponse(errorCode, errorDesc, transactionGetInfoResult);
+        } catch (NoSuchAlgorithmException | KeyManagementException | NoSuchProviderException | IOException e) {
+            transactionGetInfoResponse.buildResponse(SdkError.CONNECTNETWORK_ERROR, transactionGetInfoResult);
+        } catch (Exception e) {
+            transactionGetInfoResponse.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), transactionGetInfoResult);
+        }
+        BIFTransactionGetBidResponse response=new BIFTransactionGetBidResponse();
+        if (transactionGetInfoResponse.getErrorCode() == 0) {
+            if(transactionGetInfoResponse.getResult().getTotalCount().intValue() > 0){
+                BIFTransactionHistory transactionHistory[]=transactionGetInfoResponse.getResult().getTransactions();
+                for (BIFTransactionHistory item:transactionHistory) {
+                    BIFTransactionInfo transactionInfo=item.getTransaction();
+                    if(transactionInfo.getOperations().length > 0){
+                        BIFOperation operation[]=transactionInfo.getOperations();
+                        for (BIFOperation oper:operation) {
+                            BIFGasSendInfo sendInfo= oper.getSendGas();
+                            String destAddress= sendInfo.getDestAddress();
+                            if(destAddress.equals(Constant.DDO_CONTRACT)){
+                                String input=sendInfo.getInput();
+                                Map<String, Object> inputMap=JsonUtils.toMap(input);
+                                String params=JsonUtils.toJSONString(inputMap.get("params"));
+                                BID bid=JsonUtils.toJavaObject(params,BID.class);
+                                result.add(bid.getDocument().getId());
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            if(result.size() > 0){
+                response.buildResponse(SdkError.SUCCESS,result);
+            }else{
+                response.buildResponse(SdkError.INVALID_HASH_ERROR, result);
+            }
         }
         return response;
     }

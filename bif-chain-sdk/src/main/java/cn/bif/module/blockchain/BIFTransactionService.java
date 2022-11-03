@@ -93,4 +93,8 @@ public interface BIFTransactionService {
      * @return
      */
     BIFTransactionCacheResponse  getTxCacheData(BIFTransactionCacheRequest request);
+
+
+    BIFTransactionGetBidResponse getBidByHash(String hash);
+
 }
