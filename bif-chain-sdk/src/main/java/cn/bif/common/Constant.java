@@ -44,4 +44,5 @@ public class Constant {
 
     public static final Long INIT_ZERO_L = 0L;
     public static final Long INIT_ONE_L = 1L;
+    public static final String DDO_CONTRACT= "did:bid:efspy6btdcuzP5BH2N899Ycti5Sd7n3z";
 }

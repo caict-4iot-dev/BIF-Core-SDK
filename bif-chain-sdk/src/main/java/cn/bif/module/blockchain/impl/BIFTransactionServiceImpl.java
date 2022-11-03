@@ -824,13 +824,14 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
 
                     }
                 }
-
             }
             if(result.size() > 0){
                 response.buildResponse(SdkError.SUCCESS,result);
             }else{
                 response.buildResponse(SdkError.INVALID_HASH_ERROR, result);
             }
+        }else{
+            response.buildResponse(SdkError.INVALID_HASH_ERROR, result);
         }
         return response;
     }
