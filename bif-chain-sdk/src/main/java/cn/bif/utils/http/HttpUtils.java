@@ -1,5 +1,6 @@
 package cn.bif.utils.http;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -23,6 +24,8 @@ public class HttpUtils {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         //创建HttpGet
         HttpGet httpGet = new HttpGet(url);
+        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectTimeOut).setConnectionRequestTimeout(readTimeOut).setSocketTimeout(connectTimeOut).build();
+        httpGet.setConfig(requestConfig);
         //发起请求，获取response对象
         CloseableHttpResponse response = httpClient.execute(httpGet);
         //获取请求状态码

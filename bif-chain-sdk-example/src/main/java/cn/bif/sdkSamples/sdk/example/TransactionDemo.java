@@ -39,7 +39,7 @@ public class TransactionDemo {
     @Test
     public void getTransactionInfo() {
         BIFTransactionGetInfoRequest request = new BIFTransactionGetInfoRequest();
-        request.setHash("8f3d53f0dfb5ae652d6ed93ca9512f57c2203fe0ffefdc7649908945ad96a730");
+        request.setHash("fa0eaf3ebaa42a10f1e1db472db22ab03efb7b74a0cce489e17347978fbec799");
         BIFTransactionGetInfoResponse response = sdk.getBIFTransactionService().getTransactionInfo(request);
         if (response.getErrorCode() == 0) {
             System.out.println(JsonUtils.toJSONString(response.getResult()));
@@ -247,7 +247,19 @@ public class TransactionDemo {
             System.out.println(JsonUtils.toJSONString(response));
         }
     }
-
+    /**
+     * 根据hash获取bid标识
+     */
+    @Test
+    public void getBidByHash(){
+        String hash="9950eb981a9683698a0cdcc88d285d52b1452a12ebfcbb6ff407c4d5f618172b";
+        BIFTransactionGetBidResponse result = sdk.getBIFTransactionService().getBidByHash(hash);
+        if (result.getErrorCode() == 0) {
+            System.out.println("bids: "+JsonUtils.toJSONString(result.getBids()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(result));
+        }
+    }
 
 }
 
