@@ -777,8 +777,8 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
     }
 
     /**
-     * @Method getTxCacheData
-     * @Return BIFTransactionCacheRequest
+     * @Method getBidByHash
+     * @Return BIFTransactionGetBidResponse
      */
     @Override
     public BIFTransactionGetBidResponse getBidByHash(String hash) {
