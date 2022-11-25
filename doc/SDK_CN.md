@@ -2685,6 +2685,7 @@ if (cCallRsp.getErrorCode() == 0) {
 | INVALID_OPTTYPE_ERROR                     | 11064  | OptType must be between 0 and 2                              |
 | GET_ALLOWANCE_ERROR                       | 11065  | Failed to get allowance                                      |
 | SIGNATURE_EMPTY_ERROR                     | 11067  | The signatures cannot be empty                               |
+| OPERATIONS_INVALID_ERROR                  | 11068  | Operations length must be between 1 and 100                  |
 | REQUEST_NULL_ERROR                        | 12001  | Request parameter cannot be null                             |
 | CONNECTN_BLOCKCHAIN_ERROR                 | 19999  | Failed to connect to the blockchain                          |
 | SYSTEM_ERROR                              | 20000  | System error                                                 |
