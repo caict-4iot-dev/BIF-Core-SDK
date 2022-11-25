@@ -49,7 +49,7 @@ public class TransactionDemo {
         while (true) {
             try {
                 Thread.sleep(1000);
-                new transaction(availableAccAddr,feeLimit,gasPrice,0,gasSendOperation).start();
+                new transaction(availableAccAddr,feeLimit,gasPrice,gasSendOperation).start();
             }catch (Exception e) {
                 e.printStackTrace();
                 break;
@@ -63,12 +63,10 @@ public class TransactionDemo {
         Long feeLimit;
         Long gasPrice;
         BIFBaseOperation operation;
-        Integer domainId;
-        public transaction(List<String> availableAccAddr,Long feeLimit,Long gasPrice,Integer domainId,BIFBaseOperation operation ) {
+        public transaction(List<String> availableAccAddr,Long feeLimit,Long gasPrice,BIFBaseOperation operation ) {
             this.availableAccAddr = availableAccAddr;
             this.feeLimit = feeLimit;
             this.gasPrice = gasPrice;
-            this.domainId = domainId;
             this.operation = operation;
         }
 

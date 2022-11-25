@@ -22,13 +22,18 @@ import cn.bif.api.BIFSDK;
 import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
 import cn.bif.common.ToBaseUnit;
+import cn.bif.model.crypto.KeyPairEntity;
 import cn.bif.model.request.*;
 import cn.bif.model.request.operation.BIFGasSendOperation;
 import cn.bif.model.response.*;
 import cn.bif.model.response.result.BIFTransactionEvaluateFeeResult;
+import cn.bif.model.response.result.BIFTransactionGasSendResult;
 import cn.bif.module.encryption.key.PrivateKeyManager;
 import cn.bif.utils.hex.HexFormat;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionDemo {
     BIFSDK sdk = BIFSDK.getInstance(SampleConstant.SDK_INSTANCE_URL);
@@ -247,6 +252,17 @@ public class TransactionDemo {
             System.out.println(JsonUtils.toJSONString(response));
         }
     }
+    @Test
+    public void Offline_ParseBlob() {
+        String transactionBlobResult = "0a286469643a6269643a65666e5655677151466659657539374142663673476d335746745658485a4232100d2244080962400a0132122c0a286469643a6269643a656641735874357a4d3248737136774359524d5a425335513948764732456d4b10021a01322204080110012204080710022a0ce8aebee7bdaee69d83e9999030c0843d38016014";
+        // Parsing the transaction Blob
+        BIFTransactionParseBlobResponse transaction = sdk.getBIFTransactionService().parseBlob(transactionBlobResult);
+        if(transaction.getErrorCode()==0){
+            System.out.println("parseBlob: " + JsonUtils.toJSONString(transaction));
+        }else {
+            System.out.println(JsonUtils.toJSONString(transaction));
+        }
+    }
     /**
      * 根据hash获取bid标识
      */
@@ -258,6 +274,46 @@ public class TransactionDemo {
             System.out.println("bids: "+JsonUtils.toJSONString(result.getBids()));
         } else {
             System.out.println(JsonUtils.toJSONString(result));
+        }
+    }
+
+    @Test
+    public void batchGasSend() {
+        // 初始化参数
+        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
+        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
+
+        String destAddress1 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
+        String destAddress2 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
+        Long bifAmount1 = ToBaseUnit.ToUGas("1");
+        Long bifAmount2 = ToBaseUnit.ToUGas("1");
+
+        List<BIFGasSendOperation> operations = new ArrayList<BIFGasSendOperation>();
+        BIFGasSendOperation operation1 = new BIFGasSendOperation();
+        operation1.setDestAddress(destAddress1);
+        operation1.setAmount(bifAmount1);
+
+        BIFGasSendOperation operation2 = new BIFGasSendOperation();
+        operation2.setDestAddress(destAddress2);
+        operation2.setAmount(bifAmount2);
+
+        operations.add(operation1);
+        operations.add(operation2);
+        // 初始化请求参数
+        BIFBatchGasSendRequest request = new BIFBatchGasSendRequest();
+        request.setSenderAddress(senderAddress);
+        request.setPrivateKey(senderPrivateKey);
+        request.setOperations(operations);
+        request.setRemarks(HexFormat.byteToHex("batch gas send".getBytes()));
+        request.setGasPrice(10L);
+        //request.setFeeLimit(500L);
+        // 调用batchGasSend接口
+        BIFTransactionGasSendResponse response = sdk.getBIFTransactionService().batchGasSend(request);
+        if (response.getErrorCode() == 0) {
+            BIFTransactionGasSendResult result = response.getResult();
+            System.out.println(JsonUtils.toJSONString(result));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
         }
     }
 

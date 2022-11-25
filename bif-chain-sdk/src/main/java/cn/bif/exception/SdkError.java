@@ -222,7 +222,7 @@ public enum SdkError {
      * SIGNATURE_EMPTY_ERROR
      */
     SIGNATURE_EMPTY_ERROR(11067, "The signatures cannot be empty"),
-
+    OPERATIONS_INVALID_ERROR(11068, "Operations length must be between 1 and 100"),
     /*
      * 操作类型为空
      */

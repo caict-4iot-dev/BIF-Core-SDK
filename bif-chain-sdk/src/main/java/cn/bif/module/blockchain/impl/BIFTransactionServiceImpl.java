@@ -343,6 +343,66 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
         }
         return transactionSubmitResponse.getResult().getHash();
     }
+
+    /**
+     * 广播交易--批量gas
+     *
+     * @return
+     */
+    @Override
+    public String radioGasTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFGasSendOperation> operations,
+                                      Long ceilLedgerSeq, String remarks, String senderPrivateKey) {
+        BIFAccountServiceImpl accountService = new BIFAccountServiceImpl();
+        // 一、获取交易发起的账号nonce值
+        BIFAccountGetNonceRequest getNonceRequest = new BIFAccountGetNonceRequest();
+        getNonceRequest.setAddress(senderAddress);
+        // 调用getBIFNonce接口
+        BIFAccountGetNonceResponse nonceResponse = accountService.getNonce(getNonceRequest);
+        if (!nonceResponse.getErrorCode().equals(Constant.SUCCESS)) {
+            throw new SDKException(nonceResponse.getErrorCode(), nonceResponse.getErrorDesc());
+        }
+        Long nonce = nonceResponse.getResult().getNonce();
+        if (Tools.isEmpty(nonce) || nonce < 1) {
+            nonce=0L;
+        }
+        // 二、构建操作、序列化交易
+        // 初始化请求参数
+        BIFTransactionSerializeRequest serializeRequest = new BIFTransactionSerializeRequest();
+        serializeRequest.setSourceAddress(senderAddress);
+        serializeRequest.setNonce(nonce + 1);
+        serializeRequest.setFeeLimit(feeLimit);
+        serializeRequest.setGasPrice(gasPrice);
+
+        for (BIFGasSendOperation opt: operations
+        ) {
+            serializeRequest.addOperation(opt);
+        }
+        serializeRequest.setCeilLedgerSeq(ceilLedgerSeq);
+
+        // 调用BIFSerializable接口
+        serializeRequest.setMetadata(remarks);
+        BIFTransactionSerializeResponse serializeResponse = BIFSerializable(serializeRequest);
+        if (!serializeResponse.getErrorCode().equals(Constant.SUCCESS)) {
+            throw new SDKException(serializeResponse.getErrorCode(), serializeResponse.getErrorDesc());
+        }
+        String transactionBlob = serializeResponse.getResult().getTransactionBlob();
+
+        // 三、签名
+        byte[] signBytes = PrivateKeyManager.sign(HexFormat.hexToByte(transactionBlob), senderPrivateKey);
+        String publicKey = PrivateKeyManager.getEncPublicKey(senderPrivateKey);
+
+        //四、提交交易
+        BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
+        submitRequest.setSerialization(transactionBlob);
+        submitRequest.setPublicKey(publicKey);
+        submitRequest.setSignData(HexFormat.byteToHex(signBytes));
+        // 调用bifSubmit接口
+        BIFTransactionSubmitResponse transactionSubmitResponse = BIFSubmit(submitRequest);
+        if (!transactionSubmitResponse.getErrorCode().equals(Constant.SUCCESS)) {
+            throw new SDKException(transactionSubmitResponse.getErrorCode(), transactionSubmitResponse.getErrorDesc());
+        }
+        return transactionSubmitResponse.getResult().getHash();
+    }
     /**
      * @Method getInfo
      * @Params [transactionGetInfoRequest]
@@ -832,6 +892,104 @@ public class BIFTransactionServiceImpl implements BIFTransactionService {
             }
         }else{
             response.buildResponse(SdkError.INVALID_HASH_ERROR, result);
+        }
+        return response;
+    }
+    @Override
+    public BIFTransactionParseBlobResponse parseBlob(String blob) {
+        BIFTransactionParseBlobResponse transactionParseBlobResponse = new BIFTransactionParseBlobResponse();
+        BIFTransactionParseBlobResult transactionParseBlobResult = new BIFTransactionParseBlobResult();
+        try {
+            if (Tools.isEmpty(blob)) {
+                throw new SDKException(SdkError.REQUEST_NULL_ERROR);
+            }
+            Chain.Transaction transaction = Chain.Transaction.parseFrom(HexFormat.hexToByte(blob));
+            JsonFormat jsonFormat = new JsonFormat();
+            ByteString meta=transaction.getMetadata();
+            String remarks =meta.toStringUtf8();
+            String transactionJson = jsonFormat.printToString(transaction);
+            transactionParseBlobResult = JsonUtils.toJavaObject(transactionJson, BIFTransactionParseBlobResult.class);
+            if(!Tools.isEmpty(remarks)){
+                transactionParseBlobResult.setRemarks(remarks);
+            }
+            transactionParseBlobResponse.buildResponse(SdkError.SUCCESS, transactionParseBlobResult);
+        } catch (SDKException sdkException) {
+            Integer errorCode = sdkException.getErrorCode();
+            String errorDesc = sdkException.getErrorDesc();
+            transactionParseBlobResponse.buildResponse(errorCode, errorDesc, transactionParseBlobResult);
+        } catch (InvalidProtocolBufferException | IllegalArgumentException e) {
+            transactionParseBlobResponse.buildResponse(SdkError.INVALID_SERIALIZATION_ERROR, transactionParseBlobResult);
+        } catch (Exception e) {
+            transactionParseBlobResponse.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), transactionParseBlobResult);
+        }
+        return transactionParseBlobResponse;
+    }
+
+    @Override
+    public BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest request) {
+        BIFTransactionGasSendResponse response = new BIFTransactionGasSendResponse();
+        BIFTransactionGasSendResult result = new BIFTransactionGasSendResult();
+        try {
+            if (Tools.isEmpty(request)) {
+                throw new SDKException(SdkError.REQUEST_NULL_ERROR);
+            }
+            String senderAddress = request.getSenderAddress();
+            if (!PublicKeyManager.isAddressValid(senderAddress)) {
+                throw new SDKException(SdkError.INVALID_ADDRESS_ERROR);
+            }
+            List<BIFGasSendOperation> operations = request.getOperations();
+            if(Tools.isEmpty(operations)){
+                throw new SDKException(SdkError.OPERATIONS_EMPTY_ERROR);
+            }
+            if(operations.size()>100 || operations.size()==0){
+                throw new SDKException(SdkError.OPERATIONS_INVALID_ERROR);
+            }
+            Map<String, Integer> map = new HashMap<>();
+            for (BIFGasSendOperation opt: operations) {
+                if(!map.containsKey(opt.getDestAddress())){//map中存在此id，将数据存放当前key的map中
+                    if (!PublicKeyManager.isAddressValid(opt.getDestAddress())) {
+                        throw new SDKException(SdkError.INVALID_ADDRESS_ERROR);
+                    }
+                    map.put(opt.getDestAddress(),1);
+                }
+                Long bifAmount = opt.getAmount();
+                if (Tools.isEmpty(bifAmount) || bifAmount < Constant.INIT_ZERO) {
+                    throw new SDKException(SdkError.INVALID_AMOUNT_ERROR);
+                }
+            }
+            String privateKey = request.getPrivateKey();
+            if (Tools.isEmpty(privateKey)) {
+                throw new SDKException(SdkError.PRIVATEKEY_NULL_ERROR);
+            }
+            Long feeLimit = request.getFeeLimit();
+            if (Tools.isEmpty(feeLimit)) {
+                feeLimit = Constant.FEE_LIMIT;
+            }
+            if (Tools.isEmpty(feeLimit) || feeLimit < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_FEELIMIT_ERROR);
+            }
+            Long gasPrice = request.getGasPrice();
+            if (Tools.isEmpty(gasPrice)) {
+                gasPrice = Constant.GAS_PRICE;
+            }
+            if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
+                throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
+            }
+            Long ceilLedgerSeq = request.getCeilLedgerSeq();
+            String remarks = request.getRemarks();
+
+            // 广播交易
+            BIFTransactionService transactionService = new BIFTransactionServiceImpl();
+            String hash = transactionService.radioGasTransaction(senderAddress, feeLimit, gasPrice, operations,
+                    ceilLedgerSeq, remarks, privateKey);
+            result.setHash(hash);
+            response.buildResponse(SdkError.SUCCESS, result);
+        } catch (SDKException apiException) {
+            Integer errorCode = apiException.getErrorCode();
+            String errorDesc = apiException.getErrorDesc();
+            response.buildResponse(errorCode, errorDesc, result);
+        } catch (Exception e) {
+            response.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), result);
         }
         return response;
     }

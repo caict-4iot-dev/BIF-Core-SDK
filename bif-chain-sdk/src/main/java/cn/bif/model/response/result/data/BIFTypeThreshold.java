@@ -66,7 +66,18 @@ public class BIFTypeThreshold {
     public void setType(Integer type) {
         this.type = type;
     }
-
+    public void setType(String type) {
+        switch (type){
+            case "UNKNOWN": this.type = 0;
+            case "CREATE_ACCOUNT": this.type = 1;break;
+            case "SET_METADATA":  this.type = 4;break;
+            case "SET_THRESHOLD": this.type = 6;break;
+            case "PAY_COIN":   this.type = 7;break;
+            case "LOG":   this.type = 8;break;
+            case "SET_PRIVILEGE": this.type = 9;break;
+            default: this.type = 0;
+        }
+    }
     /**
      *
      * @Method getThreshold

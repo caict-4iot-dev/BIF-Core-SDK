@@ -21,6 +21,7 @@ package cn.bif.module.blockchain;
 import cn.bif.model.request.*;
 import cn.bif.model.request.operation.BIFBaseOperation;
 import cn.bif.model.request.operation.BIFContractInvokeOperation;
+import cn.bif.model.request.operation.BIFGasSendOperation;
 import cn.bif.model.response.*;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public interface BIFTransactionService {
      */
     String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, BIFBaseOperation operation, Long ceilLedgerSeq, String remarks, String privateKey);
     String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFContractInvokeOperation> operations, Long ceilLedgerSeq, String remarks, String privateKey);
+    String radioGasTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFGasSendOperation> operations, Long ceilLedgerSeq, String remarks, String privateKey);
     /**
      * @Method getInfo
      * @Params [transactionGetInfoRequest]
@@ -61,7 +63,12 @@ public interface BIFTransactionService {
      * @return
      */
     BIFTransactionGasSendResponse gasSend(BIFTransactionGasSendRequest request);
-
+    /**
+     * 批量转账
+     * @param request
+     * @return
+     */
+    BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest request);
     /**
      * 私有化交易-合约调用
      * @param request
@@ -94,7 +101,12 @@ public interface BIFTransactionService {
      */
     BIFTransactionCacheResponse  getTxCacheData(BIFTransactionCacheRequest request);
 
-
+    /**
+     * blob数据解析
+     * @param blob
+     * @return
+     */
+    BIFTransactionParseBlobResponse parseBlob(String blob);
     BIFTransactionGetBidResponse getBidByHash(String hash);
 
 }

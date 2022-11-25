@@ -1923,7 +1923,149 @@ BIFTransactionCacheResponse getTxCacheData(BIFTransactionCacheRequest);
         }
 ```
 
-## 
+### 1.5.9 parseBlob
+
+> 接口说明
+
+   	该接口用于blob数据解析。
+
+> 调用方法
+
+```java
+ BIFTransactionParseBlobResponse parseBlob(String blob);
+```
+
+> 请求参数
+
+| 参数 | 类型   | 描述       |
+| ---- | ------ | ---------- |
+| blob | String | 必填，BLOB |
+
+> 响应数据
+
+| 参数          | 类型     | 描述                       |
+| ------------- | -------- | -------------------------- |
+| sourceAddress | String   | 交易源账号，即交易的发起方 |
+| nonce         | String   | 账户交易序列号，必须大于0  |
+| fee_limit     | String   | 交易要求的最低费用         |
+| gas_price     | String   | 交易燃料单价               |
+| remarks       | String   | 用户自定义给交易的备注     |
+| operations    | Object[] | 操作对象数组               |
+
+> 错误码
+
+| 异常                        | 错误码 | 描述                             |
+| --------------------------- | ------ | -------------------------------- |
+| CONNECTNETWORK_ERROR        | 11007  | Failed to connect to the network |
+| SYSTEM_ERROR                | 20000  | System error                     |
+| INVALID_SERIALIZATION_ERROR | 11056  | Invalid serialization            |
+
+> 示例
+
+```java
+      String transactionBlobResult = "0A276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B3337751003225C080712276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B333775522F0A276469643A6269643A32695277744E53666841753739754A73624C6B78694333374A554C437235791080A9E0870430C0843D38E807";
+        // Parsing the transaction Blob
+        BIFTransactionParseBlobResponse transaction = sdk.getBIFTransactionService().parseBlob(transactionBlobResult);
+        if(transaction.getErrorCode()==0){
+            System.out.println("transaction content: " + JsonUtils.toJSONString(transaction.getResult()));
+        }else {
+            System.out.println(JsonUtils.toJSONString(transaction));
+        }
+```
+
+### 1.5.10 batchGasSend
+
+> 接口说明
+
+   	该接口用于批量转移星火令。
+
+> 调用方法
+
+```java
+BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
+```
+
+> 请求参数
+
+| 参数          | 类型                      | 描述                                                         |
+| ------------- | ------------------------- | ------------------------------------------------------------ |
+| senderAddress | string                    | 必填，交易源账号，即交易的发起方                             |
+| gasPrice      | Long                      | 选填，打包费用 (单位是PT)默认，默认100L                      |
+| feeLimit      | Long                      | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| privateKey    | String                    | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long                      | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String                    | 选填，用户自定义给交易的备注                                 |
+| operations    | List<BIFGasSendOperation> | 必填，转账操作集合                                           |
+
+| BIFGasSendOperation |        |                    |
+| ------------------- | ------ | ------------------ |
+| destAddress         | String | 必填，目标账户地址 |
+| amount              | Long   | 必填，转账金额     |
+
+> 响应数据
+
+| 参数 | 类型   | 描述     |
+| ---- | ------ | -------- |
+| hash | string | 交易hash |
+
+
+> 错误码
+
+| 异常                     | 错误码 | 描述                                          |
+| ------------------------ | ------ | --------------------------------------------- |
+| INVALID_ADDRESS_ERROR    | 11006  | Invalid address                               |
+| REQUEST_NULL_ERROR       | 12001  | Request parameter cannot be null              |
+| PRIVATEKEY_NULL_ERROR    | 11057  | PrivateKeys cannot be empty                   |
+| OPERATIONS_INVALID_ERROR | 11068  | Operations length must be between 1 and 100   |
+| INVALID_AMOUNT_ERROR     | 11024  | Amount must be between 0 and Long.MAX_VALUE   |
+| INVALID_FEELIMIT_ERROR   | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE |
+| SYSTEM_ERROR             | 20000  | System error                                  |
+
+
+> 示例
+
+```java
+ 		// 初始化参数
+        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
+        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
+        String destAddress1 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
+        String destAddress2 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
+        Long bifAmount1 = ToBaseUnit.ToUGas("1");
+        Long bifAmount2 = ToBaseUnit.ToUGas("1");
+
+        List<BIFGasSendOperation> operations = new ArrayList<BIFGasSendOperation>();
+        BIFGasSendOperation operation1 = new BIFGasSendOperation();
+        operation1.setDestAddress(destAddress1);
+        operation1.setAmount(bifAmount1);
+
+
+        BIFGasSendOperation operation2 = new BIFGasSendOperation();
+        operation2.setDestAddress(destAddress2);
+        operation2.setAmount(bifAmount2);
+
+        operations.add(operation1);
+        operations.add(operation2);
+
+        // 初始化请求参数
+        BIFBatchGasSendRequest request = new BIFBatchGasSendRequest();
+        request.setSenderAddress(senderAddress);
+        request.setPrivateKey(senderPrivateKey);
+        request.setOperations(operations);
+        request.setRemarks(HexFormat.byteToHex("batch gas send".getBytes()));
+        request.setGasPrice(1L);
+        request.setFeeLimit(500L);
+
+        // 调用batchGasSend接口
+        BIFTransactionGasSendResponse response = sdk.getBIFTransactionService().batchGasSend(request);
+        if (response.getErrorCode() == 0) {
+            BIFTransactionGasSendResult result = response.getResult();
+            System.out.println(JsonUtils.toJSONString(result));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+```
+
+##  
 
 ## 1.6 区块服务接口列表 
 

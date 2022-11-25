@@ -53,6 +53,16 @@ public class BIFTransactionHistory {
 
      @JsonProperty(value =  "tx_size")
     private Long txSize;
+    @JsonProperty(value = "ceil_ledger_seq")
+    private String ceilLedgerSeq;
+
+    public String getCeilLedgerSeq() {
+        return ceilLedgerSeq;
+    }
+
+    public void setCeilLedgerSeq(String ceilLedgerSeq) {
+        this.ceilLedgerSeq = ceilLedgerSeq;
+    }
 
     public String getFee() {
         return fee;
