@@ -241,10 +241,10 @@ String password = "test1234";
 //版本
 int version = (int) Math.pow(2, 16);
 //方法一
-String keyStore = KeyStore.generateKeyStore(password,encPrivateKey, 16384, 8, 1, version);
+String keyStore = KeyStore.generateKeyStore(encPrivateKey,password, 16384, 8, 1, version);
 System.out.println(JsonUtils.toJSONString(keyStore));
 //方法二
- KeyStoreEty keyStore1 = KeyStore.generateKeyStore(password, encPrivateKey, version);
+ KeyStoreEty keyStore1 = KeyStore.generateKeyStore(encPrivateKey,password, version);
 System.out.println(JsonUtils.toJSONString(keyStore1));
 
 ```
