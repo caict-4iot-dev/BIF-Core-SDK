@@ -112,6 +112,7 @@ public class PrivateKeyManager {
                 byte[] rawPubKey = SM2.getRawPubKey(keyPair);
                 keyMember.setRawSKey(rawSkey);
                 publicKey.setRawPublicKey(rawPubKey);
+                publicKey.setChainCode(chainCode);
                 break;
             }
             default:
