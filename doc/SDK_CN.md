@@ -1434,7 +1434,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 1.5.2 privateContractCreate
+### 1.5.2 privateContractCreate--已下线
 
 > 接口说明
 
@@ -1521,7 +1521,7 @@ if (transactionResponse.getErrorCode() == 0) {
 }
 ```
 
-### 1.5.3 privateContractCall
+### 1.5.3 privateContractCall--已下线
 
 > 接口说明
 
