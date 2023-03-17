@@ -47,7 +47,7 @@ public enum SdkError {
     /*
      * INVALID_INITBALANCE_ERROR
      */
-    INVALID_INITBALANCE_ERROR(11004, "InitBalance must be between 1 and Long.MAX_VALUE"),
+    INVALID_INITBALANCE_ERROR(11004, "InitBalance must be between 0 and Long.MAX_VALUE"),
     /*
      * SOURCEADDRESS_EQUAL_DESTADDRESS_ERROR
      */

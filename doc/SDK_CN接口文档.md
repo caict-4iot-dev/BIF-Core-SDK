@@ -2,8 +2,6 @@
 
 ​		本节详细说明BIF-Core-SDK常用接口文档。星火链提供 JAVA SDK供开发者使用。
 
-​        **github**代码库地址：https://github.com/CAICT-DEV/BIF-Core-SDK
-
 ## 1.1 SDK概述
 
 ### 1.1.1 名词解析
@@ -413,9 +411,9 @@ BIFCreateAccountResponse createAccount(BIFCreateAccountRequest);
 | ceilLedgerSeq | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String | 选填，用户自定义给交易的备注                                 |
 | destAddress   | String | 必填，目标账户地址                                           |
-| initBalance   | Long   | 必填，初始化星火令，单位PT，1 星火令 = 10^8 PT, 大小(0, Long.MAX_VALUE] |
-| gasPrice      | Long   | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| initBalance   | Long   | 必填，初始化星火令，单位uXHT，1 星火令 = 10^8 uXHT, 大小[0, Long.MAX_VALUE] |
+| gasPrice      | Long   | 选填，打包费用 (单位是uXHT)，默认100L                        |
+| feeLimit      | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 
 > 响应数据
 
@@ -432,17 +430,17 @@ BIFCreateAccountResponse createAccount(BIFCreateAccountRequest);
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null                 |
 | PRIVATEKEY_NULL_ERROR     | 11057  | PrivateKeys cannot be empty                      |
 | INVALID_DESTADDRESS_ERROR | 11003  | Invalid destAddress                              |
-| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 1 and Long.MAX_VALUE |
+| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 0 and Long.MAX_VALUE |
 | SYSTEM_ERROR              | 20000  | System error                                     |
 
 
 > 示例
 
 ```java
-// 初始化请求参数
-String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
-String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
-String destAddress = "did:bid:efLnyv1Cw2aN3NJBepus55EahPcq24dH";
+// 初始化参数
+String senderAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
+String senderPrivateKey = "priSPKecAB4XjfbNeGPni5oiwksAsLS9SJBQ359niKsZsCZmFK";
+String destAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
 Long initBalance = ToBaseUnit.ToUGas("0.01");
 
 BIFCreateAccountRequest request = new BIFCreateAccountRequest();
@@ -450,14 +448,13 @@ request.setSenderAddress(senderAddress);
 request.setPrivateKey(senderPrivateKey);
 request.setDestAddress(destAddress);
 request.setInitBalance(initBalance);
-request.setRemarks("init account");
 
 // 调用 createAccount 接口
 BIFCreateAccountResponse response = sdk.getBIFAccountService().createAccount(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
 } else {
-    System.out.println("error:      " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -481,11 +478,12 @@ BIFAccountGetInfoResponse getAccount(BIFAccountGetInfoRequest);
 
 > 响应数据
 
-| 参数    | 类型   | 描述                                           |
-| ------- | ------ | ---------------------------------------------- |
-| address | String | 账户地址                                       |
-| balance | Long   | 账户余额，单位PT，1 星火令 = 10^8 PT, 必须大于0 |
-| nonce   | Long   | 账户交易序列号，必须大于0                      |
+| 参数         | 类型    | 描述                                                |
+| ------------ | ------- | --------------------------------------------------- |
+| address      | String  | 账户地址                                            |
+| balance      | Long    | 账户余额，单位uXHT，1 星火令 = 10^8 uXHT, 必须大于0 |
+| nonce        | Long    | 账户交易序列号，必须大于0                           |
+| authTransfer | boolean | 许可状态                                            |
 
 > 错误码
 
@@ -500,16 +498,16 @@ BIFAccountGetInfoResponse getAccount(BIFAccountGetInfoRequest);
 
 ```java
 // 初始化请求参数
-String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
+String accountAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
 BIFAccountGetInfoRequest request = new BIFAccountGetInfoRequest();
 request.setAddress(accountAddress);
-
-// 调用 getAccount 接口
+// 调用getAccount接口
 BIFAccountGetInfoResponse response = sdk.getBIFAccountService().getAccount(request);
+
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
 } else {
-    System.out.println("error: " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -549,15 +547,14 @@ BIFAccountGetNonceResponse getNonce(BIFAccountGetNonceRequest);
 > 示例
 
 ```java
-// 初始化请求参数     
-String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
+String accountAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
 BIFAccountGetNonceRequest request = new BIFAccountGetNonceRequest();
 request.setAddress(accountAddress);
-
-// 调用 getNonce 接口
 BIFAccountGetNonceResponse response = sdk.getBIFAccountService().getNonce(request);
 if (0 == response.getErrorCode()) {
     System.out.println("Account nonce:" + response.getResult().getNonce());
+}else {
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -597,16 +594,14 @@ BIFAccountGetBalanceResponse getAccountBalance(BIFAccountGetBalanceRequest);
 > 示例
 
 ```java
-// 初始化请求参数
-String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
+String accountAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
 BIFAccountGetBalanceRequest request = new BIFAccountGetBalanceRequest();
 request.setAddress(accountAddress);
-
-// 调用 getAccountBalance 接口
 BIFAccountGetBalanceResponse response = sdk.getBIFAccountService().getAccountBalance(request);
-System.out.println(JsonUtils.toJSONString(response, true));
 if (0 == response.getErrorCode()) {
-    System.out.println("PT balance：" + ToBaseUnit.ToGas(response.getResult().getBalance().toString()) + "PT");
+    System.out.println("Gas balance：" + ToBaseUnit.ToGas(response.getResult().getBalance().toString()) + "Gas");
+}else {
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -634,8 +629,8 @@ BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest);
 | value         | String  | 必填，metadatas的内容，长度限制[0, 256000]                   |
 | version       | Long    | 选填，metadatas的版本                                        |
 | deleteFlag    | Boolean | 选填，是否删除remarks                                        |
-| gasPrice      | Long    | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 
 > 响应数据
 
@@ -659,25 +654,23 @@ BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest);
 > 示例
 
 ```java
-// 初始化请求参数
-String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
-String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
-String key = "20210902-01";
-String value = "metadata-20210902-01";
-
+// 初始化参数
+String senderAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
+String senderPrivateKey = "priSPKecAB4XjfbNeGPni5oiwksAsLS9SJBQ359niKsZsCZmFK";
+String key = "20230131-01";
+String value = "metadata-20230131-01";
 BIFAccountSetMetadatasRequest request = new BIFAccountSetMetadatasRequest();
 request.setSenderAddress(senderAddress);
 request.setPrivateKey(senderPrivateKey);
 request.setKey(key);
 request.setValue(value);
-request.setRemarks("set metadata");
-
-// 调用 setMetadatas 接口
+request.setRemarks("set remarks");
+// 调用 setMetadata 接口
 BIFAccountSetMetadatasResponse response = sdk.getBIFAccountService().setMetadatas(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
 } else {
-    System.out.println("error:      " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -726,19 +719,17 @@ BIFAccountGetMetadatasResponse getAccountMetadatas(BIFAccountGetMetadatasRequest
 
 ```java
 // 初始化请求参数
-String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
+String accountAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
 BIFAccountGetMetadatasRequest request = new BIFAccountGetMetadatasRequest();
 request.setAddress(accountAddress);
-request.setKey("20210820-01");
-
-// 调用getAccountMetadatas接口
+// 调用getBIFMetadatas接口
 BIFAccountGetMetadatasResponse response =
-sdk.getBIFAccountService().getAccountMetadatas(request);
+    sdk.getBIFAccountService().getAccountMetadatas(request);
 if (response.getErrorCode() == 0) {
     BIFAccountGetMetadatasResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result, true));
+    System.out.println(JsonUtils.toJSONString(result));
 } else {
-    System.out.println("error:      " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -748,7 +739,7 @@ if (response.getErrorCode() == 0) {
 
    	该接口用于设置权限。
 
-> 调用方法
+> 调用方法 
 
 ```java
 BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
@@ -770,8 +761,8 @@ BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
 | typeThreshold.type      | Long   | 操作类型，必须大于0                                          |
 | typeThreshold.threshold | Long   | 门限值，大小限制[0, Long.MAX_VALUE]                          |
 | masterWeight            | String | 选填                                                         |
-| gasPrice                | Long   | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit                | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| gasPrice                | Long   | 选填，打包费用 (单位是uXHT)，默认100L                        |
+| feeLimit                | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 
 > 响应数据
 
@@ -793,13 +784,22 @@ BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
 > 示例
 
 ```java
-// 初始化请求参数
-String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
-String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
-String masterWeight = null;
-BIFSigner[] signers = null;
-String txThreshold = null;
-BIFTypeThreshold[] typeThresholds = null;
+// 初始化参数
+String senderAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
+String senderPrivateKey = "priSPKecAB4XjfbNeGPni5oiwksAsLS9SJBQ359niKsZsCZmFK";
+String masterWeight = "";
+BIFSigner[] signers = new BIFSigner[1];
+BIFSigner s=new BIFSigner();
+s.setAddress("did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK");
+s.setWeight(8L);
+signers[0]=s;
+
+String txThreshold = "2";
+BIFTypeThreshold[] typeThresholds = new BIFTypeThreshold[1];
+BIFTypeThreshold d=new BIFTypeThreshold();
+d.setThreshold(8L);
+d.setType(1);
+typeThresholds[0]=d;
 
 BIFAccountSetPrivilegeRequest request = new BIFAccountSetPrivilegeRequest();
 request.setSenderAddress(senderAddress);
@@ -813,9 +813,9 @@ request.setRemarks("set privilege");
 // 调用 setPrivilege 接口
 BIFAccountSetPrivilegeResponse response = sdk.getBIFAccountService().setPrivilege(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
 } else {
-    System.out.println("error:      " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -866,23 +866,24 @@ BIFAccountPrivResponse getAccountPriv(BIFAccountPrivRequest);
 
 ```java
 // 初始化请求参数
-String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
+String accountAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
 BIFAccountPrivRequest request = new BIFAccountPrivRequest();
 request.setAddress(accountAddress);
 
 // 调用getAccountPriv接口
 BIFAccountPrivResponse response = sdk.getBIFAccountService().getAccountPriv(request);
+
 if (response.getErrorCode() == 0) {
     BIFAccountPrivResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result, true));
+    System.out.println(JsonUtils.toJSONString(result));
 } else {
-    System.out.println("error: " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
 ## 1.4 合约服务接口列表
 
-​		合约服务接口主要是合约相关的接口，目前有6个接口：
+​		合约服务接口主要是合约相关的接口，目前有7个接口：
 
 | 序号 | 接口                 | 说明                               |
 | ---- | -------------------- | ---------------------------------- |
@@ -892,6 +893,7 @@ if (response.getErrorCode() == 0) {
 | 4    | getContractAddress   | 该接口用于根据交易Hash查询合约地址 |
 | 5    | contractQuery        | 该接口用于调试合约代码             |
 | 6    | contractInvoke       | 合约调用                           |
+| 7    | batchContractInvoke  | 批量合约调用                       |
 
 ### 1.4.1 checkContractAddress
 
@@ -930,7 +932,7 @@ BIFContractCheckValidResponse checkContractAddress(BIFContractCheckValidRequest)
 ```java
 // 初始化请求参数
 BIFContractCheckValidRequest request = new BIFContractCheckValidRequest();
-request.setContractAddress("did:bid:efiBacNvVSnr5QxgB282XGWkg4RXLLxL");
+request.setContractAddress("did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2");
 
 // 调用 checkContractAddress 接口
 BIFContractCheckValidResponse response = sdk.getBIFContractService().checkContractAddress(request);
@@ -959,12 +961,12 @@ BIFContractCreateResponse contractCreate(BIFContractCreateRequest);
 | 参数          | 类型    | 描述                                                         |
 | ------------- | ------- | ------------------------------------------------------------ |
 | senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long    | 选填，打包费用 (单位是PT)默认，默认100L                      |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String  | 选填，用户自定义给交易的备注                                 |
-| initBalance   | Long    | 选填，给合约账户的初始化星火令，单位PT，1 星火令 = 10^8 PT, 大小限制[1, Long.MAX_VALUE] |
+| initBalance   | Long    | 选填，给合约账户的初始化星火令，单位uXHT，1 星火令 = 10^8 uXHT, 大小限制[0, Long.MAX_VALUE] |
 | type          | Integer | 选填，合约的类型，默认是0 , 0: javascript，1 :evm 。         |
 | payload       | String  | 必填，对应语种的合约代码                                     |
 | initInput     | String  | 选填，合约代码中init方法的入参                               |
@@ -983,7 +985,7 @@ BIFContractCreateResponse contractCreate(BIFContractCreateRequest);
 | INVALID_ADDRESS_ERROR     | 11006  | Invalid address                                  |
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null                 |
 | PRIVATEKEY_NULL_ERROR     | 11057  | PrivateKeys cannot be empty                      |
-| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 1 and Long.MAX_VALUE |
+| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 0 and Long.MAX_VALUE |
 | PAYLOAD_EMPTY_ERROR       | 11044  | Payload cannot be empty                          |
 | INVALID_FEELIMIT_ERROR    | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE    |
 | SYSTEM_ERROR              | 20000  | System error                                     |
@@ -992,10 +994,10 @@ BIFContractCreateResponse contractCreate(BIFContractCreateRequest);
 > 示例
 
 ```java
-// 初始化请求参数
-String senderAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
-String senderPrivateKey = "priSPKqvAwSG3cp63GAuWfXASGXUSokYeA5nNkuWxKeBF54yEC";
-String payload = "\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n    {\n      let x = {\n\'hello\' : \'world\'\n      };\n    }\n  }\n  \n  function query(input)\n  { \n    return input;\n  }\n";
+// 初始化参数
+String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
+String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
+String payload = "'use strict';\n\nfunction init(){return;}\n\nfunction checkDocument(params){\n    Utils.assert(params.id!== undefined, '10700,The id is not existed');\n    Utils.assert(params['@context']!== undefined, '10700,The context is not existed');\n}\n\nfunction creation(params){\n   let input = params;\n   checkDocument(input.document);\n   let id = 'bid_document_'+input.document.id;\n   Utils.assert(Utils.addressCheck(input.document.id)!==false,'10702,The bid address format is incorrect');\n   let data  = JSON.parse(Chain.load(id));\n   Utils.assert(data === false, '10703,The bid document is already existed');\n   let document = {};\n   document = input.document;\n   Chain.store(id,JSON.stringify(document));\n}\n\n\nfunction isAuth(authList) {\n\tUtils.assert(authList!== undefined, '10704,auth or recovery param is null');\n    let i = 0;\n    for(i=0;i < authList.length;i+=1){\n        let authId = authList[i];\n        let len = authId.indexOf('#');\n        if(len === -1){\n            len = authId.length;\n        }\n        if(authId.substr(0,len) === Chain.msg.sender){\n           return true;\n        }\n    }\n    return false;\n\n}\n\nfunction update(params){\n    let input = params; \n    checkDocument(input.document);\n    let id = 'bid_document_'+input.document.id;\n    let data  = JSON.parse(Chain.load(id));\n    Utils.assert(data !== false, '10706,The bid document is not existed');\n    Utils.assert(isAuth(data.authentication) !== false,'10707,sender had no right');\n    Utils.assert(Utils.addressCheck(input.document.id)!==false,'10708,id is invalid');\n    let document = {};\n    document = input.document;\n    Chain.store(id,JSON.stringify(document));\n}\n\nfunction reAuth(params){\n    let input = params; \n    Utils.assert(Utils.addressCheck(input.id)!==false,'10708,id is invalid');\n    let id = 'bid_document_'+input.id;\n    let data  = JSON.parse(Chain.load(id));\n    Utils.assert(data !== false, '10706,The bid document is not existed');\n    Utils.assert(data.extension.recovery !== false, '10709,The bid document had not recovery');\n    Utils.assert(isAuth(data.extension.recovery) !== false,'10710,sender had no right recovery');\n    data.authentication = input.authentication;\n    Chain.store(id,JSON.stringify(data));\n}\n\n\nfunction revoke(params){\n    let input = params; \n    let id = 'bid_document_'+input.document.id;\n    let data  = JSON.parse(Chain.load(id));\n    Utils.assert(data !== false, '10706,The bid document is not existed');\n    Utils.assert(Chain.ddressCheck(input.document.id)===false);\n} \n\nfunction queryBid(params) {\n   let input = params;\n   let id = 'bid_document_'+input.id;\n   let data  = JSON.parse(Chain.load(id));\n   Utils.assert(data !== false, '10706,The bid document is not existed');\n   return data;\n}\n\nfunction main(input_str){\n    let input = JSON.parse(input_str);\n\n    if(input.method === 'creation'){\n        creation(input.params);\n    }\n    else if(input.method === 'update'){\n        update(input.params);\n    }\n    else if(input.method === 'reAuth') {\n        reAuth(input.params);\n    }\n    else if(input.method === 'revoke') {\n        revoke(input.params);\n    }\n    else{\n        throw '<Main interface passes an invalid operation type>';\n    }\n}\n\nfunction query(input_str){\n    let input  = JSON.parse(input_str);\n    let object ={};\n    if(input.method === 'queryBid'){\n        object = queryBid(input.params);\n    }\n    else{\n       \tthrow '<unidentified operation type>';\n    }\n    return JSON.stringify(object);\n}";
 Long initBalance = ToBaseUnit.ToUGas("0.01");
 
 BIFContractCreateRequest request = new BIFContractCreateRequest();
@@ -1005,14 +1007,14 @@ request.setInitBalance(initBalance);
 request.setPayload(payload);
 request.setRemarks("create contract");
 request.setType(0);
-request.setFeeLimit(1000000000L);
+request.setFeeLimit(100369100L);
 
-// 调用 contractCreate 接口
+// 调用bifContractCreate接口
 BIFContractCreateResponse response = sdk.getBIFContractService().contractCreate(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
 } else {
-    System.out.println("error:      " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -1058,7 +1060,7 @@ BIFContractGetInfoResponse getContractInfo(BIFContractGetInfoRequest);
 ```java
 // 初始化请求参数
 BIFContractGetInfoRequest request = new BIFContractGetInfoRequest();
-request.setContractAddress("did:bid:efiBacNvVSnr5QxgB282XGWkg4RXLLxL");
+request.setContractAddress("did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2");
 
 // 调用 getContractInfo 接口
 BIFContractGetInfoResponse response = sdk.getBIFContractService().getContractInfo(request);
@@ -1111,7 +1113,7 @@ BIFContractGetAddressResponse getContractAddress(BIFContractGetAddressRequest);
 
 ```java
 // 初始化请求参数
-String hash = "4bb232fbe86e33b956ad5338103d4610b2b31d5bf6af742d7e55b9c6182abfee";
+String hash = "5835cfd5159db6ed0d63e10a361793b39c23de44f926b3c0c0589fee4f7b8b18";
 BIFContractGetAddressRequest request = new BIFContractGetAddressRequest();
 request.setHash(hash);
 
@@ -1138,13 +1140,13 @@ BIFContractCallResponse contractQuery(BIFContractCallRequest);
 
 > 请求参数
 
-| 参数            | 类型   | 描述                                           |
-| --------------- | ------ | ---------------------------------------------- |
-| sourceAddress   | String | 选填，合约触发账户地址                         |
-| contractAddress | String | 必填，合约账户地址                             |
-| input           | String | 选填，合约入参                                 |
-| gasPrice        | Long   | 选填，打包费用 (单位是PT)默认，默认100L        |
-| feeLimit        | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L |
+| 参数            | 类型   | 描述                                             |
+| --------------- | ------ | ------------------------------------------------ |
+| sourceAddress   | String | 选填，合约触发账户地址                           |
+| contractAddress | String | 必填，合约账户地址                               |
+| input           | String | 选填，合约入参                                   |
+| gasPrice        | Long   | 选填，打包费用 (单位是uXHT)默认，默认100L        |
+| feeLimit        | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L |
 
 
 > 响应数据
@@ -1168,7 +1170,7 @@ BIFContractCallResponse contractQuery(BIFContractCallRequest);
 
 ```java
 // 初始化请求参数
-String contractAddress = "did:bid:ef2gAT82SGdnhj87wQWb9suPKLbnk9NP";
+String contractAddress = "did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2";
 BIFContractCallRequest request = new BIFContractCallRequest();
 request.setContractAddress(contractAddress);
 
@@ -1199,8 +1201,8 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 | 参数            | 类型                           | 描述                                                         |
 | --------------- | ------------------------------ | ------------------------------------------------------------ |
 | senderAddress   | string                         | 必填，交易源账号，即交易的发起方                             |
-| gasPrice        | Long                           | 选填，打包费用 (单位是PT)默认，默认100L                      |
-| feeLimit        | Long                           | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| gasPrice        | Long                           | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
+| feeLimit        | Long                           | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 | privateKey      | String                         | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq   | Long                           | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks         | String                         | 选填，用户自定义给交易的备注                                 |
@@ -1232,27 +1234,28 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 
 ```java
 // 初始化参数
-        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
-        String contractAddress = "did:bid:eftzENB3YsWymQnvsLyF4T2ENzjgEg41";
-        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
-        Long amount = 0L;
-        String destAddress = KeyPairEntity.getBidAndKeyPair().getEncAddress();
-        String input = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
-                "\"id\": \""+destAddress+"\", \"version\": \"1\"}}}";
-        BIFContractInvokeRequest request = new BIFContractInvokeRequest();
-        request.setSenderAddress(senderAddress);
-        request.setPrivateKey(senderPrivateKey);
-        request.setContractAddress(contractAddress);
-        request.setBIFAmount(amount);
-        request.setRemarks("contract invoke");
-        request.setInput(input);
-        // 调用 bifContractInvoke 接口
-        BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
-        if (response.getErrorCode() == 0) {
-            System.out.println(JsonUtils.toJSONString(response.getResult()));
-        } else {
-            System.out.println(JsonUtils.toJSONString(response));
-        }
+String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
+String contractAddress = "did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2";
+String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
+Long amount = 0L;
+String  input = "{\"method\":\"applyServiceNode\",\"params\":{\"domainId\":20,\"nodeAddr\":\"did:bid:ef2CuJPNBW7HQhTTiiT3wPYvFbSbthtzC\"}}";
+
+BIFContractInvokeRequest request = new BIFContractInvokeRequest();
+request.setSenderAddress(senderAddress);
+request.setPrivateKey(senderPrivateKey);
+request.setContractAddress(contractAddress);
+request.setBIFAmount(amount);
+request.setRemarks("contract invoke");
+request.setDomainId(0);
+request.setInput(input);
+
+// 调用 bifContractInvoke 接口
+BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
+if (response.getErrorCode() == 0) {
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
+} else {
+    System.out.println(JsonUtils.toJSONString(response));
+}
 ```
 
 ### 1.4.7 batchContractInvoke
@@ -1272,8 +1275,8 @@ BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest);
 | 参数          | 类型                             | 描述                                                         |
 | ------------- | -------------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long                             | 选填，打包费用 (单位是PT)默认，默认100L                      |
-| feeLimit      | Long                             | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| gasPrice      | Long                             | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
+| feeLimit      | Long                             | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 | privateKey    | String                           | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String                           | 选填，用户自定义给交易的备注                                 |
@@ -1311,59 +1314,62 @@ BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest);
 
 ```java
 // 初始化参数
-        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
-        String contractAddress = "did:bid:eftzENB3YsWymQnvsLyF4T2ENzjgEg41";
-        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
-        Long amount = 0L;
-        String destAddress1 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
-        String destAddress2 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
-        String input1 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
-                "\"id\": \""+destAddress1+"\", \"version\": \"1\"}}}";
-        String input2 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
-                "\"id\": \""+destAddress2+"\", \"version\": \"1\"}}}";
+String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
+String contractAddress = "did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2";
+String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
+Long amount = 0L;
+String destAddress1 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+String destAddress2 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+String input1 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+    "\"id\": \""+destAddress1+"\", \"version\": \"1\"}}}";
+String input2 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+    "\"id\": \""+destAddress2+"\", \"version\": \"1\"}}}";
 
-        List<BIFContractInvokeOperation> operations = new ArrayList<BIFContractInvokeOperation>();
-        //操作对象1
-        BIFContractInvokeOperation operation1=new BIFContractInvokeOperation();
-        operation1.setContractAddress(contractAddress);
-        operation1.setBIFAmount(amount);
-        operation1.setInput(input1);
-        //操作对象2
-        BIFContractInvokeOperation operation2=new BIFContractInvokeOperation();
-        operation2.setContractAddress(contractAddress);
-        operation2.setBIFAmount(amount);
-        operation2.setInput(input2);
+List<BIFContractInvokeOperation> operations = new ArrayList<BIFContractInvokeOperation>();
+//操作对象1
+BIFContractInvokeOperation operation1=new BIFContractInvokeOperation();
+operation1.setContractAddress(contractAddress);
+operation1.setBIFAmount(amount);
+operation1.setInput(input1);
+//操作对象2
+BIFContractInvokeOperation operation2=new BIFContractInvokeOperation();
+operation2.setContractAddress(contractAddress);
+operation2.setBIFAmount(amount);
+operation2.setInput(input2);
 
-        operations.add(operation1);
-        operations.add(operation2);
+operations.add(operation1);
+operations.add(operation2);
 
-        BIFBatchContractInvokeRequest request = new BIFBatchContractInvokeRequest();
-        request.setSenderAddress(senderAddress);
-        request.setPrivateKey(senderPrivateKey);
-        request.setOperations(operations);
-        request.setRemarks("contract invoke");
+BIFBatchContractInvokeRequest request = new BIFBatchContractInvokeRequest();
+request.setSenderAddress(senderAddress);
+request.setPrivateKey(senderPrivateKey);
+request.setOperations(operations);
+request.setRemarks("contract invoke");
+request.setDomainId(0);
 
-        // 调用 bifContractInvoke 接口
-        BIFContractInvokeResponse response = sdk.getBIFContractService().batchContractInvoke(request);
-        if (response.getErrorCode() == 0) {
-            System.out.println(JsonUtils.toJSONString(response.getResult()));
-        } else {
-            System.out.println(JsonUtils.toJSONString(response));
-        }
+// 调用 bifContractInvoke 接口
+BIFContractInvokeResponse response = sdk.getBIFContractService().batchContractInvoke(request);
+if (response.getErrorCode() == 0) {
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
+} else {
+    System.out.println(JsonUtils.toJSONString(response));
+}
 ```
 
 ## 1.5 交易服务接口列表
 
-​		交易服务接口主要是交易相关的接口，目前有6个接口：
+​		交易服务接口主要是交易相关的接口，目前有8个接口：
 
-| 序号 | 接口                  | 说明                               |
-| ---- | --------------------- | ---------------------------------- |
-| 1    | gasSend               | 交易                               |
-| 2    | privateContractCreate | 私有化交易-合约创建                |
-| 3    | privateContractCall   | 私有化交易-合约调用                |
-| 4    | getTransactionInfo    | 该接口用于实现根据交易hash查询交易 |
-| 5    | evaluateFee           | 该接口实现交易的费用评估           |
-| 6    | BIFSubmit             | 提交交易                           |
+| 序号 | 接口               | 说明                               |
+| ---- | ------------------ | ---------------------------------- |
+| 1    | gasSend            | 交易                               |
+| 2    | getTransactionInfo | 该接口用于实现根据交易hash查询交易 |
+| 3    | evaluateFee        | 该接口实现交易的费用评估           |
+| 4    | BIFSubmit          | 提交交易                           |
+| 5    | getTxCacheSize     | 于获取交易池中交易条数             |
+| 6    | getTxCacheData     | 获取交易池中交易数据               |
+| 7    | parseBlob          | blob数据解析                       |
+| 8    | batchGasSend       | 批量转移星火令                     |
 
 ### 1.5.1 gasSend
 
@@ -1387,8 +1393,8 @@ BIFTransactionGasSendResponse gasSend(BIFTransactionGasSendRequest);
 | remarks       | String | 选填，用户自定义给交易的备注                                 |
 | destAddress   | String | 必填，发起方地址                                             |
 | amount        | Long   | 必填，转账金额                                               |
-| gasPrice      | Long   | 选填，打包费用 (单位是PT)，默认100L                          |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| gasPrice      | Long   | 选填，打包费用 (单位是uXHT)，默认100L                        |
+| feeLimit      | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 
 > 响应数据
 
@@ -1413,199 +1419,25 @@ BIFTransactionGasSendResponse gasSend(BIFTransactionGasSendRequest);
 
 ```java
 // 初始化请求参数
-String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
-String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
-String destAddress = "did:bid:efrAgXe6NvmNwWmtdBs1iKGThzBqHNwH";
-Long amount = ToBaseUnit.ToUGas("1");
+String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
+String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
+String destAddress = "did:bid:efqhQu9YWEWpUKQYkAyGevPGtAdD1N6p";
+Long amount = ToBaseUnit.ToUGas("0.01");
 
 BIFTransactionGasSendRequest request = new BIFTransactionGasSendRequest();
 request.setSenderAddress(senderAddress);
 request.setPrivateKey(senderPrivateKey);
 request.setDestAddress(destAddress);
 request.setAmount(amount);
-request.setRemarks("PT send");
+request.setRemarks("gas send");
+request.setFeeLimit(125900L);
 
 // 调用 gasSend 接口
 BIFTransactionGasSendResponse response = sdk.getBIFTransactionService().gasSend(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
 } else {
-    System.out.println("error:      " + response.getErrorDesc());
-}
-```
-
-### 1.5.2 privateContractCreate
-
-> 接口说明
-
-```
-该接口用于私有化交易的合约创建。
-```
-
-> 调用方法
-
-```java
-BIFTransactionPrivateContractCreateResponse privateContractCreate(BIFTransactionPrivateContractCreateRequest);
-```
-
-> 请求参数
-
-| 参数          | 类型     | 描述                                                         |
-| ------------- | -------- | ------------------------------------------------------------ |
-| senderAddress | string   | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String   | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long     | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String   | 选填，用户自定义给交易的备注                                 |
-| type          | Integer  | 选填，合约的语种                                             |
-| payload       | String   | 必填，对应语种的合约代码                                     |
-| from          | String   | 必填，发起方加密机公钥                                       |
-| to            | String[] | 必填，接收方加密机公钥                                       |
-| gasPrice      | Long     | 选填，打包费用 (单位是PT)默认，默认100L                      |
-| feeLimit      | Long     | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
-
-> 响应数据
-
-| 参数 | 类型   | 描述     |
-| ---- | ------ | -------- |
-| hash | string | 交易hash |
-
-
-> 错误码
-
-| 异常                        | 错误码 | 描述                             |
-| --------------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR       | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR          | 12001  | Request parameter cannot be null |
-| PRIVATEKEY_NULL_ERROR       | 11057  | PrivateKeys cannot be empty      |
-| INVALID_CONTRACT_TYPE_ERROR | 11047  | Invalid contract type            |
-| PAYLOAD_EMPTY_ERROR         | 11044  | Payload cannot be empty          |
-| SYSTEM_ERROR                | 20000  | System error                     |
-
-
-> 示例
-
-```java
-// 初始化请求参数
-String senderAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
-String senderPrivateKey = "priSPKqvAwSG3cp63GAuWfXASGXUSokYeA5nNkuWxKeBF54yEC";
-String payload = "\"use strict\";function queryBanance(address)\r\n{return \" test query private contract sdk_3\";}\r\nfunction sendTx(to,amount)\r\n{return Chain.payCoin(to,amount);}\r\nfunction init(input)\r\n{return;}\r\nfunction main(input)\r\n{let args=JSON.parse(input);if(args.method===\"sendTx\"){return sendTx(args.params.address,args.params.amount);}}\r\nfunction query(input)\r\n{let args=JSON.parse(input);if(args.method===\"queryBanance\"){return queryBanance(args.params.address);}}";
-String from = "bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=";
-String[] to = {"0VEtPRytTaDEf0g62KyAVeEHnwfd6ZM59/YQXfngaRs="};
-
-BIFTransactionPrivateContractCreateRequest request = new BIFTransactionPrivateContractCreateRequest();
-request.setSenderAddress(senderAddress);
-request.setPrivateKey(senderPrivateKey);
-request.setPayload(payload);
-request.setFrom(from);
-request.setTo(to);
-request.setRemarks("init account");
-
-// 调用 privateContractCreate 接口
-BIFTransactionPrivateContractCreateResponse response = sdk.getBIFTransactionService().privateContractCreate(request);
-if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
-} else {
-    System.out.println("error:      " + JsonUtils.toJSONString(response));
-    return;
-}
-
-Thread.sleep(5000);
-BIFTransactionGetInfoRequest transactionRequest = new BIFTransactionGetInfoRequest();
-transactionRequest.setHash(response.getResult().getHash());
-// 调用getTransactionInfo接口
-BIFTransactionGetInfoResponse transactionResponse = sdk.getBIFTransactionService().getTransactionInfo(transactionRequest);
-if (transactionResponse.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(transactionResponse.getResult(), true));
-} else {
-    System.out.println("error: " + transactionResponse.getErrorDesc());
-}
-```
-
-### 1.5.3 privateContractCall
-
-> 接口说明
-
-   	该接口用于私有化交易的合约调用。
-
-> 调用方法
-
-```java
-BIFTransactionPrivateContractCallResponse privateContractCall(BIFTransactionPrivateContractCallRequest);
-```
-
-> 请求参数
-
-| 参数          | 类型     | 描述                                                         |
-| ------------- | -------- | ------------------------------------------------------------ |
-| senderAddress | string   | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String   | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long     | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String   | 选填，用户自定义给交易的备注                                 |
-| destAddress   | String   | 必填，发起方地址                                             |
-| type          | Integer  | 选填，合约的语种（待用）                                     |
-| input         | String   | 必填，待触发的合约的main()入参                               |
-| from          | String   | 必填，发起方加密机公钥                                       |
-| to            | String[] | 必填，接收方加密机公钥                                       |
-| gasPrice      | Long     | 选填，打包费用 (单位是PT)默认，默认100L                      |
-| feeLimit      | Long     | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
-
-> 响应数据
-
-| 参数 | 类型   | 描述     |
-| ---- | ------ | -------- |
-| hash | string | 交易hash |
-
-
-> 错误码
-
-| 异常                        | 错误码 | 描述                             |
-| --------------------------- | ------ | -------------------------------- |
-| INVALID_ADDRESS_ERROR       | 11006  | Invalid address                  |
-| REQUEST_NULL_ERROR          | 12001  | Request parameter cannot be null |
-| PRIVATEKEY_NULL_ERROR       | 11057  | PrivateKeys cannot be empty      |
-| INVALID_CONTRACT_TYPE_ERROR | 11047  | Invalid contract type            |
-| SYSTEM_ERROR                | 20000  | System error                     |
-
-
-> 示例
-
-```java
-// 初始化请求参数
-String senderAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
-String senderPrivateKey = "priSPKqvAwSG3cp63GAuWfXASGXUSokYeA5nNkuWxKeBF54yEC";
-String input = "{\"method\":\"queryBanance\",\"params\":{\"address\":\"567890哈哈=======\"}}";
-String from = "bDRE8iIfGdwDeQOcJqZabZQH5Nd6cfTOMOorudtgXjQ=";
-String[] to = {"0VEtPRytTaDEf0g62KyAVeEHnwfd6ZM59/YQXfngaRs="};
-//设置调用的私有合约地址
-String destAddress = "did:bid:efTuswkPE1HP9Uc7vpNbRVokuQqhxaCE";
-
-BIFTransactionPrivateContractCallRequest request = new BIFTransactionPrivateContractCallRequest();
-request.setSenderAddress(senderAddress);
-request.setPrivateKey(senderPrivateKey);
-request.setInput(input);
-request.setFrom(from);
-request.setTo(to);
-request.setDestAddress(destAddress);
-request.setRemarks("private Contract Call");
-
-// 调用 privateContractCall 接口
-BIFTransactionPrivateContractCallResponse response = sdk.getBIFTransactionService().privateContractCall(request);
-if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
-} else {
-    System.out.println("error:      " + response.getErrorDesc());
-    return;
-}
-
-Thread.sleep(5000);
-BIFTransactionGetInfoRequest transactionRequest = new BIFTransactionGetInfoRequest();
-transactionRequest.setHash(response.getResult().getHash());
-// 调用getTransactionInfo接口
-BIFTransactionGetInfoResponse transactionResponse = sdk.getBIFTransactionService().getTransactionInfo(transactionRequest);
-if (transactionResponse.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(transactionResponse.getResult(), true));
-} else {
-    System.out.println("error: " + transactionResponse.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -1659,7 +1491,7 @@ BIFTransactionGetInfoResponse getTransactionInfo(BIFTransactionGetInfoRequest);
 ```java
 // 初始化请求参数
 BIFTransactionGetInfoRequest request = new BIFTransactionGetInfoRequest();
-request.setHash("6fd10128e0f1e3f6565542303ca308d26f70c7638ec3885141c5cdb72583d182");
+request.setHash("5835cfd5159db6ed0d63e10a361793b39c23de44f926b3c0c0589fee4f7b8b18");
 
 // 调用 getTransactionInfo 接口
 BIFTransactionGetInfoResponse response = sdk.getBIFTransactionService().getTransactionInfo(request);
@@ -1689,8 +1521,8 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 | signatureNumber | Integer                         | 选填，待签名者的数量，默认是1，大小限制[1, Integer.MAX_VALUE] |
 | remarks         | String                          | 选填，用户自定义给交易的备注                                 |
 | operation       | [BaseOperation](#BaseOperation) | 必填，待提交的操作，不能为空                                 |
-| gasPrice        | Long                            | 选填，打包费用 (单位是PT)                                    |
-| feeLimit        | Long                            | 选填，交易花费的手续费(单位是PT)                             |
+| gasPrice        | Long                            | 选填，打包费用 (单位是uXHT)                                  |
+| feeLimit        | Long                            | 选填，交易花费的手续费(单位是uXHT)                           |
 
 #### BaseOperation
 
@@ -1744,32 +1576,33 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 > 示例
 
 ```java
-       // 初始化变量
-        String senderAddresss = "did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK";
-        String destAddress = "did:bid:ef14uPsX7XYLzsU4t2rnRrsK2zfUbW3r";
-        Long bifAmount = ToBaseUnit.ToUGas("10.9");
+// 初始化变量
+String senderAddresss = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
+String destAddress = "did:bid:efqhQu9YWEWpUKQYkAyGevPGtAdD1N6p";
+Long bifAmount = ToBaseUnit.ToUGas("10.9");
 
-        // 构建sendGas操作
-        BIFGasSendOperation gasSendOperation = new BIFGasSendOperation();
-        gasSendOperation.setSourceAddress(senderAddresss);
-        gasSendOperation.setDestAddress(destAddress);
-        gasSendOperation.setAmount(bifAmount);
+// 构建sendGas操作
+BIFGasSendOperation gasSendOperation = new BIFGasSendOperation();
+gasSendOperation.setSourceAddress(senderAddresss);
+gasSendOperation.setDestAddress(destAddress);
+gasSendOperation.setAmount(bifAmount);
 
-        // 初始化评估交易请求参数
-        BIFTransactionEvaluateFeeRequest request = new BIFTransactionEvaluateFeeRequest();
-        request.setOperation(gasSendOperation);
-        request.setSourceAddress(senderAddresss);
-        request.setSignatureNumber(1);
-        request.setRemarks(HexFormat.byteToHex("evaluate fees".getBytes()));
+// 初始化评估交易请求参数
+BIFTransactionEvaluateFeeRequest request = new BIFTransactionEvaluateFeeRequest();
+request.setOperation(gasSendOperation);
+request.setSourceAddress(senderAddresss);
+request.setSignatureNumber(1);
+request.setRemarks(HexFormat.byteToHex("evaluate fees".getBytes()));
+request.setGasPrice(1L);
 
-       // 调用evaluateFee接口
-        BIFTransactionEvaluateFeeResponse response = sdk.getBIFTransactionService().evaluateFee(request);
-        if (response.getErrorCode() == 0) {
-            BIFTransactionEvaluateFeeResult result = response.getResult();
-            System.out.println(JsonUtils.toJSONString(result));
-        } else {
-            System.out.println("error: " + response.getErrorDesc());
-        }
+// 调用evaluateFee接口
+BIFTransactionEvaluateFeeResponse response = sdk.getBIFTransactionService().evaluateFee(request);
+if (response.getErrorCode() == 0) {
+    BIFTransactionEvaluateFeeResult result = response.getResult();
+    System.out.println(JsonUtils.toJSONString(result));
+} else {
+    System.out.println(JsonUtils.toJSONString(response));
+}
 ```
 
 
@@ -1792,7 +1625,7 @@ BIFTransactionSubmitResponse BIFSubmit(BIFTransactionSubmitRequest);
 | ------------- | ------ | ------------------ |
 | serialization | String | 必填，交易序列化值 |
 | signData      | String | 必填，签名数据     |
-| privateKey    | String | 必填，签名者私钥   |
+| publicKey     | String | 必填，签名者私钥   |
 
 > 响应数据
 
@@ -1911,16 +1744,17 @@ BIFTransactionCacheResponse getTxCacheData(BIFTransactionCacheRequest);
 > 示例
 
 ```java
-    //请求参数  
-	BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
-        cacheRequest.setHash("8f3d53f0dfb5ae652d6ed93ca9512f57c2203fe0ffefdc7649908945ad96a730");
+//请求参数  
+BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
+cacheRequest.setDomainId(0);
+//cacheRequest.setHash("");
 
-    BIFTransactionCacheResponse response = sdk.getBIFTransactionService().getTxCacheData(cacheRequest);
-    if (response.getErrorCode() == 0) {
-            System.out.println("txCacheData: "+JsonUtils.toJSONString(response.getResult().getTransactions()));
-        } else {
-            System.out.println(JsonUtils.toJSONString(response));
-        }
+BIFTransactionCacheResponse response = sdk.getBIFTransactionService().getTxCacheData(null);
+if (response.getErrorCode() == 0) {
+    System.out.println("txCacheData: "+JsonUtils.toJSONString(response.getResult().getTransactions()));
+} else {
+    System.out.println(JsonUtils.toJSONString(response));
+}
 ```
 
 ### 1.5.9 parseBlob
@@ -1963,7 +1797,7 @@ BIFTransactionCacheResponse getTxCacheData(BIFTransactionCacheRequest);
 > 示例
 
 ```java
-      String transactionBlobResult = "0A276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B3337751003225C080712276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B333775522F0A276469643A6269643A32695277744E53666841753739754A73624C6B78694333374A554C437235791080A9E0870430C0843D38E807";
+      String transactionBlobResult = "0a286469643a6269643a65666e5655677151466659657539374142663673476d335746745658485a4232100d2244080962400a0132122c0a286469643a6269643a656641735874357a4d3248737136774359524d5a425335513948764732456d4b10021a01322204080110012204080710022a0ce8aebee7bdaee69d83e9999030c0843d38016014";
         // Parsing the transaction Blob
         BIFTransactionParseBlobResponse transaction = sdk.getBIFTransactionService().parseBlob(transactionBlobResult);
         if(transaction.getErrorCode()==0){
@@ -1990,8 +1824,8 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
 | 参数          | 类型                      | 描述                                                         |
 | ------------- | ------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                    | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long                      | 选填，打包费用 (单位是PT)默认，默认100L                      |
-| feeLimit      | Long                      | 选填，交易花费的手续费(单位是PT)，默认1000000L               |
+| gasPrice      | Long                      | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
+| feeLimit      | Long                      | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
 | privateKey    | String                    | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                      | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String                    | 选填，用户自定义给交易的备注                                 |
@@ -2026,8 +1860,8 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
 
 ```java
  		// 初始化参数
-        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
-        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
+        String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
+        String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
         String destAddress1 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
         String destAddress2 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
         Long bifAmount1 = ToBaseUnit.ToUGas("1");
@@ -2110,12 +1944,9 @@ BIFBlockGetNumberResponse getBlockNumber();
 
 ```java
 // 调用getBlockNumber接口
-BIFBlockGetNumberResponse response = sdk.getBIFBlockService().getBlockNumber();
-if(0 == response.getErrorCode()){
-   System.out.println(JsonUtils.toJSONString(response.getResult(), true));
-}else{
-   System.out.println("error: " + response.getErrorDesc());
-}
+BIFBlockGetNumberInfoRequest request=new BIFBlockGetNumberInfoRequest();
+BIFBlockGetNumberResponse response = sdk.getBIFBlockService().getBlockNumber(request);
+System.out.println(JsonUtils.toJSONString(response));
 ```
 
 ### 1.6.2 getTransactions
@@ -2159,12 +1990,11 @@ BIFBlockGetTransactionsResponse getTransactions(BIFBlockGetTransactionsRequest);
 Long blockNumber = 1L;
 BIFBlockGetTransactionsRequest request = new BIFBlockGetTransactionsRequest();
 request.setBlockNumber(blockNumber);
-// 调用 getTransactions 接口
 BIFBlockGetTransactionsResponse response = sdk.getBIFBlockService().getTransactions(request);
 if (0 == response.getErrorCode()) {
-    System.out.println(JsonUtils.toJSONString(response, true));
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
 } else {
-    System.out.println("失败\n" + JsonUtils.toJSONString(response, true));
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -2202,6 +2032,7 @@ BIFBlockGetInfoResponse getBlockInfo(BIFBlockGetInfoRequest);
 | header.fees_hash            | String         | 费用hash          |
 | header.validators_hash      | String         | 共识列表hash      |
 | ledger_length               | Long           | 区块头大小(bytes) |
+| leader                      | String         | 出块节点参数      |
 
 > 错误码
 
@@ -2218,13 +2049,12 @@ BIFBlockGetInfoResponse getBlockInfo(BIFBlockGetInfoRequest);
 // 初始化请求参数
 BIFBlockGetInfoRequest blockGetInfoRequest = new BIFBlockGetInfoRequest();
 blockGetInfoRequest.setBlockNumber(10L);
-// 调用 getBlockInfo 接口
 BIFBlockGetInfoResponse lockGetInfoResponse = sdk.getBIFBlockService().getBlockInfo(blockGetInfoRequest);
 if (lockGetInfoResponse.getErrorCode() == 0) {
     BIFBlockGetInfoResult lockGetInfoResult = lockGetInfoResponse.getResult();
-    System.out.println(JsonUtils.toJSONString(lockGetInfoResult, true));
+    System.out.println(JsonUtils.toJSONString(lockGetInfoResult));
 } else {
-    System.out.println("error: " + lockGetInfoResponse.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(lockGetInfoResponse));
 }
 ```
 
@@ -2272,12 +2102,13 @@ BIFBlockGetLatestInfoResponse getBlockLatestInfo();
 
 ```java
 // 调用 getBlockLatestInfo 接口
-BIFBlockGetLatestInfoResponse lockGetLatestInfoResponse = sdk.getBIFBlockService().getBlockLatestInfo();
+BIFBlockGetLatestInfoRequest request = new BIFBlockGetLatestInfoRequest();
+BIFBlockGetLatestInfoResponse lockGetLatestInfoResponse = sdk.getBIFBlockService().getBlockLatestInfo(request);
 if (lockGetLatestInfoResponse.getErrorCode() == 0) {
     BIFBlockGetLatestInfoResult lockGetLatestInfoResult = lockGetLatestInfoResponse.getResult();
-    System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResult, true));
+    System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResult));
 } else {
-    System.out.println(lockGetLatestInfoResponse.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResponse));
 }
 ```
 
@@ -2322,13 +2153,13 @@ BIFBlockGetValidatorsResponse getValidators(BIFBlockGetValidatorsRequest);
 BIFBlockGetValidatorsRequest request = new BIFBlockGetValidatorsRequest();
 request.setBlockNumber(1L);
 
-// 调用 getValidators 接口
+// 调用getBIFValidators接口
 BIFBlockGetValidatorsResponse response = sdk.getBIFBlockService().getValidators(request);
 if (response.getErrorCode() == 0) {
     BIFBlockGetValidatorsResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result, true));
+    System.out.println(JsonUtils.toJSONString(result));
 } else {
-    System.out.println("error: " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -2361,13 +2192,14 @@ BIFBlockGetLatestValidatorsResponse getLatestValidators();
 > 示例
 
 ```java
-// 调用 getLatestValidators 接口
-BIFBlockGetLatestValidatorsResponse response = sdk.getBIFBlockService().getLatestValidators();
+BIFBlockGetLatestValidatorsRequest request=new BIFBlockGetLatestValidatorsRequest();
+// 调用getBIFLatestValidators接口
+BIFBlockGetLatestValidatorsResponse response = sdk.getBIFBlockService().getLatestValidators(request);
 if (response.getErrorCode() == 0) {
     BIFBlockGetLatestValidatorsResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result, true));
+    System.out.println(JsonUtils.toJSONString(result));
 } else {
-    System.out.println("error: " + response.getErrorDesc());
+    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -2640,7 +2472,7 @@ if (cCallRsp.getErrorCode() == 0) {
 | ACCOUNT_CREATE_ERROR                      | 11001  | Failed to create the account                                 |
 | INVALID_SOURCEADDRESS_ERROR               | 11002  | Invalid sourceAddress                                        |
 | INVALID_DESTADDRESS_ERROR                 | 11003  | Invalid destAddress                                          |
-| INVALID_INITBALANCE_ERROR                 | 11004  | InitBalance must be between 1 and Long.MAX_VALUE             |
+| INVALID_INITBALANCE_ERROR                 | 11004  | InitBalance must be between 0 and Long.MAX_VALUE             |
 | SOURCEADDRESS_EQUAL_DESTADDRESS_ERROR     | 11005  | SourceAddress cannot be equal to destAddress                 |
 | INVALID_ADDRESS_ERROR                     | 11006  | Invalid address                                              |
 | CONNECTNETWORK_ERROR                      | 11007  | Failed to connect to the network                             |

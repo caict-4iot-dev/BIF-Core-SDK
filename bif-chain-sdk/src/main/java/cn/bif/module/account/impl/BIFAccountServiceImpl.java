@@ -76,7 +76,7 @@ public class BIFAccountServiceImpl implements BIFAccountService {
                 throw new SDKException(SdkError.SOURCEADDRESS_EQUAL_DESTADDRESS_ERROR);
             }
             Long initBalance = accountActivateOperation.getInitBalance();
-            if (Tools.isEmpty(initBalance) || initBalance <= Constant.INIT_ZERO_L) {
+            if (Tools.isEmpty(initBalance) || initBalance < Constant.INIT_ZERO_L) {
                 throw new SDKException(SdkError.INVALID_INITBALANCE_ERROR);
             }
             String metadata = accountActivateOperation.getMetadata();
@@ -388,7 +388,7 @@ public class BIFAccountServiceImpl implements BIFAccountService {
                 throw new SDKException(SdkError.INVALID_DESTADDRESS_ERROR);
             }
             Long initBalance = request.getInitBalance();
-            if (Tools.isEmpty(initBalance) || initBalance <= Constant.INIT_ZERO) {
+            if (Tools.isEmpty(initBalance) || initBalance < Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_INITBALANCE_ERROR);
             }
             operation.setDestAddress(destAddress);
