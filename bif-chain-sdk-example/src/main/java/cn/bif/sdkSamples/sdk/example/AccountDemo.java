@@ -169,7 +169,7 @@ public class AccountDemo {
     @Test
     public void getAccountPriv() {
         // 初始化请求参数
-        String accountAddress = "did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
+        String accountAddress = "did:bid:zf2bbxDwdzm4g4fJNTH2ah6gbHu6PdAX2";
         BIFAccountPrivRequest request = new BIFAccountPrivRequest();
         request.setAddress(accountAddress);
 

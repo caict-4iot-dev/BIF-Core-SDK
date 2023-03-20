@@ -75,6 +75,12 @@ public class BIFTypeThreshold {
             case "PAY_COIN":   this.type = 7;break;
             case "LOG":   this.type = 8;break;
             case "SET_PRIVILEGE": this.type = 9;break;
+            case "1": this.type = 1;break;
+            case "4": this.type = 4;break;
+            case "6": this.type = 6;break;
+            case "7": this.type = 7;break;
+            case "8": this.type = 8;break;
+            case "9": this.type = 9;break;
             default: this.type = 0;
         }
     }
