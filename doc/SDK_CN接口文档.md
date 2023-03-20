@@ -65,7 +65,7 @@ Class BIFAccountGetNonceResult {
 ​		调用SDK的接口getInstance来实现，调用如下：
 
 ```java
-String url = "http://test-bif-core.xinghuo.space";
+String url = "http://test.bifcore.bitfactory.cn";
 BIFSDK sdk = BIFSDK.getInstance(url);
 ```
 
@@ -1246,7 +1246,6 @@ request.setPrivateKey(senderPrivateKey);
 request.setContractAddress(contractAddress);
 request.setBIFAmount(amount);
 request.setRemarks("contract invoke");
-request.setDomainId(0);
 request.setInput(input);
 
 // 调用 bifContractInvoke 接口
@@ -1345,7 +1344,6 @@ request.setSenderAddress(senderAddress);
 request.setPrivateKey(senderPrivateKey);
 request.setOperations(operations);
 request.setRemarks("contract invoke");
-request.setDomainId(0);
 
 // 调用 bifContractInvoke 接口
 BIFContractInvokeResponse response = sdk.getBIFContractService().batchContractInvoke(request);
@@ -1746,9 +1744,6 @@ BIFTransactionCacheResponse getTxCacheData(BIFTransactionCacheRequest);
 ```java
 //请求参数  
 BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
-cacheRequest.setDomainId(0);
-//cacheRequest.setHash("");
-
 BIFTransactionCacheResponse response = sdk.getBIFTransactionService().getTxCacheData(null);
 if (response.getErrorCode() == 0) {
     System.out.println("txCacheData: "+JsonUtils.toJSONString(response.getResult().getTransactions()));
@@ -2238,7 +2233,7 @@ System.out.printf("private key %s\n", entity.getEncPrivateKey());
 ```java
 import cn.bif.api.BIFSDK;
 
-public static final String NODE_URL = "http://test-bif-core.xinghuo.space";
+public static final String NODE_URL = "http://test.bifcore.bitfactory.cn";
 
 public staitc BIFSDK sdk = BIFSDK.getInstance(NODE_URL);
 ```

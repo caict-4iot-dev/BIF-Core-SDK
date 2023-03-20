@@ -668,7 +668,12 @@ public class BIFContractServiceImpl implements BIFContractService {
                 throw new SDKException(SdkError.INVALID_ADDRESS_ERROR);
             }
             List<BIFContractInvokeOperation> operations = request.getOperations();
-
+            if(Tools.isEmpty(operations)){
+                throw new SDKException(SdkError.OPERATIONS_EMPTY_ERROR);
+            }
+            if(operations.size()>100 || operations.size()==0){
+                throw new SDKException(SdkError.OPERATIONS_INVALID_ERROR);
+            }
             for (BIFContractInvokeOperation opt: operations) {
                 String contractAddress = opt.getContractAddress();
                 if (!PublicKeyManager.isAddressValid(contractAddress)) {
