@@ -67,7 +67,7 @@ public class BIFContractServiceImpl implements BIFContractService {
                 throw new SDKException(SdkError.INVALID_SOURCEADDRESS_ERROR);
             }
             Long initBalance = contractCreateOperation.getInitBalance();
-            if (!Tools.isEmpty(initBalance) && initBalance <= Constant.INIT_ZERO) {
+            if (!Tools.isEmpty(initBalance) && initBalance < Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_INITBALANCE_ERROR);
             }
             Integer type = contractCreateOperation.getType();
@@ -603,7 +603,7 @@ public class BIFContractServiceImpl implements BIFContractService {
             }
             BIFContractCreateOperation operation = new BIFContractCreateOperation();
             Long initBalance = request.getInitBalance();
-            if (!Tools.isEmpty(initBalance) && initBalance <= Constant.INIT_ZERO) {
+            if (!Tools.isEmpty(initBalance) && initBalance < Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_INITBALANCE_ERROR);
             }
             String payload = request.getPayload();
@@ -668,7 +668,12 @@ public class BIFContractServiceImpl implements BIFContractService {
                 throw new SDKException(SdkError.INVALID_ADDRESS_ERROR);
             }
             List<BIFContractInvokeOperation> operations = request.getOperations();
-
+            if(Tools.isEmpty(operations)){
+                throw new SDKException(SdkError.OPERATIONS_EMPTY_ERROR);
+            }
+            if(operations.size()>100 || operations.size()==0){
+                throw new SDKException(SdkError.OPERATIONS_INVALID_ERROR);
+            }
             for (BIFContractInvokeOperation opt: operations) {
                 String contractAddress = opt.getContractAddress();
                 if (!PublicKeyManager.isAddressValid(contractAddress)) {

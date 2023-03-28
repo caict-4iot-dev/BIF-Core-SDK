@@ -15,7 +15,21 @@
 
 * * *
 
-  *注：*
+**Changes in 1.0.1**  
+
+适用：BIF版本v1.0.1  
+[opt] 优化获取SM2原生公钥接口  
+[add] 新增RedissonLock相关内容
+[add] 新增获取交易池中交易数据接口  
+[opt] 优化获取指定区块信息返回数据
+[opt] 删除ID-SDK依赖
+[bug] 修复getAccountPriv接口type值未能正确返回bug
+[opt] 批量合约调用增加options数量判断
+更新日期：2023-03-20  
+
+* * *
+
+*注：*
   [add]代表新增内容  
 
   [opt]代表优化内容  

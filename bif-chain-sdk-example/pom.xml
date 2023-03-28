@@ -23,7 +23,7 @@
     <parent>
         <groupId>bif.chain</groupId>
         <artifactId>bif-core-sdk-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>bif.chain</groupId>
             <artifactId>bif-chain-sdk</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
