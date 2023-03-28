@@ -74,6 +74,7 @@ public interface BIFTransactionService {
      * @param request
      * @return
      */
+    @Deprecated
     BIFTransactionPrivateContractCallResponse privateContractCall(BIFTransactionPrivateContractCallRequest request);
 
     /**
@@ -81,6 +82,7 @@ public interface BIFTransactionService {
      * @param request
      * @return
      */
+    @Deprecated
     BIFTransactionPrivateContractCreateResponse privateContractCreate(BIFTransactionPrivateContractCreateRequest request);
 
     /**
