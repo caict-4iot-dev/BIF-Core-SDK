@@ -25,13 +25,14 @@
 [opt] 删除ID-SDK依赖
 [bug] 修复getAccountPriv接口type值未能正确返回bug
 [opt] 批量合约调用增加options数量判断
+[opt] 移除私有交易 
 更新日期：2023-03-20  
 
 * * *
 
 **Changes in 1.0.2**  
 
-适用：BIF版本v1.0.1  
+适用：BIF版本v1.0.2  
 [opt] SDK groupI变更为bitfactory.cn
 
 更新日期：2023-03-28  
