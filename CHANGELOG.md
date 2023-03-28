@@ -29,6 +29,15 @@
 
 * * *
 
+**Changes in 1.0.2**  
+
+适用：BIF版本v1.0.1  
+[opt] SDK groupI变更为bitfactory.cn
+
+更新日期：2023-03-20  
+
+* * *
+
 *注：*
   [add]代表新增内容  
 

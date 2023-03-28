@@ -23,10 +23,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>bif.chain</groupId>
+    <groupId>bitfactory.cn</groupId>
     <artifactId>bif-core-sdk-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <modules>
         <module>bif-chain-sdk-example</module>
         <module>bif-chain-sdk</module>
