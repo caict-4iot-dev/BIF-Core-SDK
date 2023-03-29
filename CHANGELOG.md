@@ -34,7 +34,7 @@
 
 适用：BIF版本v1.0.2  
 [opt] 删除私有合约交易
-[opt] SDK groupI变更为bitfactory.cn
+[opt] SDK groupI变更为cn.bitfactory
 
 更新日期：2023-03-28  
 

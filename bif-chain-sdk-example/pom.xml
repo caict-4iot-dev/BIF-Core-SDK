@@ -21,7 +21,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>bitfactory.cn</groupId>
+        <groupId>cn.bitfactory</groupId>
         <artifactId>bif-core-sdk-parent</artifactId>
         <version>1.0.2</version>
     </parent>
@@ -37,7 +37,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>bitfactory.cn</groupId>
+            <groupId>cn.bitfactory</groupId>
             <artifactId>bif-chain-sdk</artifactId>
             <version>1.0.2</version>
         </dependency>
