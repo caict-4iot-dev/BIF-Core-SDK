@@ -25,7 +25,8 @@
 [opt] 删除ID-SDK依赖
 [bug] 修复getAccountPriv接口type值未能正确返回bug
 [opt] 批量合约调用增加options数量判断
-更新日期：2023-03-20  
+[opt] uXHT 变更为glowstone
+更新日期：2023-04-06  
 
 * * *
 

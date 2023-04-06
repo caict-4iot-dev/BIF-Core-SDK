@@ -411,9 +411,9 @@ BIFCreateAccountResponse createAccount(BIFCreateAccountRequest);
 | ceilLedgerSeq | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String | 选填，用户自定义给交易的备注                                 |
 | destAddress   | String | 必填，目标账户地址                                           |
-| initBalance   | Long   | 必填，初始化星火令，单位uXHT，1 星火令 = 10^8 uXHT, 大小[0, Long.MAX_VALUE] |
-| gasPrice      | Long   | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| initBalance   | Long   | 必填，初始化星火令（XHT），单位星火萤(glowstone)，1 XHT = 10^8 glowstone, 大小[0, Long.MAX_VALUE] |
+| gasPrice      | Long   | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 
 > 响应数据
 
@@ -478,12 +478,12 @@ BIFAccountGetInfoResponse getAccount(BIFAccountGetInfoRequest);
 
 > 响应数据
 
-| 参数         | 类型    | 描述                                                |
-| ------------ | ------- | --------------------------------------------------- |
-| address      | String  | 账户地址                                            |
-| balance      | Long    | 账户余额，单位uXHT，1 星火令 = 10^8 uXHT, 必须大于0 |
-| nonce        | Long    | 账户交易序列号，必须大于0                           |
-| authTransfer | boolean | 许可状态                                            |
+| 参数         | 类型    | 描述                                                       |
+| ------------ | ------- | ---------------------------------------------------------- |
+| address      | String  | 账户地址                                                   |
+| balance      | Long    | 账户余额，单位glowstone，1 XHT = 10^8 glowstone, 必须大于0 |
+| nonce        | Long    | 账户交易序列号，必须大于0                                  |
+| authTransfer | boolean | 许可状态                                                   |
 
 > 错误码
 
@@ -629,8 +629,8 @@ BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest);
 | value         | String  | 必填，metadatas的内容，长度限制[0, 256000]                   |
 | version       | Long    | 选填，metadatas的版本                                        |
 | deleteFlag    | Boolean | 选填，是否删除remarks                                        |
-| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 
 > 响应数据
 
@@ -761,8 +761,8 @@ BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
 | typeThreshold.type      | Long   | 操作类型，必须大于0                                          |
 | typeThreshold.threshold | Long   | 门限值，大小限制[0, Long.MAX_VALUE]                          |
 | masterWeight            | String | 选填                                                         |
-| gasPrice                | Long   | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit                | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice                | Long   | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit                | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 
 > 响应数据
 
@@ -961,12 +961,12 @@ BIFContractCreateResponse contractCreate(BIFContractCreateRequest);
 | 参数          | 类型    | 描述                                                         |
 | ------------- | ------- | ------------------------------------------------------------ |
 | senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long    | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String  | 选填，用户自定义给交易的备注                                 |
-| initBalance   | Long    | 选填，给合约账户的初始化星火令，单位uXHT，1 星火令 = 10^8 uXHT, 大小限制[0, Long.MAX_VALUE] |
+| initBalance   | Long    | 选填，给合约账户的初始化星火令（XHT），单位星火萤(glowstone)，1 XHT = 10^8 glowstone, 大小限制[0, Long.MAX_VALUE] |
 | type          | Integer | 选填，合约的类型，默认是0 , 0: javascript，1 :evm 。         |
 | payload       | String  | 必填，对应语种的合约代码                                     |
 | initInput     | String  | 选填，合约代码中init方法的入参                               |
@@ -1140,13 +1140,13 @@ BIFContractCallResponse contractQuery(BIFContractCallRequest);
 
 > 请求参数
 
-| 参数            | 类型   | 描述                                             |
-| --------------- | ------ | ------------------------------------------------ |
-| sourceAddress   | String | 选填，合约触发账户地址                           |
-| contractAddress | String | 必填，合约账户地址                               |
-| input           | String | 选填，合约入参                                   |
-| gasPrice        | Long   | 选填，打包费用 (单位是uXHT)默认，默认100L        |
-| feeLimit        | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L |
+| 参数            | 类型   | 描述                                                  |
+| --------------- | ------ | ----------------------------------------------------- |
+| sourceAddress   | String | 选填，合约触发账户地址                                |
+| contractAddress | String | 必填，合约账户地址                                    |
+| input           | String | 选填，合约入参                                        |
+| gasPrice        | Long   | 选填，打包费用 (单位是glowstone)默认，默认100L        |
+| feeLimit        | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L |
 
 
 > 响应数据
@@ -1201,8 +1201,8 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 | 参数            | 类型                           | 描述                                                         |
 | --------------- | ------------------------------ | ------------------------------------------------------------ |
 | senderAddress   | string                         | 必填，交易源账号，即交易的发起方                             |
-| gasPrice        | Long                           | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
-| feeLimit        | Long                           | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice        | Long                           | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| feeLimit        | Long                           | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey      | String                         | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq   | Long                           | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks         | String                         | 选填，用户自定义给交易的备注                                 |
@@ -1274,8 +1274,8 @@ BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest);
 | 参数          | 类型                             | 描述                                                         |
 | ------------- | -------------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long                             | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
-| feeLimit      | Long                             | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long                             | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| feeLimit      | Long                             | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String                           | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String                           | 选填，用户自定义给交易的备注                                 |
@@ -1391,8 +1391,8 @@ BIFTransactionGasSendResponse gasSend(BIFTransactionGasSendRequest);
 | remarks       | String | 选填，用户自定义给交易的备注                                 |
 | destAddress   | String | 必填，发起方地址                                             |
 | amount        | Long   | 必填，转账金额                                               |
-| gasPrice      | Long   | 选填，打包费用 (单位是uXHT)，默认100L                        |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long   | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 
 > 响应数据
 
@@ -1519,8 +1519,8 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 | signatureNumber | Integer                         | 选填，待签名者的数量，默认是1，大小限制[1, Integer.MAX_VALUE] |
 | remarks         | String                          | 选填，用户自定义给交易的备注                                 |
 | operation       | [BaseOperation](#BaseOperation) | 必填，待提交的操作，不能为空                                 |
-| gasPrice        | Long                            | 选填，打包费用 (单位是uXHT)                                  |
-| feeLimit        | Long                            | 选填，交易花费的手续费(单位是uXHT)                           |
+| gasPrice        | Long                            | 选填，打包费用 (单位是glowstone)                             |
+| feeLimit        | Long                            | 选填，交易花费的手续费(单位是glowstone)                      |
 
 #### BaseOperation
 
@@ -1819,8 +1819,8 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
 | 参数          | 类型                      | 描述                                                         |
 | ------------- | ------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                    | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long                      | 选填，打包费用 (单位是uXHT)默认，默认100L                    |
-| feeLimit      | Long                      | 选填，交易花费的手续费(单位是uXHT)，默认1000000L             |
+| gasPrice      | Long                      | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| feeLimit      | Long                      | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String                    | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                      | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String                    | 选填，用户自定义给交易的备注                                 |
@@ -2208,7 +2208,7 @@ if (response.getErrorCode() == 0) {
 
 做合约开发，一般需要以下几个步骤：
 
-1. 创建一个账号，并且获得XHT，才能发起后续交易
+1. 创建一个账号，并且获得星火令（XHT），才能发起后续交易
 2. 编写合约，建议基于javascript编写
 3. 编译和部署合约
 4. 调用和读取合约
