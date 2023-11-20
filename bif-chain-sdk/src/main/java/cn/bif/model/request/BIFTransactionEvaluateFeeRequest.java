@@ -19,14 +19,41 @@
 package cn.bif.model.request;
 
 import cn.bif.model.request.operation.BIFBaseOperation;
+import java.util.List;
 
 public class BIFTransactionEvaluateFeeRequest {
     private String sourceAddress;
-    private BIFBaseOperation operation;
     private int signatureNumber = 1;
     private String remarks;
     private Long feeLimit;
     private Long gasPrice;
+    private Integer domainId;
+    private BIFBaseOperation operation;
+    private List<BIFBaseOperation> operations;
+
+    public BIFBaseOperation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(BIFBaseOperation operation) {
+        this.operation = operation;
+    }
+
+    public List<BIFBaseOperation> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(List<BIFBaseOperation> operations) {
+        this.operations = operations;
+    }
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     public Long getFeeLimit() {
         return feeLimit;
@@ -78,14 +105,6 @@ public class BIFTransactionEvaluateFeeRequest {
      */
     public void setSignatureNumber(int signatureNumber) {
         this.signatureNumber = signatureNumber;
-    }
-
-    public BIFBaseOperation getOperation() {
-        return operation;
-    }
-
-    public void setOperation(BIFBaseOperation operation) {
-        this.operation = operation;
     }
 
     public String getRemarks() {

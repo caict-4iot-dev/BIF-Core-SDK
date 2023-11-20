@@ -28,6 +28,15 @@ public class BIFContractCreateRequest {
     private Long ceilLedgerSeq;
     private String remarks;
     private String privateKey;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     public Long getGasPrice() {
         return gasPrice;

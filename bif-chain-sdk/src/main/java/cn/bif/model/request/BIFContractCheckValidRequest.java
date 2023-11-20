@@ -20,6 +20,15 @@ package cn.bif.model.request;
 
 public class BIFContractCheckValidRequest {
     private String contractAddress;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     /**
      * @Method getContractAddress

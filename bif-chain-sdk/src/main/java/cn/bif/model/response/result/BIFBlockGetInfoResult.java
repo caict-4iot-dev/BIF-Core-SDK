@@ -29,6 +29,9 @@ public class BIFBlockGetInfoResult {
     @JsonProperty(value = "ledger_length")
     private Long ledgerLength;
 
+    @JsonProperty(value = "leader")
+    private String leader;
+
     public Long getLedgerLength() {
         return ledgerLength;
     }
@@ -53,5 +56,13 @@ public class BIFBlockGetInfoResult {
      */
     public void setHeader(BIFBlockHeader header) {
         this.header = header;
+    }
+
+    public String getLeader() {
+        return leader;
+    }
+
+    public void setLeader(String leader) {
+        this.leader = leader;
     }
 }

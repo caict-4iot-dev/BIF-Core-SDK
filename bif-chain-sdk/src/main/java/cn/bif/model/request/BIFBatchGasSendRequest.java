@@ -30,7 +30,7 @@ public class BIFBatchGasSendRequest {
     private String remarks;
     private String privateKey;
     private Long gasPrice;
-
+    private Integer domainId;
 
     public List<BIFGasSendOperation> getOperations() {
         return operations;
@@ -39,6 +39,15 @@ public class BIFBatchGasSendRequest {
     public void setOperations(List<BIFGasSendOperation> operations) {
         this.operations = operations;
     }
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
+
 
     public Long getGasPrice() {
         return gasPrice;

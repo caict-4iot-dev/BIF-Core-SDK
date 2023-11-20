@@ -24,6 +24,15 @@ public class BIFContractInvokeOperation extends BIFBaseOperation {
     private String contractAddress;
     private Long bifAmount;
     private String input;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     public BIFContractInvokeOperation() {
         operationType = OperationType.CONTRACT_INVOKE;

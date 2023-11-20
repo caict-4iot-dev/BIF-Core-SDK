@@ -18,10 +18,12 @@
  */
 package cn.bif.model.response.result.data;
 
-import cn.bif.model.response.result.data.BIFTransactionInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BIFTransactionCacheInfo {
+    @JsonProperty(value =  "signatures")
+    private BIFSignature[] signatures;
+
     @JsonProperty(value =  "hash")
     private String hash;
 
@@ -33,4 +35,44 @@ public class BIFTransactionCacheInfo {
 
     @JsonProperty(value = "transaction")
     private BIFTransactionInfo transaction;
+
+    public BIFSignature[] getSignatures() {
+        return signatures;
+    }
+
+    public void setSignatures(BIFSignature[] signatures) {
+        this.signatures = signatures;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public String getIncomingTime() {
+        return incomingTime;
+    }
+
+    public void setIncomingTime(String incomingTime) {
+        this.incomingTime = incomingTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public BIFTransactionInfo getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(BIFTransactionInfo transaction) {
+        this.transaction = transaction;
+    }
 }

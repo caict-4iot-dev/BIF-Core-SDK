@@ -76,7 +76,7 @@ public class BIFAccountServiceImpl implements BIFAccountService {
                 throw new SDKException(SdkError.SOURCEADDRESS_EQUAL_DESTADDRESS_ERROR);
             }
             Long initBalance = accountActivateOperation.getInitBalance();
-            if (Tools.isEmpty(initBalance) || initBalance < Constant.INIT_ZERO_L) {
+            if (Tools.isEmpty(initBalance) || initBalance <= Constant.INIT_ZERO_L) {
                 throw new SDKException(SdkError.INVALID_INITBALANCE_ERROR);
             }
             String metadata = accountActivateOperation.getMetadata();
@@ -209,11 +209,20 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
-            bifAccountGetInfoResponse = getInfo(address);
+            Integer domainId=bifAccountGetInfoRequest.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            bifAccountGetInfoResponse = getInfo(address,domainId);
             Integer errorCode = bifAccountGetInfoResponse.getErrorCode();
             String errorDesc = bifAccountGetInfoResponse.getErrorDesc();
-            if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
+            if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.ERRORCODE)) {
                 throw new SDKException(errorCode, (null == errorDesc ? "Account (" + address + ") not exist" : errorDesc));
+            }else if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.DOMAINID_ERRORCODE)) {
+                throw new SDKException(errorCode, (null == errorDesc ? "DomainId (" + domainId + ") (" + address + ") not exist" : errorDesc));
             }
             SdkError.checkErrorCode(bifAccountGetInfoResponse);
             if (bifAccountGetInfoResponse.getResult().getNonce() == null) {
@@ -253,13 +262,22 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
-            String accountGetInfoUrl = General.getInstance().accountGetInfoUrl(address);
+            Integer domainId=bifAccountGetNonceRequest.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String accountGetInfoUrl = General.getInstance().accountGetInfoUrl(address,domainId);
             String result = HttpUtils.httpGet(accountGetInfoUrl);
             bifAccountGetNonceResponse = JsonUtils.toJavaObject(result, BIFAccountGetNonceResponse.class);
             Integer errorCode = bifAccountGetNonceResponse.getErrorCode();
             String errorDesc = bifAccountGetNonceResponse.getErrorDesc();
-            if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
+            if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.ERRORCODE)) {
                 throw new SDKException(errorCode, (null == errorDesc ? "Account (" + address + ") not exist" : errorDesc));
+            }else if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.DOMAINID_ERRORCODE)) {
+                throw new SDKException(errorCode, (null == errorDesc ? "DomainId (" + domainId + ") (" + address + ") not exist" : errorDesc));
             }
             SdkError.checkErrorCode(bifAccountGetNonceResponse);
             if (bifAccountGetNonceResponse.getResult().getNonce() == null) {
@@ -298,13 +316,22 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
-            String accountGetInfoUrl = General.getInstance().accountGetInfoUrl(address);
+            Integer domainId=bifAccountGetBalanceRequest.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String accountGetInfoUrl = General.getInstance().accountGetInfoUrl(address,domainId);
             String result = HttpUtils.httpGet(accountGetInfoUrl);
             bifAccountGetBalanceResponse = JsonUtils.toJavaObject(result, BIFAccountGetBalanceResponse.class);
             Integer errorCode = bifAccountGetBalanceResponse.getErrorCode();
             String errorDesc = bifAccountGetBalanceResponse.getErrorDesc();
-            if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
+            if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.ERRORCODE)) {
                 throw new SDKException(errorCode, (null == errorDesc ? "Account (" + address + ") not exist" : errorDesc));
+            }else if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.DOMAINID_ERRORCODE)) {
+                throw new SDKException(errorCode, (null == errorDesc ? "DomainId (" + domainId + ") (" + address + ") not exist" : errorDesc));
             }
             SdkError.checkErrorCode(bifAccountGetBalanceResponse);
         } catch (SDKException apiException) {
@@ -344,13 +371,22 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
-            String accountGetInfoUrl = General.getInstance().accountGetMetadataUrl(address, key);
+            Integer domainId=bifAccountGetMetadatasRequest.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String accountGetInfoUrl = General.getInstance().accountGetMetadataUrl(address, key, domainId);
             String result = HttpUtils.httpGet(accountGetInfoUrl);
             bifAccountGetMetadatasResponse = JsonUtils.toJavaObject(result, BIFAccountGetMetadatasResponse.class);
             Integer errorCode = bifAccountGetMetadatasResponse.getErrorCode();
             String errorDesc = bifAccountGetMetadatasResponse.getErrorDesc();
-            if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
+            if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.ERRORCODE)) {
                 throw new SDKException(errorCode, (null == errorDesc ? "Account (" + address + ") not exist" : errorDesc));
+            }else if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.DOMAINID_ERRORCODE)) {
+                throw new SDKException(errorCode, (null == errorDesc ? "DomainId (" + domainId + ") (" + address + ") not exist" : errorDesc));
             }
             SdkError.checkErrorCode(bifAccountGetMetadatasResponse);
             BIFMetadataInfo[] metadataInfos = bifAccountGetMetadatasResponse.getResult().getMetadatas();
@@ -388,7 +424,7 @@ public class BIFAccountServiceImpl implements BIFAccountService {
                 throw new SDKException(SdkError.INVALID_DESTADDRESS_ERROR);
             }
             Long initBalance = request.getInitBalance();
-            if (Tools.isEmpty(initBalance) || initBalance < Constant.INIT_ZERO) {
+            if (Tools.isEmpty(initBalance) || initBalance <= Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_INITBALANCE_ERROR);
             }
             operation.setDestAddress(destAddress);
@@ -415,10 +451,17 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             }
             Long ceilLedgerSeq = request.getCeilLedgerSeq();
             String remarks = request.getRemarks();
+            Integer domainId= request.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
             String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
-                    ceilLedgerSeq, remarks, privateKey);
+                    ceilLedgerSeq, remarks, privateKey,domainId);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -481,10 +524,17 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
             }
+            Integer domainId=request.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
             // 交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
             String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation,
-                    ceilLedgerSeq, remarks, privateKey);
+                    ceilLedgerSeq, remarks, privateKey,domainId);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -512,15 +562,24 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
+            Integer domainId=request.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
             // get info
-            String url = General.getInstance().accountGetInfoUrl(address);
+            String url = General.getInstance().accountGetInfoUrl(address,domainId);
             String resultInfo = HttpUtils.httpGet(url);
             response = JsonUtils.toJavaObject(resultInfo, BIFAccountPrivResponse.class);
 
             Integer errorCode = response.getErrorCode();
             String errorDesc = response.getErrorDesc();
-            if (!Tools.isEmpty(errorCode) && errorCode == 4) {
+            if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.ERRORCODE)) {
                 throw new SDKException(errorCode, (null == errorDesc ? "Account (" + address + ") not exist" : errorDesc));
+            }else if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.DOMAINID_ERRORCODE)) {
+                throw new SDKException(errorCode, (null == errorDesc ? "DomainId (" + domainId + ") (" + address + ") not exist" : errorDesc));
             }
             SdkError.checkErrorCode(response);
         } catch (SDKException apiException) {
@@ -580,9 +639,16 @@ public class BIFAccountServiceImpl implements BIFAccountService {
             if (Tools.isEmpty(gasPrice) || gasPrice < Constant.INIT_ZERO) {
                 throw new SDKException(SdkError.INVALID_GASPRICE_ERROR);
             }
+            Integer domainId=request.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
             // 广播交易
             BIFTransactionService transactionService = new BIFTransactionServiceImpl();
-            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation, ceilLedgerSeq, remarks, privateKey);
+            String hash = transactionService.radioTransaction(senderAddress, feeLimit, gasPrice, operation, ceilLedgerSeq, remarks, privateKey, domainId);
             result.setHash(hash);
             response.buildResponse(SdkError.SUCCESS, result);
         } catch (SDKException apiException) {
@@ -679,18 +745,9 @@ public class BIFAccountServiceImpl implements BIFAccountService {
         return operation.build();
     }
 
-    public static Boolean isActivated(String address) throws Exception {
-        BIFAccountGetInfoResponse bifAccountGetInfoResponse = getInfo(address);
-        Integer errorCode = bifAccountGetInfoResponse.getErrorCode();
-        if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
-            return false;
-        }
-        SdkError.checkErrorCode(bifAccountGetInfoResponse);
-        return true;
-    }
 
-    private static BIFAccountGetInfoResponse getInfo(String address) throws Exception {
-        String accountGetInfoUrl = General.getInstance().accountGetInfoUrl(address);
+    private static BIFAccountGetInfoResponse getInfo(String address,Integer domainId) throws Exception {
+        String accountGetInfoUrl = General.getInstance().accountGetInfoUrl(address,domainId);
         String result = HttpUtils.httpGet(accountGetInfoUrl);
         return JsonUtils.toJavaObject(result, BIFAccountGetInfoResponse.class);
     }

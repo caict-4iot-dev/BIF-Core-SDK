@@ -68,28 +68,6 @@ public class BIFSDK {
         return sdk;
     }
 
-    /**
-     * @Method getInstance
-     * @Params [url,port]
-     * @Return SDK
-     */
-    public synchronized static BIFSDK getInstance(String url,int port) throws SDKException {
-        if (sdk == null) {
-            sdk = new BIFSDK();
-        }
-        if (Tools.isEmpty(url) || Tools.isEmpty(port)) {
-            throw new SDKException(SdkError.URL_EMPTY_ERROR);
-        }
-        sdk.url=url;
-        sdk.cacheIp=url.replaceAll("http://","").replaceAll("https://","");
-        if (Tools.isEmpty(sdk.cacheIp)) {
-            throw new SDKException(SdkError.URL_EMPTY_ERROR);
-        }
-        if (port > 0) {
-            sdk.cachePort = port;
-        }
-        return sdk;
-    }
 
     /**
      * @Method getAccountService

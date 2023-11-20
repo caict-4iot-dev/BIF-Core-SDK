@@ -24,10 +24,8 @@ import cn.bif.common.JsonUtils;
 import cn.bif.common.Tools;
 import cn.bif.exception.SDKException;
 import cn.bif.exception.SdkError;
+import cn.bif.model.request.*;
 import cn.bif.utils.http.HttpUtils;
-import cn.bif.model.request.BIFBlockGetInfoRequest;
-import cn.bif.model.request.BIFBlockGetTransactionsRequest;
-import cn.bif.model.request.BIFBlockGetValidatorsRequest;
 import cn.bif.model.response.*;
 import cn.bif.model.response.result.*;
 import cn.bif.module.blockchain.BIFBlockService;
@@ -45,18 +43,32 @@ public class BIFBlockServiceImpl implements BIFBlockService {
      * @Return BlockGetNumberResponse
      */
     @Override
-    public BIFBlockGetNumberResponse getBlockNumber() {
+    public BIFBlockGetNumberResponse getBlockNumber(BIFBlockGetNumberInfoRequest request) {
         BIFBlockGetNumberResponse blockGetNumberResponse = new BIFBlockGetNumberResponse();
         BIFBlockGetNumberResult bifBlockGetNumberResult = new BIFBlockGetNumberResult();
         try {
+            if (Tools.isEmpty(request)) {
+                throw new SDKException(SdkError.REQUEST_NULL_ERROR);
+            }
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
-            String getNumberUrl = General.getInstance().blockGetNumberUrl();
+            Integer domainId=request.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String getNumberUrl = General.getInstance().blockGetNumberUrl(domainId);
             String result = HttpUtils.httpGet(getNumberUrl);
             blockGetNumberResponse = JsonUtils.toJavaObject(result, BIFBlockGetNumberResponse.class);
         } catch (NoSuchAlgorithmException | KeyManagementException | NoSuchProviderException | IOException e) {
             blockGetNumberResponse.buildResponse(SdkError.CONNECTNETWORK_ERROR, bifBlockGetNumberResult);
+        } catch (SDKException apiException) {
+            Integer errorCode = apiException.getErrorCode();
+            String errorDesc = apiException.getErrorDesc();
+            blockGetNumberResponse.buildResponse(errorCode, errorDesc, bifBlockGetNumberResult);
         } catch (Exception e) {
             blockGetNumberResponse.buildResponse(SdkError.SYSTEM_ERROR.getCode(), e.getMessage(), bifBlockGetNumberResult);
         }
@@ -83,7 +95,14 @@ public class BIFBlockServiceImpl implements BIFBlockService {
             if (Tools.isEmpty(blockNumber) || blockNumber < Constant.INIT_ONE_L) {
                 throw new SDKException(SdkError.INVALID_BLOCKNUMBER_ERROR);
             }
-            String getTransactionsUrl = General.getInstance().blockGetTransactionsUrl(blockNumber);
+            Integer domainId=blockGetTransactionsRequest.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String getTransactionsUrl = General.getInstance().blockGetTransactionsUrl(blockNumber,domainId);
             String result = HttpUtils.httpGet(getTransactionsUrl);
             blockGetTransactions = JsonUtils.toJavaObject(result, BIFBlockGetTransactionsResponse.class);
         } catch (SDKException apiException) {
@@ -118,12 +137,23 @@ public class BIFBlockServiceImpl implements BIFBlockService {
             if (Tools.isEmpty(blockNumber) || blockNumber < Constant.INIT_ONE_L) {
                 throw new SDKException(SdkError.INVALID_BLOCKNUMBER_ERROR);
             }
-            String getInfoUrl = General.getInstance().blockGetInfoUrl(blockNumber);
+            Integer domainId=blockGetInfoRequest.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            Boolean withLeader = false;
+            if (!Tools.isEmpty(blockGetInfoRequest.getWithLeader())) {
+                withLeader = blockGetInfoRequest.getWithLeader();
+            }
+            String getInfoUrl = General.getInstance().blockGetInfoUrl(blockNumber,domainId,withLeader);
             String result = HttpUtils.httpGet(getInfoUrl);
             blockGetInfoResponse = JsonUtils.toJavaObject(result, BIFBlockGetInfoResponse.class);
             Integer errorCode = blockGetInfoResponse.getErrorCode();
             String errorDesc = blockGetInfoResponse.getErrorDesc();
-            if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
+            if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.ERRORCODE)) {
                 throw new SDKException(4, (Tools.isEmpty(errorDesc) ? "Block (" + blockNumber + ") does not exist" : errorDesc));
             }
             SdkError.checkErrorCode(blockGetInfoResponse);
@@ -146,14 +176,24 @@ public class BIFBlockServiceImpl implements BIFBlockService {
      * @Return BlockGetLatestInfoResponse
      */
     @Override
-    public BIFBlockGetLatestInfoResponse getBlockLatestInfo() {
+    public BIFBlockGetLatestInfoResponse getBlockLatestInfo(BIFBlockGetLatestInfoRequest request) {
         BIFBlockGetLatestInfoResponse blockGetLatestInfoResponse = new BIFBlockGetLatestInfoResponse();
         BIFBlockGetLatestInfoResult bifBlockGetLatestInfoResult = new BIFBlockGetLatestInfoResult();
         try {
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
-            String getInfoUrl = General.getInstance().blockGetLatestInfoUrl();
+            if (Tools.isEmpty(request)) {
+                throw new SDKException(SdkError.REQUEST_NULL_ERROR);
+            }
+            Integer domainId=request.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String getInfoUrl = General.getInstance().blockGetLatestInfoUrl(domainId);
             String result = HttpUtils.httpGet(getInfoUrl);
             blockGetLatestInfoResponse = JsonUtils.toJavaObject(result, BIFBlockGetLatestInfoResponse.class);
         } catch (SDKException apiException) {
@@ -188,12 +228,19 @@ public class BIFBlockServiceImpl implements BIFBlockService {
             if (Tools.isEmpty(blockNumber) || blockNumber < 1) {
                 throw new SDKException(SdkError.INVALID_BLOCKNUMBER_ERROR);
             }
-            String getInfoUrl = General.getInstance().blockGetValidatorsUrl(blockNumber);
+            Integer domainId=blockGetValidatorsRequest.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String getInfoUrl = General.getInstance().blockGetValidatorsUrl(blockNumber,domainId);
             String result = HttpUtils.httpGet(getInfoUrl);
             blockGetValidatorsResponse = JsonUtils.toJavaObject(result, BIFBlockGetValidatorsResponse.class);
             Integer errorCode = blockGetValidatorsResponse.getErrorCode();
             String errorDesc = blockGetValidatorsResponse.getErrorDesc();
-            if (!Tools.isEmpty(errorCode) && errorCode == Constant.ERRORCODE) {
+            if (!Tools.isEmpty(errorCode) && errorCode.equals(Constant.ERRORCODE)) {
                 throw new SDKException(Constant.ERRORCODE, (Tools.isEmpty(errorDesc) ? "Block (" + blockNumber + ") does not exist" : errorDesc));
             }
             SdkError.checkErrorCode(blockGetValidatorsResponse);
@@ -216,14 +263,24 @@ public class BIFBlockServiceImpl implements BIFBlockService {
      * @Return BlockGetLatestValidatorsResponse
      */
     @Override
-    public BIFBlockGetLatestValidatorsResponse getLatestValidators() {
+    public BIFBlockGetLatestValidatorsResponse getLatestValidators(BIFBlockGetLatestValidatorsRequest request) {
         BIFBlockGetLatestValidatorsResponse blockGetLatestValidatorsResponse = new BIFBlockGetLatestValidatorsResponse();
         BIFBlockGetLatestValidatorsResult bifBlockGetLatestValidatorsResult = new BIFBlockGetLatestValidatorsResult();
         try {
             if (Tools.isEmpty(General.getInstance().getUrl())) {
                 throw new SDKException(SdkError.URL_EMPTY_ERROR);
             }
-            String getInfoUrl = General.getInstance().blockGetLatestValidatorsUrl();
+            if (Tools.isEmpty(request)) {
+                throw new SDKException(SdkError.REQUEST_NULL_ERROR);
+            }
+            Integer domainId=request.getDomainId();
+            if(Tools.isNULL(domainId)){
+                domainId=Constant.INIT_ZERO;
+            }
+            if(!Tools.isNULL(domainId) && domainId < Constant.INIT_ZERO){
+                throw new SDKException(SdkError.INVALID_DOMAINID_ERROR);
+            }
+            String getInfoUrl = General.getInstance().blockGetLatestValidatorsUrl(domainId);
             String result = HttpUtils.httpGet(getInfoUrl);
             blockGetLatestValidatorsResponse = JsonUtils.toJavaObject(result, BIFBlockGetLatestValidatorsResponse.class);
             SdkError.checkErrorCode(blockGetLatestValidatorsResponse);

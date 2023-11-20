@@ -21,15 +21,14 @@ package cn.bif.sdkSamples.sdk.example;
 import cn.bif.api.BIFSDK;
 import cn.bif.common.JsonUtils;
 import cn.bif.common.SampleConstant;
-import cn.bif.model.request.BIFBlockGetInfoRequest;
-import cn.bif.model.request.BIFBlockGetTransactionsRequest;
-import cn.bif.model.request.BIFBlockGetValidatorsRequest;
+import cn.bif.model.request.*;
 import cn.bif.model.response.*;
 import cn.bif.model.response.result.BIFBlockGetInfoResult;
 import cn.bif.model.response.result.BIFBlockGetLatestInfoResult;
 import cn.bif.model.response.result.BIFBlockGetLatestValidatorsResult;
 import cn.bif.model.response.result.BIFBlockGetValidatorsResult;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 public class BlockDemo {
     BIFSDK sdk = BIFSDK.getInstance(SampleConstant.SDK_INSTANCE_URL);
@@ -39,7 +38,9 @@ public class BlockDemo {
      */
     @Test
     public void getBlockNumber() {
-        BIFBlockGetNumberResponse response = sdk.getBIFBlockService().getBlockNumber();
+        BIFBlockGetNumberInfoRequest request=new BIFBlockGetNumberInfoRequest();
+        request.setDomainId(20);
+        BIFBlockGetNumberResponse response = sdk.getBIFBlockService().getBlockNumber(request);
         System.out.println(JsonUtils.toJSONString(response));
     }
 
@@ -50,9 +51,11 @@ public class BlockDemo {
      */
     @Test
     public void getTransactions() {
-        Long blockNumber = 1440137L;// 第617247区块
+        // 第617247区块
+        Long blockNumber = 1L;
         BIFBlockGetTransactionsRequest request = new BIFBlockGetTransactionsRequest();
         request.setBlockNumber(blockNumber);
+        request.setDomainId(20);
         BIFBlockGetTransactionsResponse response = sdk.getBIFBlockService().getTransactions(request);
         if (0 == response.getErrorCode()) {
             System.out.println(JsonUtils.toJSONString(response.getResult()));
@@ -67,7 +70,8 @@ public class BlockDemo {
     @Test
     public void getBlockInfo() {
         BIFBlockGetInfoRequest blockGetInfoRequest = new BIFBlockGetInfoRequest();
-        blockGetInfoRequest.setBlockNumber(1440137L);
+        blockGetInfoRequest.setBlockNumber(10L);
+        blockGetInfoRequest.setDomainId(20);
         BIFBlockGetInfoResponse lockGetInfoResponse = sdk.getBIFBlockService().getBlockInfo(blockGetInfoRequest);
         if (lockGetInfoResponse.getErrorCode() == 0) {
             BIFBlockGetInfoResult lockGetInfoResult = lockGetInfoResponse.getResult();
@@ -82,7 +86,9 @@ public class BlockDemo {
      */
     @Test
     public void getBlockLatestInfo() {
-        BIFBlockGetLatestInfoResponse lockGetLatestInfoResponse = sdk.getBIFBlockService().getBlockLatestInfo();
+        BIFBlockGetLatestInfoRequest request = new BIFBlockGetLatestInfoRequest();
+        request.setDomainId(20);
+        BIFBlockGetLatestInfoResponse lockGetLatestInfoResponse = sdk.getBIFBlockService().getBlockLatestInfo(request);
         if (lockGetLatestInfoResponse.getErrorCode() == 0) {
             BIFBlockGetLatestInfoResult lockGetLatestInfoResult = lockGetLatestInfoResponse.getResult();
             System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResult));
@@ -99,6 +105,7 @@ public class BlockDemo {
         // 初始化请求参数
         BIFBlockGetValidatorsRequest request = new BIFBlockGetValidatorsRequest();
         request.setBlockNumber(1L);
+        request.setDomainId(20);
 
         // 调用getBIFValidators接口
         BIFBlockGetValidatorsResponse response = sdk.getBIFBlockService().getValidators(request);
@@ -115,8 +122,10 @@ public class BlockDemo {
      */
     @Test
     public void getLatestValidators() {
+        BIFBlockGetLatestValidatorsRequest request=new BIFBlockGetLatestValidatorsRequest();
+        request.setDomainId(20);
         // 调用getBIFLatestValidators接口
-        BIFBlockGetLatestValidatorsResponse response = sdk.getBIFBlockService().getLatestValidators();
+        BIFBlockGetLatestValidatorsResponse response = sdk.getBIFBlockService().getLatestValidators(request);
         if (response.getErrorCode() == 0) {
             BIFBlockGetLatestValidatorsResult result = response.getResult();
             System.out.println(JsonUtils.toJSONString(result));

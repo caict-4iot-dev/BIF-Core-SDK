@@ -21,6 +21,15 @@ package cn.bif.model.request;
 public class BIFAccountGetMetadatasRequest {
     private String address;
     private String key;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     /**
      * @Method getAddress

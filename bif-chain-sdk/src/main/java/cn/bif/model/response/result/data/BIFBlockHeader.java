@@ -19,6 +19,7 @@
 package cn.bif.model.response.result.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *
@@ -50,22 +51,6 @@ public class BIFBlockHeader {
     @JsonProperty(value = "validators_hash")
     private String validatorsHash;
 
-    public String getFeesHash() {
-        return feesHash;
-    }
-
-    public void setFeesHash(String feesHash) {
-        this.feesHash = feesHash;
-    }
-
-    public String getValidatorsHash() {
-        return validatorsHash;
-    }
-
-    public void setValidatorsHash(String validatorsHash) {
-        this.validatorsHash = validatorsHash;
-    }
-
     public String getAccountTreeHash() {
         return accountTreeHash;
     }
@@ -82,20 +67,36 @@ public class BIFBlockHeader {
         this.consensusValueHash = consensusValueHash;
     }
 
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
-    }
-
     public String getPreviousHash() {
         return previousHash;
     }
 
     public void setPreviousHash(String previousHash) {
         this.previousHash = previousHash;
+    }
+
+    public String getFeesHash() {
+        return feesHash;
+    }
+
+    public void setFeesHash(String feesHash) {
+        this.feesHash = feesHash;
+    }
+
+    public String getValidatorsHash() {
+        return validatorsHash;
+    }
+
+    public void setValidatorsHash(String validatorsHash) {
+        this.validatorsHash = validatorsHash;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 
     public Long getConfirmTime() {

@@ -16,35 +16,39 @@
  * © COPYRIGHT 2021 Corporation CAICT All rights reserved.
  * http://www.caict.ac.cn
  */
-package cn.bif.model.request;
+package cn.bif.module.encryption.crypto.slip10;
 
-public class BIFTransactionGetInfoRequest {
-    private String hash;
-    private Integer domainId;
+public enum Slip10Curve {
+    SECP256K1("Bitcoin seed"),
+    ED25519("ed25519 seed"),
+    NIST256P1("Nist256p1 seed"),
+    SM2("SM2 seed");
 
-    public Integer getDomainId() {
-        return domainId;
+    public String getKey() {
+        return key;
     }
 
-    public void setDomainId(Integer domainId) {
-        this.domainId = domainId;
+    public final String key;
+
+    Slip10Curve(String key) {
+        this.key = key;
     }
 
-    /**
-     * @Method getHash
-     * @Params []
-     * @Return java.lang.String
-     */
-    public String getHash() {
-        return hash;
+    public static Boolean contains(String value) {
+        for (Slip10Curve e : Slip10Curve.values()) {
+            if (e.name().equalsIgnoreCase(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * @Method setHash
-     * @Params [hash]
-     * @Return void
-     */
-    public void setHash(String hash) {
-        this.hash = hash;
+    public static String getValue(String name) {
+        for (Slip10Curve e : Slip10Curve.values()) {
+            if (e.name().equalsIgnoreCase(name)) {
+                return e.key;
+            }
+        }
+        return null;
     }
 }

@@ -28,7 +28,7 @@ import cn.bif.model.response.result.BIFAccountGetMetadatasResult;
 import cn.bif.model.response.result.BIFAccountPrivResult;
 import cn.bif.model.response.result.data.BIFSigner;
 import cn.bif.model.response.result.data.BIFTypeThreshold;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AccountDemo {
     BIFSDK sdk = BIFSDK.getInstance(SampleConstant.SDK_INSTANCE_URL);
@@ -39,9 +39,10 @@ public class AccountDemo {
     @Test
     public void getAccount() {
         // 初始化请求参数
-        String accountAddress = "did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
+        String accountAddress = "did:bid:efaJmqSioZ59czxR6LjBUQjt6n1iph12";
         BIFAccountGetInfoRequest request = new BIFAccountGetInfoRequest();
         request.setAddress(accountAddress);
+        request.setDomainId(20);
         // 调用getAccount接口
         BIFAccountGetInfoResponse response = sdk.getBIFAccountService().getAccount(request);
 
@@ -57,9 +58,10 @@ public class AccountDemo {
      */
     @Test
     public void getNonce() {
-        String accountAddress = "did:bid:efnVUgqQFfYeu97ABf6sGm3WFtVXHZB2";
+        String accountAddress = "did:bid:efqhQu9YWEWpUKQYkAyGevPGtAdD1N6p";
         BIFAccountGetNonceRequest request = new BIFAccountGetNonceRequest();
         request.setAddress(accountAddress);
+        request.setDomainId(20);
         BIFAccountGetNonceResponse response = sdk.getBIFAccountService().getNonce(request);
         if (0 == response.getErrorCode()) {
             System.out.println("Account nonce:" + response.getResult().getNonce());
@@ -73,9 +75,10 @@ public class AccountDemo {
      */
     @Test
     public void getAccountBalance() {
-        String accountAddress = "did:bid:efzE8AcDgWUeNbgujA5hK3oUeuG9k19b";
+        String accountAddress = "did:bid:efaJmqSioZ59czxR6LjBUQjt6n1iph12";
         BIFAccountGetBalanceRequest request = new BIFAccountGetBalanceRequest();
         request.setAddress(accountAddress);
+        request.setDomainId(20);
 
         BIFAccountGetBalanceResponse response = sdk.getBIFAccountService().getAccountBalance(request);
         if (0 == response.getErrorCode()) {
@@ -94,6 +97,7 @@ public class AccountDemo {
         String accountAddress = "did:bid:eft6d191modv1cxBC43wjKHk85VVhQDc";
         BIFAccountGetMetadatasRequest request = new BIFAccountGetMetadatasRequest();
         request.setAddress(accountAddress);
+        request.setDomainId(20);
         //request.setKey("20210902-01");
 
         // 调用getBIFMetadatas接口
@@ -113,8 +117,10 @@ public class AccountDemo {
     @Test
     public void createAccount() {
         // 初始化参数
-        String senderAddress = "did:bid:ef21AHDJWnFfYQ3Qs3kMxo64jD2KATwBz";
-        String senderPrivateKey = "priSPKkL8XpxHiRLuNoxph2ThSbexeRUGEETprvuVHkxy2yBDp";
+//        String senderAddress = "did:bid:efaJmqSioZ59czxR6LjBUQjt6n1iph12";
+//        String senderPrivateKey = "priSPKmopQGLoE7ZBT6urhS9rayboAE5ER3v4ajWPMCuze4SC8";
+        String senderAddress = "did:bid:efqhQu9YWEWpUKQYkAyGevPGtAdD1N6p";
+        String senderPrivateKey = "priSPKqru2zMzeb14XWxPNM1sassFeqyyUZotCAYcvCjhNof7t";
          String destAddress = "did:bid:efzE8AcDgWUeNbgujA5hK3oUeuG9k19b";
        //  String destAddress = KeyPairEntity.getBidAndKeyPair().getEncAddress();
         System.out.println(destAddress);
@@ -125,7 +131,8 @@ public class AccountDemo {
         request.setPrivateKey(senderPrivateKey);
         request.setDestAddress(destAddress);
         request.setInitBalance(initBalance);
-        request.setRemarks("init account");
+        request.setDomainId(21);
+
         // 调用 createAccount 接口
         BIFCreateAccountResponse response = sdk.getBIFAccountService().createAccount(request);
         if (response.getErrorCode() == 0) {
@@ -152,6 +159,7 @@ public class AccountDemo {
         request.setKey(key);
         request.setValue(value);
         request.setRemarks("set remarks");
+        request.setDomainId(20);
 
         // 调用 setMetadata 接口
         BIFAccountSetMetadatasResponse response = sdk.getBIFAccountService().setMetadatas(request);
@@ -169,9 +177,10 @@ public class AccountDemo {
     @Test
     public void getAccountPriv() {
         // 初始化请求参数
-        String accountAddress = "did:bid:zf2bbxDwdzm4g4fJNTH2ah6gbHu6PdAX2";
+        String accountAddress = "did:bid:efaJmqSioZ59czxR6LjBUQjt6n1iph12";
         BIFAccountPrivRequest request = new BIFAccountPrivRequest();
         request.setAddress(accountAddress);
+        request.setDomainId(20);
 
         // 调用getAccountPriv接口
         BIFAccountPrivResponse response = sdk.getBIFAccountService().getAccountPriv(request);
@@ -214,6 +223,7 @@ public class AccountDemo {
         request.setMasterWeight(masterWeight);
         request.setTypeThresholds(typeThresholds);
         request.setRemarks("set privilege");
+        request.setDomainId(20);
 
         // 调用 setPrivilege 接口
         BIFAccountSetPrivilegeResponse response = sdk.getBIFAccountService().setPrivilege(request);

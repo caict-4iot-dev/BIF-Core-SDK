@@ -41,6 +41,7 @@ public class Constant {
     public static final Long INIT_NONCE = 0L;
     public static final Integer INIT_ZERO = 0;
     public static final Integer INIT_ONE = 1;
+    public static final Integer DOMAINID_ERRORCODE= 170;
 
     public static final Long INIT_ZERO_L = 0L;
     public static final Long INIT_ONE_L = 1L;

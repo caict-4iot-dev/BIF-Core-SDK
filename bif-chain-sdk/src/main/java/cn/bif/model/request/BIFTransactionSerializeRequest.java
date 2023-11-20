@@ -30,6 +30,7 @@ public class BIFTransactionSerializeRequest {
     private BIFBaseOperation[] operations;
     private Long ceilLedgerSeq;
     private String metadata;
+    private Integer domainId;
 
     public BIFBaseOperation[] getOperations() {
         return operations;
@@ -61,6 +62,15 @@ public class BIFTransactionSerializeRequest {
         }
         operations[operations.length - 1] = operation;
     }
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
+
     /**
      * @Method getAddress
      * @Params []

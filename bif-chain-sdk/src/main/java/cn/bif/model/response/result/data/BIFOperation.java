@@ -49,6 +49,7 @@ public class BIFOperation {
     private BIFLogInfo log;
 
 
+
     public BIFLogInfo getLog() {
         return log;
     }

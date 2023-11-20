@@ -20,6 +20,15 @@ package cn.bif.model.request;
 
 public class BIFBlockGetValidatorsRequest {
     private Long blockNumber;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     /**
      * @Method getBlockNumber

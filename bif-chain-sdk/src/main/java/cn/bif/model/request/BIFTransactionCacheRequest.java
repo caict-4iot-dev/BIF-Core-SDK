@@ -20,6 +20,7 @@ package cn.bif.model.request;
 
 public class BIFTransactionCacheRequest {
     private String hash;
+    private Integer domainId;
 
     public String getHash() {
         return hash;
@@ -29,4 +30,11 @@ public class BIFTransactionCacheRequest {
         this.hash = hash;
     }
 
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 }

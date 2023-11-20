@@ -20,6 +20,9 @@ public class HttpUtils {
 
     //Http协议GET请求
     public static String httpGet(String url) throws Exception{
+        if(url.startsWith("https:")){
+            return httpsGet(url);
+        }
         //初始化HttpClient
         CloseableHttpClient httpClient = HttpClients.createDefault();
         //创建HttpGet
@@ -40,6 +43,9 @@ public class HttpUtils {
 
     //Http协议Post请求
     public static String httpPost (String url,String json) throws Exception{
+        if(url.startsWith("https:")){
+            return httpsPost(url,json);
+        }
         //初始HttpClient
         CloseableHttpClient httpClient = HttpClients.createDefault();
         //创建Post对象

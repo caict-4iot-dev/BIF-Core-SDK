@@ -24,9 +24,8 @@ import cn.bif.module.encryption.key.PrivateKeyManager;
 import cn.bif.module.encryption.key.PublicKeyManager;
 import cn.bif.module.encryption.model.KeyType;
 import cn.bif.utils.hex.HexFormat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
 
 public class TestKey {
 
@@ -64,7 +63,7 @@ public class TestKey {
             System.out.println("Key1 static address: " + PrivateKeyManager.getEncAddress(priKey.getEncPublicKey()));
 
            // PrivateKeyManager priKey2 = new PrivateKeyManager(priKey.getEncPrivateKey());
-            PrivateKeyManager priKey2 = new PrivateKeyManager("priSPKsSkkYSR5J9kp7BAN7iyztz62xQEN9FT3XxqyTLfu84ox");
+            PrivateKeyManager priKey2 = new PrivateKeyManager("priSPKmopQGLoE7ZBT6urhS9rayboAE5ER3v4ajWPMCuze4SC8");
             System.out.println("Key1 static public key: " + PrivateKeyManager.getEncPublicKey(priKey.getEncPrivateKey()));
             System.out.println("Key2 private key: " + priKey2.getEncPrivateKey());
             System.out.println("Key2 public key: " + priKey2.getEncPublicKey());

@@ -25,6 +25,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 public class BIFTransactionInfo {
+    @JsonProperty(value = "ceil_ledger_seq")
+    private String ceilLedgerSeq;
 
     @JsonProperty(value = "source_address")
     private String sourceAddress;
@@ -46,6 +48,24 @@ public class BIFTransactionInfo {
 
     @JsonProperty(value = "chain_id")
     private Long chainId;
+    @JsonProperty(value = "domain_id")
+    private Long domainId;
+
+    public Long getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Long domainId) {
+        this.domainId = domainId;
+    }
+
+    public String getCeilLedgerSeq() {
+        return ceilLedgerSeq;
+    }
+
+    public void setCeilLedgerSeq(String ceilLedgerSeq) {
+        this.ceilLedgerSeq = ceilLedgerSeq;
+    }
 
     /**
      * @Method getMetadata

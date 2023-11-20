@@ -30,6 +30,15 @@ public class BIFBatchContractInvokeRequest {
     private String remarks;
     private String privateKey;
     private Long gasPrice;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     public List<BIFContractInvokeOperation> getOperations() {
         return operations;

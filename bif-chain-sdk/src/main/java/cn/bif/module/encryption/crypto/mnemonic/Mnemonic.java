@@ -19,9 +19,13 @@
 package cn.bif.module.encryption.crypto.mnemonic;
 
 import cn.bif.exception.EncException;
+import cn.bif.module.encryption.crypto.slip10.HDKey;
+import cn.bif.module.encryption.crypto.slip10.Keys;
+import cn.bif.module.encryption.crypto.slip10.Slip10Curve;
 import cn.bif.module.encryption.key.PrivateKeyManager;
 import cn.bif.module.encryption.model.KeyType;
 import org.bitcoinj.crypto.*;
+import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -46,76 +50,28 @@ public class Mnemonic {
 
         return mnemonicCodes;
     }
-
-    public static List<String> generatePrivateKeys(List<String> mnemonicCodes, List<String> hdPaths) throws EncException {
+    public static String generatePrivateKeyByMnemonicCodeAndKeyTypeAndHDPath(List<String> mnemonicCodes, KeyType keyType, String hdPath) throws Exception {
         if (null == mnemonicCodes || mnemonicCodes.size() == 0) {
             throw new EncException("The size of mnemonicCodes must be bigger than or equal to 0");
         }
-        if (null == hdPaths || hdPaths.size() == 0) {
+        if (null == hdPath) {
             throw new EncException("The size of hdPaths must be bigger than or equal to 0");
         }
         byte[] seed = MnemonicCode.toSeed(mnemonicCodes, "");
-        DeterministicKey deterministicKey = HDKeyDerivation.createMasterPrivateKey(seed);
-
-        DeterministicHierarchy deterministicHierarchy = new DeterministicHierarchy(deterministicKey);
-        List<String> privateKeys = new ArrayList<>();
-        for (String hdPath : hdPaths) {
-            List<ChildNumber> keyPath = HDUtils.parsePath(hdPath);
-            DeterministicKey childKey = deterministicHierarchy.get(keyPath, true, true);
-            BigInteger privKey = childKey.getPrivKey();
-            byte[] bytes = privKey.toByteArray();
-            byte[] seeds = new byte[32];
-            int startPos = 0;
-            int length = 32;
-            if (privKey.toByteArray().length == 33) {
-                startPos = 1;
-            }
-            if (privKey.toByteArray().length == 31) {
-                length = 31;
-            }
-            System.arraycopy(bytes, startPos, seeds, 0, length);
-            PrivateKeyManager privateKey = new PrivateKeyManager(seeds);
-            privateKeys.add(privateKey.getEncPrivateKey());
+        Slip10Curve curveSeed;
+        switch(keyType) {
+            case ED25519:
+                curveSeed = Slip10Curve.ED25519;
+                break;
+            case SM2:
+                curveSeed = Slip10Curve.SM2;
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + keyType);
         }
-        if (privateKeys.size() == 0) {
-            throw new EncException("Failed to generate private key with mnemonicCodes");
-        }
-        return privateKeys;
-    }
-
-    public static List<String> generatePrivateKeysByCrypto(KeyType type,List<String> mnemonicCodes, List<String> hdPaths) throws EncException {
-        if (null == mnemonicCodes || mnemonicCodes.size() == 0) {
-            throw new EncException("The size of mnemonicCodes must be bigger than or equal to 0");
-        }
-        if (null == hdPaths || hdPaths.size() == 0) {
-            throw new EncException("The size of hdPaths must be bigger than or equal to 0");
-        }
-        byte[] seed = MnemonicCode.toSeed(mnemonicCodes, "");
-        DeterministicKey deterministicKey = HDKeyDerivation.createMasterPrivateKey(seed);
-
-        DeterministicHierarchy deterministicHierarchy = new DeterministicHierarchy(deterministicKey);
-        List<String> privateKeys = new ArrayList<>();
-        for (String hdPath : hdPaths) {
-            List<ChildNumber> keyPath = HDUtils.parsePath(hdPath);
-            DeterministicKey childKey = deterministicHierarchy.get(keyPath, true, true);
-            BigInteger privKey = childKey.getPrivKey();
-            byte[] bytes = privKey.toByteArray();
-            byte[] seeds = new byte[32];
-            int startPos = 0;
-            int length = 32;
-            if (privKey.toByteArray().length == 33) {
-                startPos = 1;
-            }
-            if (privKey.toByteArray().length == 31) {
-                length = 31;
-            }
-            System.arraycopy(bytes, startPos, seeds, 0, length);
-            PrivateKeyManager privateKey = new PrivateKeyManager(seeds,type);
-            privateKeys.add(privateKey.getEncPrivateKey());
-        }
-        if (privateKeys.size() == 0) {
-            throw new EncException("Failed to generate private key with mnemonicCodes");
-        }
-        return privateKeys;
+        HDKey hdKey = new HDKey();
+        Keys resultKeys = hdKey.deriveKeyByPath(curveSeed, hdPath, Hex.toHexString(seed));
+        PrivateKeyManager privateKey = new PrivateKeyManager(Hex.decode(resultKeys.getKey()), keyType);
+        return privateKey.getEncPrivateKey();
     }
 }

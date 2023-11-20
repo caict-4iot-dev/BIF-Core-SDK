@@ -49,7 +49,7 @@ public class TransactionDemo {
         while (true) {
             try {
                 Thread.sleep(1000);
-                new transaction(availableAccAddr,feeLimit,gasPrice,gasSendOperation).start();
+                new transaction(availableAccAddr,feeLimit,gasPrice,0,gasSendOperation).start();
             }catch (Exception e) {
                 e.printStackTrace();
                 break;
@@ -63,10 +63,12 @@ public class TransactionDemo {
         Long feeLimit;
         Long gasPrice;
         BIFBaseOperation operation;
-        public transaction(List<String> availableAccAddr,Long feeLimit,Long gasPrice,BIFBaseOperation operation ) {
+        Integer domainId;
+        public transaction(List<String> availableAccAddr,Long feeLimit,Long gasPrice,Integer domainId,BIFBaseOperation operation ) {
             this.availableAccAddr = availableAccAddr;
             this.feeLimit = feeLimit;
             this.gasPrice = gasPrice;
+            this.domainId = domainId;
             this.operation = operation;
         }
 
@@ -103,6 +105,7 @@ public class TransactionDemo {
                 serializeRequest.setFeeLimit(feeLimit);
                 serializeRequest.setGasPrice(gasPrice);
                 serializeRequest.setOperation(operation);
+                serializeRequest.setDomainId(domainId);
                 // 调用buildBlob接口
                 BIFTransactionSerializeResponse serializeResponse = sdk.getBIFTransactionService().BIFSerializable(serializeRequest);
                 System.out.println("serializeResponse:"+ JsonUtils.toJSONString(serializeResponse.getResult()));
@@ -117,8 +120,9 @@ public class TransactionDemo {
                 //提交交易
                 BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
                 submitRequest.setSerialization(transactionBlob);
-                submitRequest.setPublicKey(publicKey);
-                submitRequest.setSignData(HexFormat.byteToHex(signBytes));
+                submitRequest.addSignature(publicKey,HexFormat.byteToHex(signBytes));
+                //submitRequest.setPublicKey(publicKey);
+                //submitRequest.setSignData(HexFormat.byteToHex(signBytes));
                 // 调用bifSubmit接口
                 BIFTransactionSubmitResponse transactionSubmitResponse = sdk.getBIFTransactionService().BIFSubmit(submitRequest);
                 if (transactionSubmitResponse.getErrorCode() == 0) {

@@ -18,24 +18,14 @@
  */
 package cn.bif.model.request;
 
-public class BIFPrivateTransactionReceiveRequest {
-    private String priTxHash;
+public class BIFBlockGetLatestInfoRequest {
+    private Integer domainId;
 
-    /**
-     * @Method getPriTxHash
-     * @Params []
-     * @Return java.lang.String
-     */
-    public String getPriTxHash() {
-        return priTxHash;
+    public Integer getDomainId() {
+        return domainId;
     }
 
-    /**
-     * @Method setPriTxHash
-     * @Params [priTxHash]
-     * @Return void
-     */
-    public void setPriTxHash(String priTxHash) {
-        this.priTxHash = priTxHash;
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
     }
 }

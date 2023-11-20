@@ -65,7 +65,6 @@ public interface BIFContractService {
      * @return
      */
     BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest request);
-
     /**
      * bifInvokeByGas
      *

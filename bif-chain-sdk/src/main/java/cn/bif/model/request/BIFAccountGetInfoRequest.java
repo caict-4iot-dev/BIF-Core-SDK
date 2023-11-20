@@ -20,6 +20,15 @@ package cn.bif.model.request;
 
 public class BIFAccountGetInfoRequest {
     private String address;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     /**
      * @Method getAddress

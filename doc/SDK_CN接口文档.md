@@ -2,6 +2,8 @@
 
 ​		本节详细说明BIF-Core-SDK常用接口文档。星火链提供 JAVA SDK供开发者使用。
 
+​        **github**代码库地址：https://github.com/caict-4iot-dev/BIF-Core-SDK
+
 ## 1.1 SDK概述
 
 ### 1.1.1 名词解析
@@ -239,10 +241,10 @@ String password = "test1234";
 //版本
 int version = (int) Math.pow(2, 16);
 //方法一
-String keyStore = KeyStore.generateKeyStore(encPrivateKey,password, 16384, 8, 1, version);
+String keyStore = KeyStore.generateKeyStore(password,encPrivateKey, 16384, 8, 1, version);
 System.out.println(JsonUtils.toJSONString(keyStore));
 //方法二
- KeyStoreEty keyStore1 = KeyStore.generateKeyStore(encPrivateKey,password, version);
+ KeyStoreEty keyStore1 = KeyStore.generateKeyStore(password, encPrivateKey, version);
 System.out.println(JsonUtils.toJSONString(keyStore1));
 
 ```
@@ -277,7 +279,7 @@ System.out.println(encPrivateKey);
 
 ```
 
-### 1.2.6 助记词
+### 1.2.6 助记词(v1.0.3)
 
 + **生成助记词**
 
@@ -307,7 +309,7 @@ for (String mnemonicCode : mnemonicCodes) {
 System.out.println();
 ```
 
-+ **根据助记词生成私钥**
++ **根据助记词生成私钥（仅支持插件钱包1.4.4版本以上）**
 
 > 请求参数
 
@@ -326,51 +328,21 @@ System.out.println();
 > 示例
 
 ```java
-List<String> mnemonicCodes = new ArrayList<>();
-mnemonicCodes.add("wood");
-mnemonicCodes.add("floor");
-mnemonicCodes.add("submit");
-mnemonicCodes.add("traffic");
-mnemonicCodes.add("obvious");
-mnemonicCodes.add("indoor");
-mnemonicCodes.add("rocket");
-mnemonicCodes.add("lunch");
-mnemonicCodes.add("melt");
-mnemonicCodes.add("park");
-mnemonicCodes.add("regular");
-mnemonicCodes.add("vessel");
-
-List<String> hdPaths = new ArrayList<>();
-hdPaths.add("M/44/80/0/0/1");
-//方式一
-List<String> privateKeys = Mnemonic.generatePrivateKeys(mnemonicCodes, hdPaths);
-        for (String privateKey : privateKeys) {
-            if (!PrivateKeyManager.isPrivateKeyValid(privateKey)) {
-                System.out.println("private is invalid");
-                return;
-            }
-            System.out.println(privateKey + " " + PrivateKeyManager.getEncAddress(PrivateKeyManager.getEncPublicKey(privateKey)));
-        }
-//SM2
- List<String> privateKeysBySM2 = Mnemonic.generatePrivateKeysByCrypto(KeyType.SM2,mnemonicCodes, hdPaths);
-        for (String privateKey : privateKeysBySM2) {
-            if (!PrivateKeyManager.isPrivateKeyValid(privateKey)) {
-                System.out.println("private is invalid");
-                return;
-            }
-            System.out.println("SM2 { privateKey : "+privateKey + " \n encAddress : " + PrivateKeyManager.getEncAddress(PrivateKeyManager.getEncPublicKey(privateKey))+" \n }");
-        }
-
-//ED25519
- List<String> privateKeysByED25519 = Mnemonic.generatePrivateKeysByCrypto(KeyType.ED25519,mnemonicCodes, hdPaths);
-        for (String privateKey : privateKeysByED25519) {
-            if (!PrivateKeyManager.isPrivateKeyValid(privateKey)) {
-                System.out.println("private is invalid");
-                return;
-            }
-            System.out.println("ED25519  { privateKey : "+privateKey + " \n encAddress : " + PrivateKeyManager.getEncAddress(PrivateKeyManager.getEncPublicKey(privateKey))+" \n }");
-        }
-System.out.println();
+static String mnemonicCode = "attitude coyote negative library clerk copy portion bus combine gospel topic typical";
+static String hdPath = "m/44'/2022'/0'/0'/0'";
+static String hdPathForSM2 = "m/44'/2022'/0'/0/0";
+static List<String> mnemonicCodes = null;
+@BeforeAll
+static  void  setUp() {
+    mnemonicCodes = Arrays.asList(mnemonicCode.split(" "));
+}
+@Test
+public void generatePrivateKeyForAccount() throws Exception {
+    String privateKeyByED25519 = Mnemonic.generatePrivateKeyByMnemonicCodeAndKeyTypeAndHDPath(mnemonicCodes, KeyType.ED25519, hdPath);
+    System.out.println(privateKeyByED25519);
+    String privateKeyBySM2 = Mnemonic.generatePrivateKeyByMnemonicCodeAndKeyTypeAndHDPath(mnemonicCodes, KeyType.SM2, hdPathForSM2);
+    System.out.println(privateKeyBySM2);
+}
 ```
 
 ## 1.3 账户服务接口列表
@@ -404,16 +376,17 @@ BIFCreateAccountResponse createAccount(BIFCreateAccountRequest);
 
 > 请求参数
 
-| 参数          | 类型   | 描述                                                         |
-| ------------- | ------ | ------------------------------------------------------------ |
-| senderAddress | string | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String | 选填，用户自定义给交易的备注                                 |
-| destAddress   | String | 必填，目标账户地址                                           |
-| initBalance   | Long   | 必填，初始化星火令（XHT），单位星火萤(glowstone)，1 XHT = 10^8 glowstone, 大小[0, Long.MAX_VALUE] |
-| gasPrice      | Long   | 选填，打包费用 (单位是glowstone)，默认100L                   |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| 参数          | 类型    | 描述                                                         |
+| ------------- | ------- | ------------------------------------------------------------ |
+| senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
+| privateKey    | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String  | 选填，用户自定义给交易的备注                                 |
+| destAddress   | String  | 必填，目标账户地址                                           |
+| initBalance   | Long    | 必填，初始化星火令，单位glowstone，1 星火令(XHT) = 10^8 星火萤(glowstone)，大小(0, Long.MAX_VALUE] |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -430,17 +403,18 @@ BIFCreateAccountResponse createAccount(BIFCreateAccountRequest);
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null                 |
 | PRIVATEKEY_NULL_ERROR     | 11057  | PrivateKeys cannot be empty                      |
 | INVALID_DESTADDRESS_ERROR | 11003  | Invalid destAddress                              |
-| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 0 and Long.MAX_VALUE |
+| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 1 and Long.MAX_VALUE |
 | SYSTEM_ERROR              | 20000  | System error                                     |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0      |
 
 
 > 示例
 
 ```java
-// 初始化参数
-String senderAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
-String senderPrivateKey = "priSPKecAB4XjfbNeGPni5oiwksAsLS9SJBQ359niKsZsCZmFK";
-String destAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
+// 初始化请求参数
+String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
+String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
+String destAddress = "did:bid:efLnyv1Cw2aN3NJBepus55EahPcq24dH";
 Long initBalance = ToBaseUnit.ToUGas("0.01");
 
 BIFCreateAccountRequest request = new BIFCreateAccountRequest();
@@ -448,13 +422,15 @@ request.setSenderAddress(senderAddress);
 request.setPrivateKey(senderPrivateKey);
 request.setDestAddress(destAddress);
 request.setInitBalance(initBalance);
+request.setRemarks("init account");
+request.setDomainId(20);
 
 // 调用 createAccount 接口
 BIFCreateAccountResponse response = sdk.getBIFAccountService().createAccount(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error:      " + response.getErrorDesc());
 }
 ```
 
@@ -475,15 +451,15 @@ BIFAccountGetInfoResponse getAccount(BIFAccountGetInfoRequest);
 | 参数    | 类型   | 描述                         |
 | ------- | ------ | ---------------------------- |
 | address | String | 必填，待查询的区块链账户地址 |
+| domainId| Integer| 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
-| 参数         | 类型    | 描述                                                         |
-| ------------ | ------- | ------------------------------------------------------------ |
-| address      | String  | 账户地址                                                     |
-| balance      | Long    | 账户余额，单位星火萤(glowstone)，1 XHT = 10^8 glowstone, 必须大于0 |
-| nonce        | Long    | 账户交易序列号，必须大于0                                    |
-| authTransfer | boolean | 许可状态                                                     |
+| 参数    | 类型   | 描述                                                         |
+| ------- | ------ | ------------------------------------------------------------ |
+| address | String | 账户地址                                                     |
+| balance | Long   | 账户余额，单位glowstone，1 星火令(XHT) = 10^8 星火萤(glowstone), 必须大于0 |
+| nonce   | Long   | 账户交易序列号，必须大于0                                    |
 
 > 错误码
 
@@ -493,21 +469,23 @@ BIFAccountGetInfoResponse getAccount(BIFAccountGetInfoRequest);
 | REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR          | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR| 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```java
 // 初始化请求参数
-String accountAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
+String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
 BIFAccountGetInfoRequest request = new BIFAccountGetInfoRequest();
 request.setAddress(accountAddress);
-// 调用getAccount接口
-BIFAccountGetInfoResponse response = sdk.getBIFAccountService().getAccount(request);
+request.setDomainId(20);
 
+// 调用 getAccount 接口
+BIFAccountGetInfoResponse response = sdk.getBIFAccountService().getAccount(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error: " + response.getErrorDesc());
 }
 ```
 
@@ -528,6 +506,7 @@ BIFAccountGetNonceResponse getNonce(BIFAccountGetNonceRequest);
 | 参数    | 类型   | 描述                         |
 | ------- | ------ | ---------------------------- |
 | address | String | 必填，待查询的区块链账户地址 |
+| domainId| Integer| 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -543,18 +522,21 @@ BIFAccountGetNonceResponse getNonce(BIFAccountGetNonceRequest);
 | REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR          | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR| 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```java
-String accountAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
+// 初始化请求参数     
+String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
 BIFAccountGetNonceRequest request = new BIFAccountGetNonceRequest();
 request.setAddress(accountAddress);
+request.setDomainId(20);
+
+// 调用 getNonce 接口
 BIFAccountGetNonceResponse response = sdk.getBIFAccountService().getNonce(request);
 if (0 == response.getErrorCode()) {
     System.out.println("Account nonce:" + response.getResult().getNonce());
-}else {
-    System.out.println(JsonUtils.toJSONString(response));
 }
 ```
 
@@ -575,6 +557,7 @@ BIFAccountGetBalanceResponse getAccountBalance(BIFAccountGetBalanceRequest);
 | 参数    | 类型   | 描述                         |
 | ------- | ------ | ---------------------------- |
 | address | String | 必填，待查询的区块链账户地址 |
+| domainId| Integer| 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -590,18 +573,22 @@ BIFAccountGetBalanceResponse getAccountBalance(BIFAccountGetBalanceRequest);
 | REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR          | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR| 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```java
-String accountAddress = "did:bid:efJ6AJFPZ8LyHECXnbvc4ivCTRRQTmyE";
+// 初始化请求参数
+String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
 BIFAccountGetBalanceRequest request = new BIFAccountGetBalanceRequest();
 request.setAddress(accountAddress);
+request.setDomainId(20);
+
+// 调用 getAccountBalance 接口
 BIFAccountGetBalanceResponse response = sdk.getBIFAccountService().getAccountBalance(request);
+System.out.println(JsonUtils.toJSONString(response, true));
 if (0 == response.getErrorCode()) {
-    System.out.println("Gas balance：" + ToBaseUnit.ToGas(response.getResult().getBalance().toString()) + "Gas");
-}else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("glowstone balance：" + ToBaseUnit.ToGas(response.getResult().getBalance().toString()) + "glowstone");
 }
 ```
 
@@ -631,6 +618,7 @@ BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest);
 | deleteFlag    | Boolean | 选填，是否删除remarks                                        |
 | gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
 | feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -649,28 +637,32 @@ BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest);
 | INVALID_DATAKEY_ERROR   | 11011  | The length of key must be between 1 and 1024     |
 | INVALID_DATAVALUE_ERROR | 11012  | The length of value must be between 0 and 256000 |
 | SYSTEM_ERROR            | 20000  | System error                                     |
+| INVALID_DOMAINID_ERROR  | 12007  | Domainid must be equal to or greater than 0      |
 
 
 > 示例
 
 ```java
-// 初始化参数
-String senderAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
-String senderPrivateKey = "priSPKecAB4XjfbNeGPni5oiwksAsLS9SJBQ359niKsZsCZmFK";
-String key = "20230131-01";
-String value = "metadata-20230131-01";
+// 初始化请求参数
+String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
+String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
+String key = "20210902-01";
+String value = "metadata-20210902-01";
+
 BIFAccountSetMetadatasRequest request = new BIFAccountSetMetadatasRequest();
 request.setSenderAddress(senderAddress);
 request.setPrivateKey(senderPrivateKey);
 request.setKey(key);
 request.setValue(value);
-request.setRemarks("set remarks");
-// 调用 setMetadata 接口
+request.setRemarks("set metadata");
+request.setDomainId(20);
+
+// 调用 setMetadatas 接口
 BIFAccountSetMetadatasResponse response = sdk.getBIFAccountService().setMetadatas(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error:      " + response.getErrorDesc());
 }
 ```
 
@@ -692,6 +684,7 @@ BIFAccountGetMetadatasResponse getAccountMetadatas(BIFAccountGetMetadatasRequest
 | ------- | ------ | ------------------------------------------------------------ |
 | address | String | 必填，待查询的账户地址                                       |
 | key     | String | 选填，metadatas关键字，长度限制[1, 1024]，有值为精确查找，无值为全部查找 |
+| domainId| Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -713,23 +706,27 @@ BIFAccountGetMetadatasResponse getAccountMetadatas(BIFAccountGetMetadatasRequest
 | NO_METADATAS_ERROR    | 11010  | The account does not have the metadatas      |
 | INVALID_DATAKEY_ERROR | 11011  | The length of key must be between 1 and 1024 |
 | SYSTEM_ERROR          | 20000  | System error                                 |
+| INVALID_DOMAINID_ERROR| 12007  | Domainid must be equal to or greater than 0  |
 
 
 > 示例
 
 ```java
 // 初始化请求参数
-String accountAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
+String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
 BIFAccountGetMetadatasRequest request = new BIFAccountGetMetadatasRequest();
 request.setAddress(accountAddress);
-// 调用getBIFMetadatas接口
+request.setKey("20210820-01");
+request.setDomainId(20);
+
+// 调用getAccountMetadatas接口
 BIFAccountGetMetadatasResponse response =
-    sdk.getBIFAccountService().getAccountMetadatas(request);
+sdk.getBIFAccountService().getAccountMetadatas(request);
 if (response.getErrorCode() == 0) {
     BIFAccountGetMetadatasResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result));
+    System.out.println(JsonUtils.toJSONString(result, true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error:      " + response.getErrorDesc());
 }
 ```
 
@@ -739,7 +736,7 @@ if (response.getErrorCode() == 0) {
 
    	该接口用于设置权限。
 
-> 调用方法 
+> 调用方法
 
 ```java
 BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
@@ -747,22 +744,23 @@ BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
 
 > 请求参数
 
-| 参数                    | 类型   | 描述                                                         |
-| ----------------------- | ------ | ------------------------------------------------------------ |
-| senderAddress           | string | 必填，交易源账号，即交易的发起方                             |
-| privateKey              | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq           | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks                 | String | 选填，用户自定义给交易的备注                                 |
-| signers                 | list   | 选填，签名者权重列表                                         |
-| signers.address         | String | 签名者区块链账户地址                                         |
-| signers.weight          | Long   | 为签名者设置权重值                                           |
-| txThreshold             | String | 选填，交易门限，大小限制[0, Long.MAX_VALUE]                  |
-| typeThreshold           | list   | 选填，指定类型交易门限                                       |
-| typeThreshold.type      | Long   | 操作类型，必须大于0                                          |
-| typeThreshold.threshold | Long   | 门限值，大小限制[0, Long.MAX_VALUE]                          |
-| masterWeight            | String | 选填                                                         |
-| gasPrice                | Long   | 选填，打包费用 (单位是glowstone)，默认100L                   |
-| feeLimit                | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| 参数                    | 类型    | 描述                                                         |
+| ----------------------- | ------- | ------------------------------------------------------------ |
+| senderAddress           | string  | 必填，交易源账号，即交易的发起方                             |
+| privateKey              | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq           | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks                 | String  | 选填，用户自定义给交易的备注                                 |
+| signers                 | list    | 选填，签名者权重列表                                         |
+| signers.address         | String  | 签名者区块链账户地址                                         |
+| signers.weight          | Long    | 为签名者设置权重值                                           |
+| txThreshold             | String  | 选填，交易门限，大小限制[0, Long.MAX_VALUE]                  |
+| typeThreshold           | list    | 选填，指定类型交易门限                                       |
+| typeThreshold.type      | Long    | 操作类型，必须大于0                                          |
+| typeThreshold.threshold | Long    | 门限值，大小限制[0, Long.MAX_VALUE]                          |
+| masterWeight            | String  | 选填                                                         |
+| gasPrice                | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit                | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| domainId                | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -779,27 +777,19 @@ BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
 | REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
 | PRIVATEKEY_NULL_ERROR | 11057  | PrivateKeys cannot be empty      |
 | SYSTEM_ERROR          | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR| 12007  | Domainid must be equal to or greater than 0  |
 
 
 > 示例
 
 ```java
-// 初始化参数
-String senderAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
-String senderPrivateKey = "priSPKecAB4XjfbNeGPni5oiwksAsLS9SJBQ359niKsZsCZmFK";
-String masterWeight = "";
-BIFSigner[] signers = new BIFSigner[1];
-BIFSigner s=new BIFSigner();
-s.setAddress("did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK");
-s.setWeight(8L);
-signers[0]=s;
-
-String txThreshold = "2";
-BIFTypeThreshold[] typeThresholds = new BIFTypeThreshold[1];
-BIFTypeThreshold d=new BIFTypeThreshold();
-d.setThreshold(8L);
-d.setType(1);
-typeThresholds[0]=d;
+// 初始化请求参数
+String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
+String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
+String masterWeight = null;
+BIFSigner[] signers = null;
+String txThreshold = null;
+BIFTypeThreshold[] typeThresholds = null;
 
 BIFAccountSetPrivilegeRequest request = new BIFAccountSetPrivilegeRequest();
 request.setSenderAddress(senderAddress);
@@ -809,13 +799,14 @@ request.setTxThreshold(txThreshold);
 request.setMasterWeight(masterWeight);
 request.setTypeThresholds(typeThresholds);
 request.setRemarks("set privilege");
+request.setDomainId(20);
 
 // 调用 setPrivilege 接口
 BIFAccountSetPrivilegeResponse response = sdk.getBIFAccountService().setPrivilege(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error:      " + response.getErrorDesc());
 }
 ```
 
@@ -836,6 +827,7 @@ BIFAccountPrivResponse getAccountPriv(BIFAccountPrivRequest);
 | 参数    | 类型   | 描述                         |
 | ------- | ------ | ---------------------------- |
 | address | String | 必填，待查询的区块链账户地址 |
+| domainId| Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -861,29 +853,30 @@ BIFAccountPrivResponse getAccountPriv(BIFAccountPrivRequest);
 | REQUEST_NULL_ERROR    | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR  | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR          | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR| 12007  | Domainid must be equal to or greater than 0  |
 
 > 示例
 
 ```java
 // 初始化请求参数
-String accountAddress = "did:bid:efTVU63yqh61bpYNeVkJwoKtS9K1258E";
+String accountAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
 BIFAccountPrivRequest request = new BIFAccountPrivRequest();
 request.setAddress(accountAddress);
+request.setDomainId(20);
 
 // 调用getAccountPriv接口
 BIFAccountPrivResponse response = sdk.getBIFAccountService().getAccountPriv(request);
-
 if (response.getErrorCode() == 0) {
     BIFAccountPrivResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result));
+    System.out.println(JsonUtils.toJSONString(result, true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error: " + response.getErrorDesc());
 }
 ```
 
 ## 1.4 合约服务接口列表
 
-​		合约服务接口主要是合约相关的接口，目前有7个接口：
+​		合约服务接口主要是合约相关的接口，目前有6个接口：
 
 | 序号 | 接口                 | 说明                               |
 | ---- | -------------------- | ---------------------------------- |
@@ -912,6 +905,7 @@ BIFContractCheckValidResponse checkContractAddress(BIFContractCheckValidRequest)
 | 参数            | 类型   | 描述                 |
 | --------------- | ------ | -------------------- |
 | contractAddress | String | 待检测的合约账户地址 |
+| domainId        | Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -926,13 +920,15 @@ BIFContractCheckValidResponse checkContractAddress(BIFContractCheckValidRequest)
 | INVALID_CONTRACTADDRESS_ERROR | 11037  | Invalid contract address         |
 | REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null |
 | SYSTEM_ERROR                  | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR| 12007  | Domainid must be equal to or greater than 0  |
 
 > 示例
 
 ```java
 // 初始化请求参数
 BIFContractCheckValidRequest request = new BIFContractCheckValidRequest();
-request.setContractAddress("did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2");
+request.setContractAddress("did:bid:efiBacNvVSnr5QxgB282XGWkg4RXLLxL");
+request.setDomainId(20);
 
 // 调用 checkContractAddress 接口
 BIFContractCheckValidResponse response = sdk.getBIFContractService().checkContractAddress(request);
@@ -961,15 +957,16 @@ BIFContractCreateResponse contractCreate(BIFContractCreateRequest);
 | 参数          | 类型    | 描述                                                         |
 | ------------- | ------- | ------------------------------------------------------------ |
 | senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)默认，默认100L               |
-| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone),默认100L            |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L      |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String  | 选填，用户自定义给交易的备注                                 |
-| initBalance   | Long    | 选填，给合约账户的初始化星火令（XHT），单位星火萤(glowstone)，1 XHT = 10^8 glowstone, 大小限制[0, Long.MAX_VALUE] |
+| initBalance   | Long    | 选填，给合约账户的初始化星火令，单位glowstone，1 星火令(XHT) = 10^8 星火萤(glowstone), 大小限制[1, Long.MAX_VALUE] |
 | type          | Integer | 选填，合约的类型，默认是0 , 0: javascript，1 :evm 。         |
 | payload       | String  | 必填，对应语种的合约代码                                     |
 | initInput     | String  | 选填，合约代码中init方法的入参                               |
+| domainId      | Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -985,19 +982,20 @@ BIFContractCreateResponse contractCreate(BIFContractCreateRequest);
 | INVALID_ADDRESS_ERROR     | 11006  | Invalid address                                  |
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null                 |
 | PRIVATEKEY_NULL_ERROR     | 11057  | PrivateKeys cannot be empty                      |
-| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 0 and Long.MAX_VALUE |
+| INVALID_INITBALANCE_ERROR | 11004  | InitBalance must be between 1 and Long.MAX_VALUE |
 | PAYLOAD_EMPTY_ERROR       | 11044  | Payload cannot be empty                          |
 | INVALID_FEELIMIT_ERROR    | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE    |
 | SYSTEM_ERROR              | 20000  | System error                                     |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0      |
 
 
 > 示例
 
 ```java
-// 初始化参数
-String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
-String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
-String payload = "'use strict';\n\nfunction init(){return;}\n\nfunction checkDocument(params){\n    Utils.assert(params.id!== undefined, '10700,The id is not existed');\n    Utils.assert(params['@context']!== undefined, '10700,The context is not existed');\n}\n\nfunction creation(params){\n   let input = params;\n   checkDocument(input.document);\n   let id = 'bid_document_'+input.document.id;\n   Utils.assert(Utils.addressCheck(input.document.id)!==false,'10702,The bid address format is incorrect');\n   let data  = JSON.parse(Chain.load(id));\n   Utils.assert(data === false, '10703,The bid document is already existed');\n   let document = {};\n   document = input.document;\n   Chain.store(id,JSON.stringify(document));\n}\n\n\nfunction isAuth(authList) {\n\tUtils.assert(authList!== undefined, '10704,auth or recovery param is null');\n    let i = 0;\n    for(i=0;i < authList.length;i+=1){\n        let authId = authList[i];\n        let len = authId.indexOf('#');\n        if(len === -1){\n            len = authId.length;\n        }\n        if(authId.substr(0,len) === Chain.msg.sender){\n           return true;\n        }\n    }\n    return false;\n\n}\n\nfunction update(params){\n    let input = params; \n    checkDocument(input.document);\n    let id = 'bid_document_'+input.document.id;\n    let data  = JSON.parse(Chain.load(id));\n    Utils.assert(data !== false, '10706,The bid document is not existed');\n    Utils.assert(isAuth(data.authentication) !== false,'10707,sender had no right');\n    Utils.assert(Utils.addressCheck(input.document.id)!==false,'10708,id is invalid');\n    let document = {};\n    document = input.document;\n    Chain.store(id,JSON.stringify(document));\n}\n\nfunction reAuth(params){\n    let input = params; \n    Utils.assert(Utils.addressCheck(input.id)!==false,'10708,id is invalid');\n    let id = 'bid_document_'+input.id;\n    let data  = JSON.parse(Chain.load(id));\n    Utils.assert(data !== false, '10706,The bid document is not existed');\n    Utils.assert(data.extension.recovery !== false, '10709,The bid document had not recovery');\n    Utils.assert(isAuth(data.extension.recovery) !== false,'10710,sender had no right recovery');\n    data.authentication = input.authentication;\n    Chain.store(id,JSON.stringify(data));\n}\n\n\nfunction revoke(params){\n    let input = params; \n    let id = 'bid_document_'+input.document.id;\n    let data  = JSON.parse(Chain.load(id));\n    Utils.assert(data !== false, '10706,The bid document is not existed');\n    Utils.assert(Chain.ddressCheck(input.document.id)===false);\n} \n\nfunction queryBid(params) {\n   let input = params;\n   let id = 'bid_document_'+input.id;\n   let data  = JSON.parse(Chain.load(id));\n   Utils.assert(data !== false, '10706,The bid document is not existed');\n   return data;\n}\n\nfunction main(input_str){\n    let input = JSON.parse(input_str);\n\n    if(input.method === 'creation'){\n        creation(input.params);\n    }\n    else if(input.method === 'update'){\n        update(input.params);\n    }\n    else if(input.method === 'reAuth') {\n        reAuth(input.params);\n    }\n    else if(input.method === 'revoke') {\n        revoke(input.params);\n    }\n    else{\n        throw '<Main interface passes an invalid operation type>';\n    }\n}\n\nfunction query(input_str){\n    let input  = JSON.parse(input_str);\n    let object ={};\n    if(input.method === 'queryBid'){\n        object = queryBid(input.params);\n    }\n    else{\n       \tthrow '<unidentified operation type>';\n    }\n    return JSON.stringify(object);\n}";
+// 初始化请求参数
+String senderAddress = "did:bid:ef26wZymU7Vyc74S5TBrde8rAu6rnLJwN";
+String senderPrivateKey = "priSPKqvAwSG3cp63GAuWfXASGXUSokYeA5nNkuWxKeBF54yEC";
+String payload = "\"use strict\";function init(bar){/*init whatever you want*/return;}function main(input){let para = JSON.parse(input);if (para.do_foo)\n    {\n      let x = {\n\'hello\' : \'world\'\n      };\n    }\n  }\n  \n  function query(input)\n  { \n    return input;\n  }\n";
 Long initBalance = ToBaseUnit.ToUGas("0.01");
 
 BIFContractCreateRequest request = new BIFContractCreateRequest();
@@ -1007,14 +1005,15 @@ request.setInitBalance(initBalance);
 request.setPayload(payload);
 request.setRemarks("create contract");
 request.setType(0);
-request.setFeeLimit(100369100L);
+request.setFeeLimit(1000000000L);
+request.setDomainId(20);
 
-// 调用bifContractCreate接口
+// 调用 contractCreate 接口
 BIFContractCreateResponse response = sdk.getBIFContractService().contractCreate(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error:      " + response.getErrorDesc());
 }
 ```
 
@@ -1035,6 +1034,7 @@ BIFContractGetInfoResponse getContractInfo(BIFContractGetInfoRequest);
 | 参数            | 类型   | 描述                 |
 | --------------- | ------ | -------------------- |
 | contractAddress | String | 待查询的合约账户地址 |
+| domainId        | Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -1054,13 +1054,15 @@ BIFContractGetInfoResponse getContractInfo(BIFContractGetInfoRequest);
 | GET_TOKEN_INFO_ERROR                      | 11066  | Failed to get token info                  |
 | REQUEST_NULL_ERROR                        | 12001  | Request parameter cannot be null          |
 | SYSTEM_ERROR                              | 20000  | System error                              |
+| INVALID_DOMAINID_ERROR                    | 12007  | Domainid must be equal to or greater than 0      |
 
 > 示例
 
 ```java
 // 初始化请求参数
 BIFContractGetInfoRequest request = new BIFContractGetInfoRequest();
-request.setContractAddress("did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2");
+request.setContractAddress("did:bid:efiBacNvVSnr5QxgB282XGWkg4RXLLxL");
+request.setDomainId(20);
 
 // 调用 getContractInfo 接口
 BIFContractGetInfoResponse response = sdk.getBIFContractService().getContractInfo(request);
@@ -1090,6 +1092,7 @@ BIFContractGetAddressResponse getContractAddress(BIFContractGetAddressRequest);
 | 参数 | 类型   | 描述               |
 | ---- | ------ | ------------------ |
 | hash | String | 创建合约交易的hash |
+| domainId | Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -1108,14 +1111,16 @@ BIFContractGetAddressResponse getContractAddress(BIFContractGetAddressRequest);
 | CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
 | REQUEST_NULL_ERROR   | 12001  | Request parameter cannot be null |
 | SYSTEM_ERROR         | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0      |
 
 > 示例
 
 ```java
 // 初始化请求参数
-String hash = "5835cfd5159db6ed0d63e10a361793b39c23de44f926b3c0c0589fee4f7b8b18";
+String hash = "4bb232fbe86e33b956ad5338103d4610b2b31d5bf6af742d7e55b9c6182abfee";
 BIFContractGetAddressRequest request = new BIFContractGetAddressRequest();
 request.setHash(hash);
+request.setDomainId(20);
 
 // 调用 getContractAddress 接口
 BIFContractGetAddressResponse response = sdk.getBIFContractService().getContractAddress(request);
@@ -1140,13 +1145,14 @@ BIFContractCallResponse contractQuery(BIFContractCallRequest);
 
 > 请求参数
 
-| 参数            | 类型   | 描述                                                  |
-| --------------- | ------ | ----------------------------------------------------- |
-| sourceAddress   | String | 选填，合约触发账户地址                                |
-| contractAddress | String | 必填，合约账户地址                                    |
-| input           | String | 选填，合约入参                                        |
-| gasPrice        | Long   | 选填，打包费用 (单位是glowstone)默认，默认100L        |
-| feeLimit        | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L |
+| 参数            | 类型    | 描述                                                  |
+| --------------- | ------- | ----------------------------------------------------- |
+| sourceAddress   | String  | 选填，合约触发账户地址                                |
+| contractAddress | String  | 必填，合约账户地址                                    |
+| input           | String  | 选填，合约入参                                        |
+| gasPrice        | Long    | 选填，打包费用 (单位是glowstone)默认，默认100L        |
+| feeLimit        | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L |
+| domainId        | Integer | 选填，指定域ID，默认主共识域id(0)                     |
 
 
 > 响应数据
@@ -1165,14 +1171,16 @@ BIFContractCallResponse contractQuery(BIFContractCallRequest);
 | REQUEST_NULL_ERROR                        | 12001  | Request parameter cannot be null                 |
 | CONNECTNETWORK_ERROR                      | 11007  | Failed to connect to the network                 |
 | SYSTEM_ERROR                              | 20000  | System error                                     |
+| INVALID_DOMAINID_ERROR                    | 12007  | Domainid must be equal to or greater than 0      |
 
 > 示例
 
 ```java
 // 初始化请求参数
-String contractAddress = "did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2";
+String contractAddress = "did:bid:ef2gAT82SGdnhj87wQWb9suPKLbnk9NP";
 BIFContractCallRequest request = new BIFContractCallRequest();
 request.setContractAddress(contractAddress);
+request.setDomainId(20);
 
 // 调用 contractQuery 接口
 BIFContractCallResponse response = sdk.getBIFContractService().contractQuery(request);
@@ -1198,17 +1206,18 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 
 > 请求参数
 
-| 参数            | 类型                           | 描述                                                         |
-| --------------- | ------------------------------ | ------------------------------------------------------------ |
-| senderAddress   | string                         | 必填，交易源账号，即交易的发起方                             |
-| gasPrice        | Long                           | 选填，打包费用 (单位是glowstone)默认，默认100L               |
-| feeLimit        | Long                           | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
-| privateKey      | String                         | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq   | Long                           | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks         | String                         | 选填，用户自定义给交易的备注                                 |
-| contractAddress | String                         | 必填，合约账户地址                                           |
-| BIFAmount       | Long                           | 必填，转账金额                                               |
-| input           | 选填，待触发的合约的main()入参 |                                                              |
+| 参数            | 类型    | 描述                                                         |
+| --------------- | ------- | ------------------------------------------------------------ |
+| senderAddress   | string  | 必填，交易源账号，即交易的发起方                             |
+| gasPrice        | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit        | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| privateKey      | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq   | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks         | String  | 选填，用户自定义给交易的备注                                 |
+| contractAddress | String  | 必填，合约账户地址                                           |
+| BIFAmount       | Long    | 必填，转账金额                                               |
+| input           | String  | 选填，待触发的合约的main()入参                               |
+| domainId        | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -1228,17 +1237,17 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 | INVALID_AMOUNT_ERROR          | 11024  | Amount must be between 0 and Long.MAX_VALUE   |
 | INVALID_FEELIMIT_ERROR        | 11050  | FeeLimit must be between 0 and Long.MAX_VALUE |
 | SYSTEM_ERROR                  | 20000  | System error                                  |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0   |
 
 
 > 示例
 
 ```java
-// 初始化参数
-String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
-String contractAddress = "did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2";
-String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
+// 初始化请求参数
+String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
+String contractAddress = "did:bid:ef2gAT82SGdnhj87wQWb9suPKLbnk9NP";
+String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
 Long amount = 0L;
-String  input = "{\"method\":\"applyServiceNode\",\"params\":{\"domainId\":20,\"nodeAddr\":\"did:bid:ef2CuJPNBW7HQhTTiiT3wPYvFbSbthtzC\"}}";
 
 BIFContractInvokeRequest request = new BIFContractInvokeRequest();
 request.setSenderAddress(senderAddress);
@@ -1246,14 +1255,14 @@ request.setPrivateKey(senderPrivateKey);
 request.setContractAddress(contractAddress);
 request.setBIFAmount(amount);
 request.setRemarks("contract invoke");
-request.setInput(input);
+request.setDomainId(20);
 
-// 调用 bifContractInvoke 接口
+// 调用 contractInvoke 接口
 BIFContractInvokeResponse response = sdk.getBIFContractService().contractInvoke(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error:      " + response.getErrorDesc());
 }
 ```
 
@@ -1274,11 +1283,12 @@ BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest);
 | 参数          | 类型                             | 描述                                                         |
 | ------------- | -------------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                           | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long                             | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| gasPrice      | Long                             | 选填，打包费用 (单位是glowstone)默认100L                     |
 | feeLimit      | Long                             | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String                           | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String                           | 选填，用户自定义给交易的备注                                 |
+| domainId      | Integer                          | 选填，指定域ID，默认主共识域id(0)                            |
 | operations    | List<BIFContractInvokeOperation> | 必填，合约调用集合                                           |
 
 | BIFContractInvokeOperation |        |                                |
@@ -1313,50 +1323,50 @@ BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest);
 
 ```java
 // 初始化参数
-String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
-String contractAddress = "did:bid:efMDjurEyAWpoE15u5xuoWzJEx55oXm2";
-String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
-Long amount = 0L;
-String destAddress1 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
-String destAddress2 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
-String input1 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
-    "\"id\": \""+destAddress1+"\", \"version\": \"1\"}}}";
-String input2 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
-    "\"id\": \""+destAddress2+"\", \"version\": \"1\"}}}";
+        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
+        String contractAddress = "did:bid:eftzENB3YsWymQnvsLyF4T2ENzjgEg41";
+        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
+        Long amount = 0L;
+        String destAddress1 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        String destAddress2 = KeyPairEntity.getBidAndKeyPair().getEncAddress();
+        String input1 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress1+"\", \"version\": \"1\"}}}";
+        String input2 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress2+"\", \"version\": \"1\"}}}";
 
-List<BIFContractInvokeOperation> operations = new ArrayList<BIFContractInvokeOperation>();
-//操作对象1
-BIFContractInvokeOperation operation1=new BIFContractInvokeOperation();
-operation1.setContractAddress(contractAddress);
-operation1.setBIFAmount(amount);
-operation1.setInput(input1);
-//操作对象2
-BIFContractInvokeOperation operation2=new BIFContractInvokeOperation();
-operation2.setContractAddress(contractAddress);
-operation2.setBIFAmount(amount);
-operation2.setInput(input2);
+        List<BIFContractInvokeOperation> operations = new ArrayList<BIFContractInvokeOperation>();
+        //操作对象1
+        BIFContractInvokeOperation operation1=new BIFContractInvokeOperation();
+        operation1.setContractAddress(contractAddress);
+        operation1.setBIFAmount(amount);
+        operation1.setInput(input1);
+        //操作对象2
+        BIFContractInvokeOperation operation2=new BIFContractInvokeOperation();
+        operation2.setContractAddress(contractAddress);
+        operation2.setBIFAmount(amount);
+        operation2.setInput(input2);
 
-operations.add(operation1);
-operations.add(operation2);
+        operations.add(operation1);
+        operations.add(operation2);
 
-BIFBatchContractInvokeRequest request = new BIFBatchContractInvokeRequest();
-request.setSenderAddress(senderAddress);
-request.setPrivateKey(senderPrivateKey);
-request.setOperations(operations);
-request.setRemarks("contract invoke");
+        BIFBatchContractInvokeRequest request = new BIFBatchContractInvokeRequest();
+        request.setSenderAddress(senderAddress);
+        request.setPrivateKey(senderPrivateKey);
+        request.setOperations(operations);
+        request.setRemarks("contract invoke");
 
-// 调用 bifContractInvoke 接口
-BIFContractInvokeResponse response = sdk.getBIFContractService().batchContractInvoke(request);
-if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
-} else {
-    System.out.println(JsonUtils.toJSONString(response));
-}
+        // 调用 bifContractInvoke 接口
+        BIFContractInvokeResponse response = sdk.getBIFContractService().batchContractInvoke(request);
+        if (response.getErrorCode() == 0) {
+            System.out.println(JsonUtils.toJSONString(response.getResult()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
 ```
 
 ## 1.5 交易服务接口列表
 
-​		交易服务接口主要是交易相关的接口，目前有8个接口：
+​		交易服务接口主要是交易相关的接口，目前有4个接口：
 
 | 序号 | 接口               | 说明                               |
 | ---- | ------------------ | ---------------------------------- |
@@ -1364,10 +1374,10 @@ if (response.getErrorCode() == 0) {
 | 2    | getTransactionInfo | 该接口用于实现根据交易hash查询交易 |
 | 3    | evaluateFee        | 该接口实现交易的费用评估           |
 | 4    | BIFSubmit          | 提交交易                           |
-| 5    | getTxCacheSize     | 于获取交易池中交易条数             |
-| 6    | getTxCacheData     | 获取交易池中交易数据               |
-| 7    | parseBlob          | blob数据解析                       |
-| 8    | batchGasSend       | 批量转移星火令                     |
+| 5    | getTxCacheSize     | 交易池中交易条数                   |
+| 6    | batchEvaluateFee   | 该接口为批量费用评估接口           |
+| 7    | getTxCacheData     | 交易池中交易数据                   |
+| 8    | parseBlob          | 用于blob数据解析                   |
 
 ### 1.5.1 gasSend
 
@@ -1383,16 +1393,17 @@ BIFTransactionGasSendResponse gasSend(BIFTransactionGasSendRequest);
 
 > 请求参数
 
-| 参数          | 类型   | 描述                                                         |
-| ------------- | ------ | ------------------------------------------------------------ |
-| senderAddress | string | 必填，交易源账号，即交易的发起方                             |
-| privateKey    | String | 必填，交易源账户私钥                                         |
-| ceilLedgerSeq | Long   | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String | 选填，用户自定义给交易的备注                                 |
-| destAddress   | String | 必填，发起方地址                                             |
-| amount        | Long   | 必填，转账金额                                               |
-| gasPrice      | Long   | 选填，打包费用 (单位是glowstone)，默认100L                   |
-| feeLimit      | Long   | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| 参数          | 类型    | 描述                                                         |
+| ------------- | ------- | ------------------------------------------------------------ |
+| senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
+| privateKey    | String  | 必填，交易源账户私钥                                         |
+| ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
+| remarks       | String  | 选填，用户自定义给交易的备注                                 |
+| destAddress   | String  | 必填，发起方地址                                             |
+| amount        | Long    | 必填，转账金额                                               |
+| gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
+| feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| domainId      | Integer | 选填，指定域ID，默认主共识域id(0)                            |
 
 > 响应数据
 
@@ -1411,35 +1422,36 @@ BIFTransactionGasSendResponse gasSend(BIFTransactionGasSendRequest);
 | INVALID_DESTADDRESS_ERROR | 11003  | Invalid destAddress                            |
 | INVALID_GAS_AMOUNT_ERROR  | 11026  | BIFAmount must be between 0 and Long.MAX_VALUE |
 | SYSTEM_ERROR              | 20000  | System error                                   |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0    |
 
 
 > 示例
 
 ```java
 // 初始化请求参数
-String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
-String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
-String destAddress = "did:bid:efqhQu9YWEWpUKQYkAyGevPGtAdD1N6p";
-Long amount = ToBaseUnit.ToUGas("0.01");
+String senderAddress = "did:bid:efVmotQW28QDtQyupnKTFvpjKQYs5bxf";
+String senderPrivateKey = "priSPKnDue7AJ42gt7acy4AVaobGJtM871r1eukZ2M6eeW5LxG";
+String destAddress = "did:bid:efrAgXe6NvmNwWmtdBs1iKGThzBqHNwH";
+Long amount = ToBaseUnit.ToUGas("1");
 
 BIFTransactionGasSendRequest request = new BIFTransactionGasSendRequest();
 request.setSenderAddress(senderAddress);
 request.setPrivateKey(senderPrivateKey);
 request.setDestAddress(destAddress);
 request.setAmount(amount);
-request.setRemarks("gas send");
-request.setFeeLimit(125900L);
+request.setRemarks("glowstone send");
+request.setDomainId(20);
 
 // 调用 gasSend 接口
 BIFTransactionGasSendResponse response = sdk.getBIFTransactionService().gasSend(request);
 if (response.getErrorCode() == 0) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response.getResult(), true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error:      " + response.getErrorDesc());
 }
 ```
 
-### 1.5.4 getTransactionInfo
+### 1.5.2 getTransactionInfo
 
 > 接口说明
 
@@ -1456,6 +1468,7 @@ BIFTransactionGetInfoResponse getTransactionInfo(BIFTransactionGetInfoRequest);
 | 参数 | 类型   | 描述     |
 | ---- | ------ | -------- |
 | hash | String | 交易hash |
+| domainId | Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -1483,13 +1496,15 @@ BIFTransactionGetInfoResponse getTransactionInfo(BIFTransactionGetInfoRequest);
 | REQUEST_NULL_ERROR   | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR         | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0    |
 
 > 示例
 
 ```java
 // 初始化请求参数
 BIFTransactionGetInfoRequest request = new BIFTransactionGetInfoRequest();
-request.setHash("5835cfd5159db6ed0d63e10a361793b39c23de44f926b3c0c0589fee4f7b8b18");
+request.setHash("6fd10128e0f1e3f6565542303ca308d26f70c7638ec3885141c5cdb72583d182");
+request.setDomainId(20);
 
 // 调用 getTransactionInfo 接口
 BIFTransactionGetInfoResponse response = sdk.getBIFTransactionService().getTransactionInfo(request);
@@ -1500,7 +1515,7 @@ if (response.getErrorCode() == 0) {
 }
 ```
 
-### 1.5.5 evaluateFee
+### 1.5.3 evaluateFee
 
 > 接口说明
 
@@ -1519,8 +1534,9 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 | signatureNumber | Integer                         | 选填，待签名者的数量，默认是1，大小限制[1, Integer.MAX_VALUE] |
 | remarks         | String                          | 选填，用户自定义给交易的备注                                 |
 | operation       | [BaseOperation](#BaseOperation) | 必填，待提交的操作，不能为空                                 |
-| gasPrice        | Long                            | 选填，打包费用 (单位是glowstone)                             |
-| feeLimit        | Long                            | 选填，交易花费的手续费(单位是glowstone)                      |
+| gasPrice        | Long                            | 必填，打包费用 (单位是glowstone) ，默认100L                  |
+| feeLimit        | Long                            | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| domainId        | Integer                         | 选填，指定域ID，默认主共识域id(0)                            |
 
 #### BaseOperation
 
@@ -1532,8 +1548,6 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 | 4    | BIFContractCreateOperation        | 创建合约（暂不支持EVM 合约） |
 | 5    | BIFContractInvokeOperation        | 合约调用（暂不支持EVM 合约） |
 | 6    | BIFGasSendOperation               | 发起交易                     |
-| 7    | BIFPrivateContractCallOperation   | 私有化交易的合约创建         |
-| 8    | BIFPrivateContractCreateOperation | 私有化交易的合约调用         |
 
 > 响应数据
 
@@ -1570,42 +1584,41 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 | INVALID_SIGNATURENUMBER_ERROR | 11054  | SignagureNumber must be between 1 and Integer.MAX_VALUE |
 | REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null                        |
 | SYSTEM_ERROR                  | 20000  | System error                                            |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0             |
 
 > 示例
 
 ```java
-// 初始化变量
-String senderAddresss = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
-String destAddress = "did:bid:efqhQu9YWEWpUKQYkAyGevPGtAdD1N6p";
-Long bifAmount = ToBaseUnit.ToUGas("10.9");
+       // 初始化变量
+        String senderAddresss = "did:bid:efAsXt5zM2Hsq6wCYRMZBS5Q9HvG2EmK";
+        String destAddress = "did:bid:ef14uPsX7XYLzsU4t2rnRrsK2zfUbW3r";
+        Long bifAmount = ToBaseUnit.ToUGas("10.9");
 
-// 构建sendGas操作
-BIFGasSendOperation gasSendOperation = new BIFGasSendOperation();
-gasSendOperation.setSourceAddress(senderAddresss);
-gasSendOperation.setDestAddress(destAddress);
-gasSendOperation.setAmount(bifAmount);
+        // 构建sendGas操作
+        BIFGasSendOperation gasSendOperation = new BIFGasSendOperation();
+        gasSendOperation.setSourceAddress(senderAddresss);
+        gasSendOperation.setDestAddress(destAddress);
+        gasSendOperation.setAmount(bifAmount);
 
-// 初始化评估交易请求参数
-BIFTransactionEvaluateFeeRequest request = new BIFTransactionEvaluateFeeRequest();
-request.setOperation(gasSendOperation);
-request.setSourceAddress(senderAddresss);
-request.setSignatureNumber(1);
-request.setRemarks(HexFormat.byteToHex("evaluate fees".getBytes()));
-request.setGasPrice(1L);
+        // 初始化评估交易请求参数
+        BIFTransactionEvaluateFeeRequest request = new BIFTransactionEvaluateFeeRequest();
+        request.setOperation(gasSendOperation);
+        request.setSourceAddress(senderAddresss);
+        request.setSignatureNumber(1);
+        request.setRemarks(HexFormat.byteToHex("evaluate fees".getBytes()));
+        request.setDomainId(20);
 
-// 调用evaluateFee接口
-BIFTransactionEvaluateFeeResponse response = sdk.getBIFTransactionService().evaluateFee(request);
-if (response.getErrorCode() == 0) {
-    BIFTransactionEvaluateFeeResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result));
-} else {
-    System.out.println(JsonUtils.toJSONString(response));
-}
+       // 调用evaluateFee接口
+        BIFTransactionEvaluateFeeResponse response = sdk.getBIFTransactionService().evaluateFee(request);
+        if (response.getErrorCode() == 0) {
+            BIFTransactionEvaluateFeeResult result = response.getResult();
+            System.out.println(JsonUtils.toJSONString(result));
+        } else {
+            System.out.println("error: " + response.getErrorDesc());
+        }
 ```
 
-
-
-### 1.5.6 BIFSubmit
+### 1.5.4 BIFSubmit(v1.0.3)
 
 > 接口说明
 
@@ -1619,11 +1632,12 @@ BIFTransactionSubmitResponse BIFSubmit(BIFTransactionSubmitRequest);
 
 > 请求参数
 
-| 参数          | 类型   | 描述               |
-| ------------- | ------ | ------------------ |
-| serialization | String | 必填，交易序列化值 |
-| signData      | String | 必填，签名数据     |
-| publicKey     | String | 必填，签名者私钥   |
+| 参数          | 类型           | 描述                     |
+| ------------- | -------------- | ------------------------ |
+| serialization | String         | 必填，交易序列化值       |
+| signData      | String         | 单签名必填，签名数据     |
+| publicKey     | String         | 单签名必填，公钥         |
+| signatures    | BIFSignature[] | 多签名必填，签名数据集合 |
 
 > 响应数据
 
@@ -1644,30 +1658,62 @@ BIFTransactionSubmitResponse BIFSubmit(BIFTransactionSubmitRequest);
 
 > 示例
 
-```Java
-  // 初始化参数
-  String senderPrivateKey = "priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
-  //序列化交易
-  String serialization ="";
-  //签名
-  byte[] signBytes = PrivateKeyManager.sign(HexFormat.hexToByte(serialization), senderPrivateKey);
-  String publicKey = PrivateKeyManager.getEncPublicKey(senderPrivateKey);
-  //提交交易
-  BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
-     submitRequest.setSerialization(serialization);
-     submitRequest.setPublicKey(publicKey);
-     submitRequest.setSignData(HexFormat.byteToHex(signBytes));
-  // 调用bifSubmit接口
-  BIFTransactionSubmitResponse response = sdk.getBIFTransactionService().BIFSubmit(submitRequest);
-     if (response.getErrorCode() == 0) {
-          System.out.println(JsonUtils.toJSONString(response.getResult()));
-      } else {
-          System.out.println("error: " + response.getErrorDesc());
-      }
+- 方式一：单签名
 
+
+```Java
+// 初始化参数
+String senderPrivateKey = "priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
+//序列化交易
+String serialization ="";
+//签名
+byte[] signBytes = PrivateKeyManager.sign(HexFormat.hexToByte(serialization), senderPrivateKey);
+String publicKey = PrivateKeyManager.getEncPublicKey(senderPrivateKey);
+//提交交易
+BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
+submitRequest.setSerialization(serialization);
+submitRequest.setPublicKey(publicKey);
+submitRequest.setSignData(HexFormat.byteToHex(signBytes));
+// 调用bifSubmit接口
+BIFTransactionSubmitResponse response = sdk.getBIFTransactionService().BIFSubmit(submitRequest);
+if (response.getErrorCode() == 0) {
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
+} else {
+    System.out.println("error: " + response.getErrorDesc());
+}
 ```
 
-### 1.5.7 getTxCacheSize
+- 方式二：多签名
+
+
+```java
+// 初始化参数
+String senderPrivateKey1 = "priSPKkWVk418PKAS66q4bsiE2c4dKuSSafZvNWyGGp2sJVtXL";
+String senderPrivateKey2 = "priSPKmopQGLoE7ZBT6urhS9rayboAE5ER3v4ajWPMCuze4SC8";
+//序列化交易
+String serialization ="";
+//签名
+byte[] signBytes1 = PrivateKeyManager.sign(HexFormat.hexToByte(serialization), senderPrivateKey1);
+String publicKey1 = PrivateKeyManager.getEncPublicKey(senderPrivateKey1);
+byte[] signBytes2 = PrivateKeyManager.sign(HexFormat.hexToByte(serialization), senderPrivateKey2);
+String publicKey2 = PrivateKeyManager.getEncPublicKey(senderPrivateKey2);
+//提交交易
+BIFTransactionSubmitRequest submitRequest = new BIFTransactionSubmitRequest();
+submitRequest.setSerialization(serialization);
+//签名一
+submitRequest.addSignature(publicKey1,HexFormat.byteToHex(signBytes1));
+//签名二
+submitRequest.addSignature(publicKey2,HexFormat.byteToHex(signBytes2));
+// 调用bifSubmit接口
+BIFTransactionSubmitResponse response = sdk.getBIFTransactionService().BIFSubmit(submitRequest);
+if (response.getErrorCode() == 0) {
+    System.out.println(JsonUtils.toJSONString(response.getResult()));
+} else {
+    System.out.println("error: " + response.getErrorDesc());
+}
+```
+
+### 1.5.5 getTxCacheSize
 
 > 接口说明
 
@@ -1676,8 +1722,14 @@ BIFTransactionSubmitResponse BIFSubmit(BIFTransactionSubmitRequest);
 > 调用方法
 
 ```java
-BIFTransactionGetTxCacheSizeResponse getTxCacheSize();
+BIFTransactionGetTxCacheSizeResponse getTxCacheSize(domainId);
 ```
+
+> 请求参数
+
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
@@ -1703,7 +1755,121 @@ BIFTransactionGetTxCacheSizeResponse getTxCacheSize();
         }
 ```
 
-### 1.5.8 getTxCacheData
+### 1.5.6 batchEvaluateFee
+
+> 接口说明
+
+   	该接口为批量费用评估接口。
+
+> 调用方法
+
+```java
+BIFTransactionEvaluateFeeResponse batchEvaluateFee(BIFTransactionEvaluateFeeRequest BIFTransactionEvaluateFeeRequest);
+```
+
+> 请求参数
+
+| 参数            | 类型                            | 描述                                                         |
+| --------------- | ------------------------------- | ------------------------------------------------------------ |
+| signatureNumber | Integer                         | 选填，待签名者的数量，默认是1，大小限制[1, Integer.MAX_VALUE] |
+| remarks         | String                          | 选填，用户自定义给交易的备注                                 |
+| operation       | [BaseOperation](#BaseOperation) | 必填，待提交的操作，不能为空                                 |
+| gasPrice        | Long                            | 必填，打包费用 (单位是glowstone) ，默认100L                  |
+| feeLimit        | Long                            | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
+| domainId        | Integer                         | 选填，指定域ID，默认主共识域id(0)                            |
+
+#### BaseOperation
+
+| 序号 | 操作                       | 描述                         |
+| ---- | -------------------------- | ---------------------------- |
+| 1    | BIFContractInvokeOperation | 合约调用（暂不支持EVM 合约） |
+
+> 响应数据
+
+| 参数 | 类型                | 描述       |
+| ---- | ------------------- | ---------- |
+| txs  | [TestTx](#TestTx)[] | 评估交易集 |
+
+#### TestTx
+
+| 成员变量       | 类型                                        | 描述         |
+| -------------- | ------------------------------------------- | ------------ |
+| transactionEnv | [TestTransactionFees](#TestTransactionFees) | 评估交易费用 |
+
+#### TestTransactionFees
+
+| 成员变量        | 类型                                | 描述     |
+| --------------- | ----------------------------------- | -------- |
+| transactionFees | [TransactionFees](#TransactionFees) | 交易费用 |
+
+#### TransactionFees
+
+| 成员变量 | 类型 | 描述               |
+| -------- | ---- | ------------------ |
+| feeLimit | Long | 交易要求的最低费用 |
+| gasPrice | Long | 交易燃料单价       |
+
+> 错误码
+
+| 异常                          | 错误码 | 描述                                                    |
+| ----------------------------- | ------ | ------------------------------------------------------- |
+| INVALID_SOURCEADDRESS_ERROR   | 11002  | Invalid sourceAddress                                   |
+| OPERATIONS_EMPTY_ERROR        | 11051  | Operations cannot be empty                              |
+| OPERATIONS_ONE_ERROR          | 11053  | One of the operations cannot be resolved                |
+| INVALID_SIGNATURENUMBER_ERROR | 11054  | SignagureNumber must be between 1 and Integer.MAX_VALUE |
+| REQUEST_NULL_ERROR            | 12001  | Request parameter cannot be null                        |
+| SYSTEM_ERROR                  | 20000  | System error                                            |
+| INVALID_DOMAINID_ERROR        | 12007  | Domainid must be equal to or greater than 0             |
+
+> 示例
+
+```java
+         // 初始化参数
+        String senderAddress = "did:bid:efHzcjj3w1eg9B4aoaem5axrBLS8y8JF";
+        String destAddress1 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
+        String destAddress2 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
+        Long bifAmount = ToBaseUnit.ToUGas("10.9");
+        String input1 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress1+"\", \"version\": \"1\"}}}";
+        String input2 = "{\"method\":\"creation\",\"params\":{\"document\":{\"@context\": [\"https://w3.org/ns/did/v1\"],\"context\": \"https://w3id.org/did/v1\"," +
+                "\"id\": \""+destAddress2+"\", \"version\": \"1\"}}}";
+
+        List<BIFBaseOperation> operations = new ArrayList<BIFBaseOperation>();
+        // 构建操作1
+        BIFContractInvokeOperation bIFContractInvokeOperation1 = new BIFContractInvokeOperation();
+        bIFContractInvokeOperation1.setContractAddress(destAddress1);
+        bIFContractInvokeOperation1.setBIFAmount(bifAmount);
+        bIFContractInvokeOperation1.setInput(input1);
+        // 构建操作2
+        BIFContractInvokeOperation bIFContractInvokeOperation2 = new BIFContractInvokeOperation();
+        bIFContractInvokeOperation2.setContractAddress(destAddress2);
+        bIFContractInvokeOperation2.setBIFAmount(bifAmount);
+        bIFContractInvokeOperation2.setInput(input2);
+
+        operations.add(bIFContractInvokeOperation1);
+        operations.add(bIFContractInvokeOperation2);
+
+        // 初始化评估交易请求参数
+        BIFTransactionEvaluateFeeRequest request = new BIFTransactionEvaluateFeeRequest();
+        request.setOperations(operations);
+        request.setSourceAddress(senderAddress);
+        request.setSignatureNumber(1);
+        request.setRemarks(HexFormat.byteToHex("batch evaluate fees".getBytes()));
+        request.setDomainId(0);
+        request.setGasPrice(1L);
+        request.setFeeLimit(500L);
+
+        // 调用batchEvaluateFee接口
+        BIFTransactionEvaluateFeeResponse response = sdk.getBIFTransactionService().batchEvaluateFee(request);
+        if (response.getErrorCode() == 0) {
+            BIFTransactionEvaluateFeeResult result = response.getResult();
+            System.out.println(JsonUtils.toJSONString(result));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
+```
+
+### 1.5.7 getTxCacheData
 
 > 接口说明
 
@@ -1712,47 +1878,50 @@ BIFTransactionGetTxCacheSizeResponse getTxCacheSize();
 > 调用方法
 
 ```java
-BIFTransactionCacheResponse getTxCacheData(BIFTransactionCacheRequest);
+BIFTransactionCacheResponse  getTxCacheData(BIFTransactionCacheRequest request);
 ```
 
 > 请求参数
 
-| 参数 | 类型   | 描述           |
-| ---- | ------ | -------------- |
-| hash | String | 选填，交易hash |
+| 参数     | 类型    | 描述                              |
+| -------- | ------- | --------------------------------- |
+| hash     | String  | 选填，交易hash                    |
+| domainId | Integer | 选填，指定域ID，默认主共识域id(0) |
 
 > 响应数据
 
-| 参数                           | 类型     | 描述                 |
-| ------------------------------ | -------- | -------------------- |
-| transactions                   | Object[] | 返回交易池中交易数据 |
-| transactionsp[i].hash          | String   | 交易hash             |
-| transactionsp[i].incoming_time | String   | 进入时间             |
-| transactionsp[i].status        | String   | 状态                 |
-| transactionsp[i].transaction   | Object   |                      |
+| 参数                         | 类型     | 描述     |
+| ---------------------------- | -------- | -------- |
+| transactions                 | Object[] | 对象数组 |
+| transactions[].hash          | String   | 交易hash |
+| transactions[].incoming_time | String   | 进入时间 |
+| transactions[].status        | String   | 状态     |
+| transactions[].transaction   | String   | 对象     |
 
 > 错误码
 
-| 异常                 | 错误码 | 描述                             |
-| -------------------- | ------ | -------------------------------- |
-| CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
-| SYSTEM_ERROR         | 20000  | System error                     |
-| INVALID_HASH_ERROR   | 11055  | Invalid transaction hash         |
+| 异常                   | 错误码 | 描述                                        |
+| ---------------------- | ------ | ------------------------------------------- |
+| CONNECTNETWORK_ERROR   | 11007  | Failed to connect to the network            |
+| SYSTEM_ERROR           | 20000  | System error                                |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0 |
 
 > 示例
 
 ```java
-//请求参数  
-BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
-BIFTransactionCacheResponse response = sdk.getBIFTransactionService().getTxCacheData(null);
-if (response.getErrorCode() == 0) {
-    System.out.println("txCacheData: "+JsonUtils.toJSONString(response.getResult().getTransactions()));
-} else {
-    System.out.println(JsonUtils.toJSONString(response));
-}
+      BIFTransactionCacheRequest cacheRequest=new BIFTransactionCacheRequest();
+        cacheRequest.setDomainId(0);
+        cacheRequest.setHash("");
+
+        BIFTransactionCacheResponse response = sdk.getBIFTransactionService().getTxCacheData(cacheRequest);
+        if (response.getErrorCode() == 0) {
+            System.out.println("txCacheData: "+JsonUtils.toJSONString(response.getResult().getTransactions()));
+        } else {
+            System.out.println(JsonUtils.toJSONString(response));
+        }
 ```
 
-### 1.5.9 parseBlob
+### 1.5.8 parseBlob
 
 > 接口说明
 
@@ -1792,7 +1961,7 @@ if (response.getErrorCode() == 0) {
 > 示例
 
 ```java
-      String transactionBlobResult = "0a286469643a6269643a65666e5655677151466659657539374142663673476d335746745658485a4232100d2244080962400a0132122c0a286469643a6269643a656641735874357a4d3248737136774359524d5a425335513948764732456d4b10021a01322204080110012204080710022a0ce8aebee7bdaee69d83e9999030c0843d38016014";
+      String transactionBlobResult = "0A276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B3337751003225C080712276469643A6269643A324E4A4C46343931536431553434323270476B50715467686946664B333775522F0A276469643A6269643A32695277744E53666841753739754A73624C6B78694333374A554C437235791080A9E0870430C0843D38E807";
         // Parsing the transaction Blob
         BIFTransactionParseBlobResponse transaction = sdk.getBIFTransactionService().parseBlob(transactionBlobResult);
         if(transaction.getErrorCode()==0){
@@ -1802,7 +1971,7 @@ if (response.getErrorCode() == 0) {
         }
 ```
 
-### 1.5.10 batchGasSend
+### 1.5.9 batchGasSend
 
 > 接口说明
 
@@ -1819,11 +1988,12 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
 | 参数          | 类型                      | 描述                                                         |
 | ------------- | ------------------------- | ------------------------------------------------------------ |
 | senderAddress | string                    | 必填，交易源账号，即交易的发起方                             |
-| gasPrice      | Long                      | 选填，打包费用 (单位是glowstone)默认，默认100L               |
+| gasPrice      | Long                      | 选填，打包费用 (单位是glowstone),默认100L                    |
 | feeLimit      | Long                      | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String                    | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                      | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
 | remarks       | String                    | 选填，用户自定义给交易的备注                                 |
+| domainId      | Integer                   | 选填，指定域ID，默认主共识域id(0)                            |
 | operations    | List<BIFGasSendOperation> | 必填，转账操作集合                                           |
 
 | BIFGasSendOperation |        |                    |
@@ -1855,8 +2025,8 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
 
 ```java
  		// 初始化参数
-        String senderAddress = "did:bid:efsdhXX7bNYxeYYVasatAi7DPE4nM3Lb";
-        String senderPrivateKey = "priSPKUk5JSkEK7inJTTs1RFAqvHoVKw6KEhZzsZxuMpGJieU4";
+        String senderAddress = "did:bid:ef7zyvBtyg22NC4qDHwehMJxeqw6Mmrh";
+        String senderPrivateKey = "priSPKr2dgZTCNj1mGkDYyhyZbCQhEzjQm7aEAnfVaqGmXsW2x";
         String destAddress1 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
         String destAddress2 = KeyPairEntity.getBidAndKeyPairBySM2().getEncAddress();
         Long bifAmount1 = ToBaseUnit.ToUGas("1");
@@ -1894,8 +2064,6 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
         }
 ```
 
-##  
-
 ## 1.6 区块服务接口列表 
 
 ​		区块服务接口主要是区块相关的接口，目前有6个接口：
@@ -1918,8 +2086,14 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
 > 调用方法
 
 ```java
-BIFBlockGetNumberResponse getBlockNumber();
+BIFBlockGetNumberResponse getBlockNumber(BIFBlockGetNumberInfoRequest);
 ```
+
+> 请求参数
+
+| 参数          | 类型   | 描述               |
+| ------------- | ------ | ------------------ |
+| domainId | Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -1934,14 +2108,20 @@ BIFBlockGetNumberResponse getBlockNumber();
 | -------------------- | ------ | -------------------------------- |
 | CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR         | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0             |
 
 > 示例
 
 ```java
 // 调用getBlockNumber接口
 BIFBlockGetNumberInfoRequest request=new BIFBlockGetNumberInfoRequest();
-BIFBlockGetNumberResponse response = sdk.getBIFBlockService().getBlockNumber(request);
-System.out.println(JsonUtils.toJSONString(response));
+request.setDomainId(20);
+BIFBlockGetNumberResponse response = sdk.getBIFBlockService().getBlockNumber();
+if(0 == response.getErrorCode()){
+   System.out.println(JsonUtils.toJSONString(response.getResult(), true));
+}else{
+   System.out.println("error: " + response.getErrorDesc());
+}
 ```
 
 ### 1.6.2 getTransactions
@@ -1961,6 +2141,7 @@ BIFBlockGetTransactionsResponse getTransactions(BIFBlockGetTransactionsRequest);
 | 参数        | 类型 | 描述                                  |
 | ----------- | ---- | ------------------------------------- |
 | blockNumber | Long | 必填，最新的区块高度，对应底层字段seq |
+| domainId    | Integer| 选填，指定域ID，默认主共识域id(0)       |
 
 > 响应数据
 
@@ -1977,6 +2158,7 @@ BIFBlockGetTransactionsResponse getTransactions(BIFBlockGetTransactionsRequest);
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR              | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0  |
 
 > 示例
 
@@ -1985,15 +2167,17 @@ BIFBlockGetTransactionsResponse getTransactions(BIFBlockGetTransactionsRequest);
 Long blockNumber = 1L;
 BIFBlockGetTransactionsRequest request = new BIFBlockGetTransactionsRequest();
 request.setBlockNumber(blockNumber);
+request.setDomainId(20);
+// 调用 getTransactions 接口
 BIFBlockGetTransactionsResponse response = sdk.getBIFBlockService().getTransactions(request);
 if (0 == response.getErrorCode()) {
-    System.out.println(JsonUtils.toJSONString(response.getResult()));
+    System.out.println(JsonUtils.toJSONString(response, true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("失败\n" + JsonUtils.toJSONString(response, true));
 }
 ```
 
-### 1.6.3 getBlockInfo
+### 1.6.3 getBlockInfo(v1.0.3)
 
 > 接口说明
 
@@ -2010,24 +2194,20 @@ BIFBlockGetInfoResponse getBlockInfo(BIFBlockGetInfoRequest);
 | 参数        | 类型 | 描述                   |
 | ----------- | ---- | ---------------------- |
 | blockNumber | Long | 必填，待查询的区块高度 |
+| domainId    | Integer| 选填，指定域ID，默认主共识域id(0)       |
+| withLeader | boolean | 选填，出块人信息,默认false |
 
 > 响应数据
 
-| 参数                        | 类型           | 描述              |
-| --------------------------- | -------------- | ----------------- |
-| header                      | BIFBlockHeader | 区块信息          |
-| header.close_time           | Long           | 区块确认时间      |
-| header.seq                  | Long           | 区块高度          |
-| header.tx_count             | Long           | 交易总量          |
-| header.version              | String         | 区块版本          |
-| header.account_tree_hash    | String         | 账户树哈希        |
-| header.consensus_value_hash | String         | 共识信息哈希      |
-| header.hash                 | String         | 区块哈希          |
-| header.previous_hash        | String         | 上一区块哈希      |
-| header.fees_hash            | String         | 费用hash          |
-| header.validators_hash      | String         | 共识列表hash      |
-| ledger_length               | Long           | 区块头大小(bytes) |
-| leader                      | String         | 出块节点参数      |
+| 参数               | 类型           | 描述                               |
+| ------------------ | -------------- | ---------------------------------- |
+| header             | BIFBlockHeader | 区块信息                           |
+| header.confirmTime | Long           | 区块确认时间                       |
+| header.number      | Long           | 区块高度                           |
+| header.txCount     | Long           | 交易总量                           |
+| header.version     | String         | 区块版本                           |
+| header.hash        | String         | 区块HASH                           |
+| leader             | String         | 出块人信息(withLeader为true时返回) |
 
 > 错误码
 
@@ -2037,6 +2217,7 @@ BIFBlockGetInfoResponse getBlockInfo(BIFBlockGetInfoRequest);
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR              | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0  |
 
 > 示例
 
@@ -2044,12 +2225,15 @@ BIFBlockGetInfoResponse getBlockInfo(BIFBlockGetInfoRequest);
 // 初始化请求参数
 BIFBlockGetInfoRequest blockGetInfoRequest = new BIFBlockGetInfoRequest();
 blockGetInfoRequest.setBlockNumber(10L);
+blockGetInfoRequest.setDomainId(0);
+blockGetInfoRequest.setWithLeader(true);
+// 调用 getBlockInfo 接口
 BIFBlockGetInfoResponse lockGetInfoResponse = sdk.getBIFBlockService().getBlockInfo(blockGetInfoRequest);
 if (lockGetInfoResponse.getErrorCode() == 0) {
     BIFBlockGetInfoResult lockGetInfoResult = lockGetInfoResponse.getResult();
-    System.out.println(JsonUtils.toJSONString(lockGetInfoResult));
+    System.out.println(JsonUtils.toJSONString(lockGetInfoResult, true));
 } else {
-    System.out.println(JsonUtils.toJSONString(lockGetInfoResponse));
+    System.out.println("error: " + lockGetInfoResponse.getErrorDesc());
 }
 ```
 
@@ -2064,26 +2248,25 @@ if (lockGetInfoResponse.getErrorCode() == 0) {
 > 调用方法
 
 ```java
-BIFBlockGetLatestInfoResponse getBlockLatestInfo();
+BIFBlockGetLatestInfoResponse getBlockLatestInfo(BIFBlockGetLatestInfoRequest);
 ```
 
-> 响应数据
->
+> 请求参数
 
-| 参数                        | 类型           | 描述              |
-| --------------------------- | -------------- | ----------------- |
-| header                      | BIFBlockHeader | 区块信息          |
-| header.close_time           | Long           | 区块确认时间      |
-| header.seq                  | Long           | 区块高度          |
-| header.tx_count             | Long           | 交易总量          |
-| header.version              | String         | 区块版本          |
-| header.account_tree_hash    | String         | 账户树哈希        |
-| header.consensus_value_hash | String         | 共识信息哈希      |
-| header.hash                 | String         | 区块哈希          |
-| header.previous_hash        | String         | 上一区块哈希      |
-| header.fees_hash            | String         | 费用hash          |
-| header.validators_hash      | String         | 共识列表hash      |
-| ledger_length               | Long           | 区块头大小(bytes) |
+| 参数          | 类型   | 描述               |
+| ------------- | ------ | ------------------ |
+| domainId | Integer| 选填，指定域ID，默认主共识域id(0)       |
+
+> 响应数据
+
+| 参数               | 类型           | 描述                      |
+| ------------------ | -------------- | ------------------------- |
+| header             | BIFBlockHeader | 区块信息                  |
+| header.confirmTime | Long           | 区块确认时间              |
+| header.number      | Long           | 区块高度，对应底层字段seq |
+| header.txCount     | Long           | 交易总量                  |
+| header.version     | String         | 区块版本                  |
+| header.hash        | String         | 区块HASH                  |
 
 
 > 错误码
@@ -2092,18 +2275,20 @@ BIFBlockGetLatestInfoResponse getBlockLatestInfo();
 | -------------------- | ------ | -------------------------------- |
 | CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR         | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR | 12007  | Domainid must be equal to or greater than 0  |
 
 > 示例
 
 ```java
 // 调用 getBlockLatestInfo 接口
 BIFBlockGetLatestInfoRequest request = new BIFBlockGetLatestInfoRequest();
-BIFBlockGetLatestInfoResponse lockGetLatestInfoResponse = sdk.getBIFBlockService().getBlockLatestInfo(request);
+request.setDomainId(20);
+BIFBlockGetLatestInfoResponse lockGetLatestInfoResponse = sdk.getBIFBlockService().getBlockLatestInfo();
 if (lockGetLatestInfoResponse.getErrorCode() == 0) {
     BIFBlockGetLatestInfoResult lockGetLatestInfoResult = lockGetLatestInfoResponse.getResult();
-    System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResult));
+    System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResult, true));
 } else {
-    System.out.println(JsonUtils.toJSONString(lockGetLatestInfoResponse));
+    System.out.println(lockGetLatestInfoResponse.getErrorDesc());
 }
 ```
 
@@ -2124,6 +2309,7 @@ BIFBlockGetValidatorsResponse getValidators(BIFBlockGetValidatorsRequest);
 | 参数        | 类型 | 描述                              |
 | ----------- | ---- | --------------------------------- |
 | blockNumber | Long | 必填，待查询的区块高度，必须大于0 |
+| domainId    | Integer| 选填，指定域ID，默认主共识域id(0)   |
 
 > 响应数据
 
@@ -2140,6 +2326,7 @@ BIFBlockGetValidatorsResponse getValidators(BIFBlockGetValidatorsRequest);
 | REQUEST_NULL_ERROR        | 12001  | Request parameter cannot be null |
 | CONNECTNETWORK_ERROR      | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR              | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR    | 12007  | Domainid must be equal to or greater than 0  |
 
 > 示例
 
@@ -2147,14 +2334,15 @@ BIFBlockGetValidatorsResponse getValidators(BIFBlockGetValidatorsRequest);
 // 初始化请求参数
 BIFBlockGetValidatorsRequest request = new BIFBlockGetValidatorsRequest();
 request.setBlockNumber(1L);
+request.setDomainId(20);
 
-// 调用getBIFValidators接口
+// 调用 getValidators 接口
 BIFBlockGetValidatorsResponse response = sdk.getBIFBlockService().getValidators(request);
 if (response.getErrorCode() == 0) {
     BIFBlockGetValidatorsResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result));
+    System.out.println(JsonUtils.toJSONString(result, true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error: " + response.getErrorDesc());
 }
 ```
 
@@ -2167,8 +2355,14 @@ if (response.getErrorCode() == 0) {
 > 调用方法
 
 ```java
-BIFBlockGetLatestValidatorsResponse getLatestValidators();
+BIFBlockGetLatestValidatorsResponse getLatestValidators(BIFBlockGetLatestValidatorsRequest);
 ```
+
+> 请求参数
+
+| 参数        | 类型 | 描述                              |
+| ----------- | ---- | --------------------------------- |
+| domainId    | Integer| 选填，指定域ID，默认主共识域id(0)   |
 
 > 响应数据
 
@@ -2183,18 +2377,20 @@ BIFBlockGetLatestValidatorsResponse getLatestValidators();
 | -------------------- | ------ | -------------------------------- |
 | CONNECTNETWORK_ERROR | 11007  | Failed to connect to the network |
 | SYSTEM_ERROR         | 20000  | System error                     |
+| INVALID_DOMAINID_ERROR  | 12007  | Domainid must be equal to or greater than 0  |
 
 > 示例
 
 ```java
+// 调用 getLatestValidators 接口
 BIFBlockGetLatestValidatorsRequest request=new BIFBlockGetLatestValidatorsRequest();
-// 调用getBIFLatestValidators接口
-BIFBlockGetLatestValidatorsResponse response = sdk.getBIFBlockService().getLatestValidators(request);
+request.setDomainId(20);
+BIFBlockGetLatestValidatorsResponse response = sdk.getBIFBlockService().getLatestValidators();
 if (response.getErrorCode() == 0) {
     BIFBlockGetLatestValidatorsResult result = response.getResult();
-    System.out.println(JsonUtils.toJSONString(result));
+    System.out.println(JsonUtils.toJSONString(result, true));
 } else {
-    System.out.println(JsonUtils.toJSONString(response));
+    System.out.println("error: " + response.getErrorDesc());
 }
 ```
 
@@ -2204,11 +2400,11 @@ if (response.getErrorCode() == 0) {
 
 **一定要灵活使用星火区块链浏览器 http://test-explorer.bitfactory.cn/, 账户，交易，合约hash都可以在上面搜索查询。**
 
-### 1.7.1 概述
+### 4.7.1 概述
 
 做合约开发，一般需要以下几个步骤：
 
-1. 创建一个账号，并且获得星火令（XHT），才能发起后续交易
+1. 创建一个账号，并且获得XHT，才能发起后续交易
 2. 编写合约，建议基于javascript编写
 3. 编译和部署合约
 4. 调用和读取合约
@@ -2233,7 +2429,7 @@ System.out.printf("private key %s\n", entity.getEncPrivateKey());
 ```java
 import cn.bif.api.BIFSDK;
 
-public static final String NODE_URL = "http://test.bifcore.bitfactory.cn";
+public static final String NODE_URL = "http://test-bif-core.xinghuo.space";
 
 public staitc BIFSDK sdk = BIFSDK.getInstance(NODE_URL);
 ```
@@ -2467,7 +2663,7 @@ if (cCallRsp.getErrorCode() == 0) {
 | ACCOUNT_CREATE_ERROR                      | 11001  | Failed to create the account                                 |
 | INVALID_SOURCEADDRESS_ERROR               | 11002  | Invalid sourceAddress                                        |
 | INVALID_DESTADDRESS_ERROR                 | 11003  | Invalid destAddress                                          |
-| INVALID_INITBALANCE_ERROR                 | 11004  | InitBalance must be between 0 and Long.MAX_VALUE             |
+| INVALID_INITBALANCE_ERROR                 | 11004  | InitBalance must be between 1 and Long.MAX_VALUE             |
 | SOURCEADDRESS_EQUAL_DESTADDRESS_ERROR     | 11005  | SourceAddress cannot be equal to destAddress                 |
 | INVALID_ADDRESS_ERROR                     | 11006  | Invalid address                                              |
 | CONNECTNETWORK_ERROR                      | 11007  | Failed to connect to the network                             |
@@ -2521,3 +2717,4 @@ if (cCallRsp.getErrorCode() == 0) {
 | INVALID_PRITX_PAYLAOD_ERROR               | 12004  | Invalid Private Transaction payload                          |
 | INVALID_PRITX_TO_ERROR                    | 12005  | Invalid Private Transaction recipient list                   |
 | INVALID_PRITX_HASH_ERROR                  | 12006  | Invalid Private Transaction Hash                             |
+| INVALID_DOMAINID_ERROR                    | 12007  | Domainid must be equal to or greater than 0                  |

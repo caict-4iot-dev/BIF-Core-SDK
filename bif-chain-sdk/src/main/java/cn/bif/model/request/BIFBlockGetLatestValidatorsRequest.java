@@ -18,43 +18,14 @@
  */
 package cn.bif.model.request;
 
-public class BIFPrivateTransactionStoreRawRequest {
-    private String from;
-    private String payload;
+public class BIFBlockGetLatestValidatorsRequest {
+    private Integer domainId;
 
-    /**
-     * @Method getFrom
-     * @Params []
-     * @Return java.lang.String
-     */
-    public String getFrom() {
-        return from;
+    public Integer getDomainId() {
+        return domainId;
     }
 
-    /**
-     * @Method setFrom
-     * @Params [from]
-     * @Return void
-     */
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    /**
-     * @Method getPayload
-     * @Params []
-     * @Return java.lang.String
-     */
-    public String getPayload() {
-        return payload;
-    }
-
-    /**
-     * @Method setPayload
-     * @Params [payload]
-     * @Return void
-     */
-    public void setPayload(String payload) {
-        this.payload = payload;
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
     }
 }

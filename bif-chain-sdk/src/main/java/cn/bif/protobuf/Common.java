@@ -6,19 +6,19 @@ package cn.bif.protobuf;
 public final class Common {
   private Common() {}
   public static void registerAllExtensions(
-          com.google.protobuf.ExtensionRegistryLite registry) {
+      com.google.protobuf.ExtensionRegistryLite registry) {
   }
 
   public static void registerAllExtensions(
-          com.google.protobuf.ExtensionRegistry registry) {
+      com.google.protobuf.ExtensionRegistry registry) {
     registerAllExtensions(
-            (com.google.protobuf.ExtensionRegistryLite) registry);
+        (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   /**
    * Protobuf enum {@code protocol.ERRORCODE}
    */
   public enum ERRORCODE
-          implements com.google.protobuf.ProtocolMessageEnum {
+      implements com.google.protobuf.ProtocolMessageEnum {
     /**
      * <code>ERRCODE_SUCCESS = 0;</code>
      */
@@ -93,7 +93,7 @@ public final class Common {
     ERRCODE_BAD_SEQUENCE(99),
     /**
      * <pre>
-     *BUCHAIN LOW RESERVE
+     *BIFCHAIN LOW RESERVE
      * </pre>
      *
      * <code>ERRCODE_ACCOUNT_LOW_RESERVE = 100;</code>
@@ -183,6 +183,30 @@ public final class Common {
      * <code>ERRCODE_TX_INSERT_QUEUE_FAIL = 160;</code>
      */
     ERRCODE_TX_INSERT_QUEUE_FAIL(160),
+    /**
+     * <code>ERRCODE_PRI_TX_STORE_RAW_FAIL = 161;</code>
+     */
+    ERRCODE_PRI_TX_STORE_RAW_FAIL(161),
+    /**
+     * <code>ERRCODE_PRI_TX_RECEIVE_RAW_FAIL = 162;</code>
+     */
+    ERRCODE_PRI_TX_RECEIVE_RAW_FAIL(162),
+    /**
+     * <code>ERRCODE_PRI_TX_SEND_FAIL = 163;</code>
+     */
+    ERRCODE_PRI_TX_SEND_FAIL(163),
+    /**
+     * <code>ERRCODE_PRI_TX_RECEIVE_FAIL = 164;</code>
+     */
+    ERRCODE_PRI_TX_RECEIVE_FAIL(164),
+    /**
+     * <code>ERRCODE_PRI_TX_DESTADDRESS_NOT_EMPTY = 165;</code>
+     */
+    ERRCODE_PRI_TX_DESTADDRESS_NOT_EMPTY(165),
+    /**
+     * <code>ERROR_DOMAIN_NOT_EXIST = 170;</code>
+     */
+    ERROR_DOMAIN_NOT_EXIST(170),
     UNRECOGNIZED(-1),
     ;
 
@@ -260,7 +284,7 @@ public final class Common {
     public static final int ERRCODE_BAD_SEQUENCE_VALUE = 99;
     /**
      * <pre>
-     *BUCHAIN LOW RESERVE
+     *BIFCHAIN LOW RESERVE
      * </pre>
      *
      * <code>ERRCODE_ACCOUNT_LOW_RESERVE = 100;</code>
@@ -350,12 +374,36 @@ public final class Common {
      * <code>ERRCODE_TX_INSERT_QUEUE_FAIL = 160;</code>
      */
     public static final int ERRCODE_TX_INSERT_QUEUE_FAIL_VALUE = 160;
+    /**
+     * <code>ERRCODE_PRI_TX_STORE_RAW_FAIL = 161;</code>
+     */
+    public static final int ERRCODE_PRI_TX_STORE_RAW_FAIL_VALUE = 161;
+    /**
+     * <code>ERRCODE_PRI_TX_RECEIVE_RAW_FAIL = 162;</code>
+     */
+    public static final int ERRCODE_PRI_TX_RECEIVE_RAW_FAIL_VALUE = 162;
+    /**
+     * <code>ERRCODE_PRI_TX_SEND_FAIL = 163;</code>
+     */
+    public static final int ERRCODE_PRI_TX_SEND_FAIL_VALUE = 163;
+    /**
+     * <code>ERRCODE_PRI_TX_RECEIVE_FAIL = 164;</code>
+     */
+    public static final int ERRCODE_PRI_TX_RECEIVE_FAIL_VALUE = 164;
+    /**
+     * <code>ERRCODE_PRI_TX_DESTADDRESS_NOT_EMPTY = 165;</code>
+     */
+    public static final int ERRCODE_PRI_TX_DESTADDRESS_NOT_EMPTY_VALUE = 165;
+    /**
+     * <code>ERROR_DOMAIN_NOT_EXIST = 170;</code>
+     */
+    public static final int ERROR_DOMAIN_NOT_EXIST_VALUE = 170;
 
 
     public final int getNumber() {
       if (this == UNRECOGNIZED) {
         throw new java.lang.IllegalArgumentException(
-                "Can't get the number of an unknown enum value.");
+            "Can't get the number of an unknown enum value.");
       }
       return value;
     }
@@ -407,42 +455,48 @@ public final class Common {
         case 156: return ERRCODE_INVALID_CONTRACT;
         case 157: return ERRCODE_INVALID_CONTRACTVERSION;
         case 160: return ERRCODE_TX_INSERT_QUEUE_FAIL;
+        case 161: return ERRCODE_PRI_TX_STORE_RAW_FAIL;
+        case 162: return ERRCODE_PRI_TX_RECEIVE_RAW_FAIL;
+        case 163: return ERRCODE_PRI_TX_SEND_FAIL;
+        case 164: return ERRCODE_PRI_TX_RECEIVE_FAIL;
+        case 165: return ERRCODE_PRI_TX_DESTADDRESS_NOT_EMPTY;
+        case 170: return ERROR_DOMAIN_NOT_EXIST;
         default: return null;
       }
     }
 
     public static com.google.protobuf.Internal.EnumLiteMap<ERRORCODE>
-    internalGetValueMap() {
+        internalGetValueMap() {
       return internalValueMap;
     }
     private static final com.google.protobuf.Internal.EnumLiteMap<
-            ERRORCODE> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<ERRORCODE>() {
-              public ERRORCODE findValueByNumber(int number) {
-                return ERRORCODE.forNumber(number);
-              }
-            };
+        ERRORCODE> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ERRORCODE>() {
+            public ERRORCODE findValueByNumber(int number) {
+              return ERRORCODE.forNumber(number);
+            }
+          };
 
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
-    getValueDescriptor() {
+        getValueDescriptor() {
       return getDescriptor().getValues().get(ordinal());
     }
     public final com.google.protobuf.Descriptors.EnumDescriptor
-    getDescriptorForType() {
+        getDescriptorForType() {
       return getDescriptor();
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
-    getDescriptor() {
+        getDescriptor() {
       return cn.bif.protobuf.Common.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final ERRORCODE[] VALUES = values();
 
     public static ERRORCODE valueOf(
-            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
         throw new java.lang.IllegalArgumentException(
-                "EnumValueDescriptor is not for this type.");
+          "EnumValueDescriptor is not for this type.");
       }
       if (desc.getIndex() == -1) {
         return UNRECOGNIZED;
@@ -460,8 +514,8 @@ public final class Common {
   }
 
   public interface KeyPairOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protocol.KeyPair)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protocol.KeyPair)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>optional string key = 1;</code>
@@ -471,7 +525,7 @@ public final class Common {
      * <code>optional string key = 1;</code>
      */
     com.google.protobuf.ByteString
-    getKeyBytes();
+        getKeyBytes();
 
     /**
      * <code>optional string value = 2;</code>
@@ -481,7 +535,7 @@ public final class Common {
      * <code>optional string value = 2;</code>
      */
     com.google.protobuf.ByteString
-    getValueBytes();
+        getValueBytes();
 
     /**
      * <code>optional int64 version = 3;</code>
@@ -492,9 +546,9 @@ public final class Common {
    * Protobuf type {@code protocol.KeyPair}
    */
   public  static final class KeyPair extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:protocol.KeyPair)
-          KeyPairOrBuilder {
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.KeyPair)
+      KeyPairOrBuilder {
     // Use KeyPair.newBuilder() to construct.
     private KeyPair(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
@@ -511,9 +565,9 @@ public final class Common {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private KeyPair(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -553,21 +607,21 @@ public final class Common {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
+        getDescriptor() {
       return cn.bif.protobuf.Common.internal_static_protocol_KeyPair_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
+        internalGetFieldAccessorTable() {
       return cn.bif.protobuf.Common.internal_static_protocol_KeyPair_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      cn.bif.protobuf.Common.KeyPair.class, cn.bif.protobuf.Common.KeyPair.Builder.class);
+          .ensureFieldAccessorsInitialized(
+              cn.bif.protobuf.Common.KeyPair.class, cn.bif.protobuf.Common.KeyPair.Builder.class);
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
@@ -580,8 +634,8 @@ public final class Common {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         key_ = s;
         return s;
@@ -591,12 +645,12 @@ public final class Common {
      * <code>optional string key = 1;</code>
      */
     public com.google.protobuf.ByteString
-    getKeyBytes() {
+        getKeyBytes() {
       java.lang.Object ref = key_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         key_ = b;
         return b;
       } else {
@@ -614,8 +668,8 @@ public final class Common {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         value_ = s;
         return s;
@@ -625,12 +679,12 @@ public final class Common {
      * <code>optional string value = 2;</code>
      */
     public com.google.protobuf.ByteString
-    getValueBytes() {
+        getValueBytes() {
       java.lang.Object ref = value_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         value_ = b;
         return b;
       } else {
@@ -658,7 +712,7 @@ public final class Common {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       if (!getKeyBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, key_);
       }
@@ -683,7 +737,7 @@ public final class Common {
       }
       if (version_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(3, version_);
+          .computeInt64Size(3, version_);
       }
       memoizedSize = size;
       return size;
@@ -693,7 +747,7 @@ public final class Common {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+       return true;
       }
       if (!(obj instanceof cn.bif.protobuf.Common.KeyPair)) {
         return super.equals(obj);
@@ -702,11 +756,11 @@ public final class Common {
 
       boolean result = true;
       result = result && getKey()
-              .equals(other.getKey());
+          .equals(other.getKey());
       result = result && getValue()
-              .equals(other.getValue());
+          .equals(other.getValue());
       result = result && (getVersion()
-              == other.getVersion());
+          == other.getVersion());
       return result;
     }
 
@@ -723,69 +777,69 @@ public final class Common {
       hash = (53 * hash) + getValue().hashCode();
       hash = (37 * hash) + VERSION_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getVersion());
+          getVersion());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
     public static cn.bif.protobuf.Common.KeyPair parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.KeyPair parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.KeyPair parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.KeyPair parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.KeyPair parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.KeyPair parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.KeyPair parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.KeyPair parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.KeyPair parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.KeyPair parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -797,12 +851,12 @@ public final class Common {
     }
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
+          ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -810,19 +864,19 @@ public final class Common {
      * Protobuf type {@code protocol.KeyPair}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protocol.KeyPair)
-            cn.bif.protobuf.Common.KeyPairOrBuilder {
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.KeyPair)
+        cn.bif.protobuf.Common.KeyPairOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
+          getDescriptor() {
         return cn.bif.protobuf.Common.internal_static_protocol_KeyPair_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
+          internalGetFieldAccessorTable() {
         return cn.bif.protobuf.Common.internal_static_protocol_KeyPair_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        cn.bif.protobuf.Common.KeyPair.class, cn.bif.protobuf.Common.KeyPair.Builder.class);
+            .ensureFieldAccessorsInitialized(
+                cn.bif.protobuf.Common.KeyPair.class, cn.bif.protobuf.Common.KeyPair.Builder.class);
       }
 
       // Construct using cn.bif.protobuf.Common.KeyPair.newBuilder()
@@ -831,7 +885,7 @@ public final class Common {
       }
 
       private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -852,7 +906,7 @@ public final class Common {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
+          getDescriptorForType() {
         return cn.bif.protobuf.Common.internal_static_protocol_KeyPair_descriptor;
       }
 
@@ -881,26 +935,26 @@ public final class Common {
         return (Builder) super.clone();
       }
       public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.setField(field, value);
       }
       public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
       public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
       public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
       public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -934,9 +988,9 @@ public final class Common {
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
         cn.bif.protobuf.Common.KeyPair parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -959,7 +1013,7 @@ public final class Common {
         java.lang.Object ref = key_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
+              (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           key_ = s;
           return s;
@@ -971,12 +1025,12 @@ public final class Common {
        * <code>optional string key = 1;</code>
        */
       public com.google.protobuf.ByteString
-      getKeyBytes() {
+          getKeyBytes() {
         java.lang.Object ref = key_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
           key_ = b;
           return b;
         } else {
@@ -987,11 +1041,11 @@ public final class Common {
        * <code>optional string key = 1;</code>
        */
       public Builder setKey(
-              java.lang.String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-
+    throw new NullPointerException();
+  }
+  
         key_ = value;
         onChanged();
         return this;
@@ -1000,7 +1054,7 @@ public final class Common {
        * <code>optional string key = 1;</code>
        */
       public Builder clearKey() {
-
+        
         key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
@@ -1009,12 +1063,12 @@ public final class Common {
        * <code>optional string key = 1;</code>
        */
       public Builder setKeyBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
         key_ = value;
         onChanged();
         return this;
@@ -1028,7 +1082,7 @@ public final class Common {
         java.lang.Object ref = value_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
+              (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           value_ = s;
           return s;
@@ -1040,12 +1094,12 @@ public final class Common {
        * <code>optional string value = 2;</code>
        */
       public com.google.protobuf.ByteString
-      getValueBytes() {
+          getValueBytes() {
         java.lang.Object ref = value_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
           value_ = b;
           return b;
         } else {
@@ -1056,11 +1110,11 @@ public final class Common {
        * <code>optional string value = 2;</code>
        */
       public Builder setValue(
-              java.lang.String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-
+    throw new NullPointerException();
+  }
+  
         value_ = value;
         onChanged();
         return this;
@@ -1069,7 +1123,7 @@ public final class Common {
        * <code>optional string value = 2;</code>
        */
       public Builder clearValue() {
-
+        
         value_ = getDefaultInstance().getValue();
         onChanged();
         return this;
@@ -1078,12 +1132,12 @@ public final class Common {
        * <code>optional string value = 2;</code>
        */
       public Builder setValueBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
         value_ = value;
         onChanged();
         return this;
@@ -1100,7 +1154,7 @@ public final class Common {
        * <code>optional int64 version = 3;</code>
        */
       public Builder setVersion(long value) {
-
+        
         version_ = value;
         onChanged();
         return this;
@@ -1109,18 +1163,18 @@ public final class Common {
        * <code>optional int64 version = 3;</code>
        */
       public Builder clearVersion() {
-
+        
         version_ = 0L;
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
       public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
@@ -1139,12 +1193,12 @@ public final class Common {
     }
 
     private static final com.google.protobuf.Parser<KeyPair>
-            PARSER = new com.google.protobuf.AbstractParser<KeyPair>() {
+        PARSER = new com.google.protobuf.AbstractParser<KeyPair>() {
       public KeyPair parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        return new KeyPair(input, extensionRegistry);
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new KeyPair(input, extensionRegistry);
       }
     };
 
@@ -1164,8 +1218,8 @@ public final class Common {
   }
 
   public interface SignatureOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protocol.Signature)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protocol.Signature)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>optional string public_key = 1;</code>
@@ -1175,7 +1229,7 @@ public final class Common {
      * <code>optional string public_key = 1;</code>
      */
     com.google.protobuf.ByteString
-    getPublicKeyBytes();
+        getPublicKeyBytes();
 
     /**
      * <code>optional bytes sign_data = 2;</code>
@@ -1186,9 +1240,9 @@ public final class Common {
    * Protobuf type {@code protocol.Signature}
    */
   public  static final class Signature extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:protocol.Signature)
-          SignatureOrBuilder {
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.Signature)
+      SignatureOrBuilder {
     // Use Signature.newBuilder() to construct.
     private Signature(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
@@ -1204,9 +1258,9 @@ public final class Common {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Signature(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -1240,21 +1294,21 @@ public final class Common {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
+        getDescriptor() {
       return cn.bif.protobuf.Common.internal_static_protocol_Signature_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
+        internalGetFieldAccessorTable() {
       return cn.bif.protobuf.Common.internal_static_protocol_Signature_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      cn.bif.protobuf.Common.Signature.class, cn.bif.protobuf.Common.Signature.Builder.class);
+          .ensureFieldAccessorsInitialized(
+              cn.bif.protobuf.Common.Signature.class, cn.bif.protobuf.Common.Signature.Builder.class);
     }
 
     public static final int PUBLIC_KEY_FIELD_NUMBER = 1;
@@ -1267,8 +1321,8 @@ public final class Common {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         publicKey_ = s;
         return s;
@@ -1278,12 +1332,12 @@ public final class Common {
      * <code>optional string public_key = 1;</code>
      */
     public com.google.protobuf.ByteString
-    getPublicKeyBytes() {
+        getPublicKeyBytes() {
       java.lang.Object ref = publicKey_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         publicKey_ = b;
         return b;
       } else {
@@ -1311,7 +1365,7 @@ public final class Common {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       if (!getPublicKeyBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, publicKey_);
       }
@@ -1330,7 +1384,7 @@ public final class Common {
       }
       if (!signData_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(2, signData_);
+          .computeBytesSize(2, signData_);
       }
       memoizedSize = size;
       return size;
@@ -1340,7 +1394,7 @@ public final class Common {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+       return true;
       }
       if (!(obj instanceof cn.bif.protobuf.Common.Signature)) {
         return super.equals(obj);
@@ -1349,9 +1403,9 @@ public final class Common {
 
       boolean result = true;
       result = result && getPublicKey()
-              .equals(other.getPublicKey());
+          .equals(other.getPublicKey());
       result = result && getSignData()
-              .equals(other.getSignData());
+          .equals(other.getSignData());
       return result;
     }
 
@@ -1372,62 +1426,62 @@ public final class Common {
     }
 
     public static cn.bif.protobuf.Common.Signature parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.Signature parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Signature parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.Signature parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Signature parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Signature parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Signature parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Signature parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Signature parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Signature parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -1439,12 +1493,12 @@ public final class Common {
     }
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
+          ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1452,19 +1506,19 @@ public final class Common {
      * Protobuf type {@code protocol.Signature}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protocol.Signature)
-            cn.bif.protobuf.Common.SignatureOrBuilder {
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.Signature)
+        cn.bif.protobuf.Common.SignatureOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
+          getDescriptor() {
         return cn.bif.protobuf.Common.internal_static_protocol_Signature_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
+          internalGetFieldAccessorTable() {
         return cn.bif.protobuf.Common.internal_static_protocol_Signature_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        cn.bif.protobuf.Common.Signature.class, cn.bif.protobuf.Common.Signature.Builder.class);
+            .ensureFieldAccessorsInitialized(
+                cn.bif.protobuf.Common.Signature.class, cn.bif.protobuf.Common.Signature.Builder.class);
       }
 
       // Construct using cn.bif.protobuf.Common.Signature.newBuilder()
@@ -1473,7 +1527,7 @@ public final class Common {
       }
 
       private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -1492,7 +1546,7 @@ public final class Common {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
+          getDescriptorForType() {
         return cn.bif.protobuf.Common.internal_static_protocol_Signature_descriptor;
       }
 
@@ -1520,26 +1574,26 @@ public final class Common {
         return (Builder) super.clone();
       }
       public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.setField(field, value);
       }
       public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
       public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
       public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
       public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -1569,9 +1623,9 @@ public final class Common {
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
         cn.bif.protobuf.Common.Signature parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -1594,7 +1648,7 @@ public final class Common {
         java.lang.Object ref = publicKey_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
+              (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           publicKey_ = s;
           return s;
@@ -1606,12 +1660,12 @@ public final class Common {
        * <code>optional string public_key = 1;</code>
        */
       public com.google.protobuf.ByteString
-      getPublicKeyBytes() {
+          getPublicKeyBytes() {
         java.lang.Object ref = publicKey_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
           publicKey_ = b;
           return b;
         } else {
@@ -1622,11 +1676,11 @@ public final class Common {
        * <code>optional string public_key = 1;</code>
        */
       public Builder setPublicKey(
-              java.lang.String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-
+    throw new NullPointerException();
+  }
+  
         publicKey_ = value;
         onChanged();
         return this;
@@ -1635,7 +1689,7 @@ public final class Common {
        * <code>optional string public_key = 1;</code>
        */
       public Builder clearPublicKey() {
-
+        
         publicKey_ = getDefaultInstance().getPublicKey();
         onChanged();
         return this;
@@ -1644,12 +1698,12 @@ public final class Common {
        * <code>optional string public_key = 1;</code>
        */
       public Builder setPublicKeyBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
         publicKey_ = value;
         onChanged();
         return this;
@@ -1667,9 +1721,9 @@ public final class Common {
        */
       public Builder setSignData(com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-
+    throw new NullPointerException();
+  }
+  
         signData_ = value;
         onChanged();
         return this;
@@ -1678,18 +1732,18 @@ public final class Common {
        * <code>optional bytes sign_data = 2;</code>
        */
       public Builder clearSignData() {
-
+        
         signData_ = getDefaultInstance().getSignData();
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
       public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
@@ -1708,12 +1762,12 @@ public final class Common {
     }
 
     private static final com.google.protobuf.Parser<Signature>
-            PARSER = new com.google.protobuf.AbstractParser<Signature>() {
+        PARSER = new com.google.protobuf.AbstractParser<Signature>() {
       public Signature parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Signature(input, extensionRegistry);
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Signature(input, extensionRegistry);
       }
     };
 
@@ -1733,8 +1787,8 @@ public final class Common {
   }
 
   public interface LedgerUpgradeOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protocol.LedgerUpgrade)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protocol.LedgerUpgrade)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
@@ -1753,7 +1807,7 @@ public final class Common {
      * <code>repeated string new_validator_list = 2;</code>
      */
     java.util.List<java.lang.String>
-    getNewValidatorListList();
+        getNewValidatorListList();
     /**
      * <pre>
      *for hardfork
@@ -1778,7 +1832,7 @@ public final class Common {
      * <code>repeated string new_validator_list = 2;</code>
      */
     com.google.protobuf.ByteString
-    getNewValidatorListBytes(int index);
+        getNewValidatorListBytes(int index);
 
     /**
      * <code>optional string chain_code = 3;</code>
@@ -1788,15 +1842,15 @@ public final class Common {
      * <code>optional string chain_code = 3;</code>
      */
     com.google.protobuf.ByteString
-    getChainCodeBytes();
+        getChainCodeBytes();
   }
   /**
    * Protobuf type {@code protocol.LedgerUpgrade}
    */
   public  static final class LedgerUpgrade extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:protocol.LedgerUpgrade)
-          LedgerUpgradeOrBuilder {
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.LedgerUpgrade)
+      LedgerUpgradeOrBuilder {
     // Use LedgerUpgrade.newBuilder() to construct.
     private LedgerUpgrade(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
@@ -1813,9 +1867,9 @@ public final class Common {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private LedgerUpgrade(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -1858,7 +1912,7 @@ public final class Common {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+            e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           newValidatorList_ = newValidatorList_.getUnmodifiableView();
@@ -1867,15 +1921,15 @@ public final class Common {
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
+        getDescriptor() {
       return cn.bif.protobuf.Common.internal_static_protocol_LedgerUpgrade_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
+        internalGetFieldAccessorTable() {
       return cn.bif.protobuf.Common.internal_static_protocol_LedgerUpgrade_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      cn.bif.protobuf.Common.LedgerUpgrade.class, cn.bif.protobuf.Common.LedgerUpgrade.Builder.class);
+          .ensureFieldAccessorsInitialized(
+              cn.bif.protobuf.Common.LedgerUpgrade.class, cn.bif.protobuf.Common.LedgerUpgrade.Builder.class);
     }
 
     private int bitField0_;
@@ -1902,7 +1956,7 @@ public final class Common {
      * <code>repeated string new_validator_list = 2;</code>
      */
     public com.google.protobuf.ProtocolStringList
-    getNewValidatorListList() {
+        getNewValidatorListList() {
       return newValidatorList_;
     }
     /**
@@ -1933,7 +1987,7 @@ public final class Common {
      * <code>repeated string new_validator_list = 2;</code>
      */
     public com.google.protobuf.ByteString
-    getNewValidatorListBytes(int index) {
+        getNewValidatorListBytes(int index) {
       return newValidatorList_.getByteString(index);
     }
 
@@ -1947,8 +2001,8 @@ public final class Common {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         chainCode_ = s;
         return s;
@@ -1958,12 +2012,12 @@ public final class Common {
      * <code>optional string chain_code = 3;</code>
      */
     public com.google.protobuf.ByteString
-    getChainCodeBytes() {
+        getChainCodeBytes() {
       java.lang.Object ref = chainCode_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b =
-                com.google.protobuf.ByteString.copyFromUtf8(
-                        (java.lang.String) ref);
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
         chainCode_ = b;
         return b;
       } else {
@@ -1982,7 +2036,7 @@ public final class Common {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       if (newLedgerVersion_ != 0L) {
         output.writeInt64(1, newLedgerVersion_);
       }
@@ -2001,7 +2055,7 @@ public final class Common {
       size = 0;
       if (newLedgerVersion_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, newLedgerVersion_);
+          .computeInt64Size(1, newLedgerVersion_);
       }
       {
         int dataSize = 0;
@@ -2022,7 +2076,7 @@ public final class Common {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+       return true;
       }
       if (!(obj instanceof cn.bif.protobuf.Common.LedgerUpgrade)) {
         return super.equals(obj);
@@ -2031,11 +2085,11 @@ public final class Common {
 
       boolean result = true;
       result = result && (getNewLedgerVersion()
-              == other.getNewLedgerVersion());
+          == other.getNewLedgerVersion());
       result = result && getNewValidatorListList()
-              .equals(other.getNewValidatorListList());
+          .equals(other.getNewValidatorListList());
       result = result && getChainCode()
-              .equals(other.getChainCode());
+          .equals(other.getChainCode());
       return result;
     }
 
@@ -2048,7 +2102,7 @@ public final class Common {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + NEW_LEDGER_VERSION_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getNewLedgerVersion());
+          getNewLedgerVersion());
       if (getNewValidatorListCount() > 0) {
         hash = (37 * hash) + NEW_VALIDATOR_LIST_FIELD_NUMBER;
         hash = (53 * hash) + getNewValidatorListList().hashCode();
@@ -2061,62 +2115,62 @@ public final class Common {
     }
 
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.LedgerUpgrade parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -2128,12 +2182,12 @@ public final class Common {
     }
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
+          ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2141,19 +2195,19 @@ public final class Common {
      * Protobuf type {@code protocol.LedgerUpgrade}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protocol.LedgerUpgrade)
-            cn.bif.protobuf.Common.LedgerUpgradeOrBuilder {
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.LedgerUpgrade)
+        cn.bif.protobuf.Common.LedgerUpgradeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
+          getDescriptor() {
         return cn.bif.protobuf.Common.internal_static_protocol_LedgerUpgrade_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
+          internalGetFieldAccessorTable() {
         return cn.bif.protobuf.Common.internal_static_protocol_LedgerUpgrade_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        cn.bif.protobuf.Common.LedgerUpgrade.class, cn.bif.protobuf.Common.LedgerUpgrade.Builder.class);
+            .ensureFieldAccessorsInitialized(
+                cn.bif.protobuf.Common.LedgerUpgrade.class, cn.bif.protobuf.Common.LedgerUpgrade.Builder.class);
       }
 
       // Construct using cn.bif.protobuf.Common.LedgerUpgrade.newBuilder()
@@ -2162,7 +2216,7 @@ public final class Common {
       }
 
       private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2183,7 +2237,7 @@ public final class Common {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
+          getDescriptorForType() {
         return cn.bif.protobuf.Common.internal_static_protocol_LedgerUpgrade_descriptor;
       }
 
@@ -2219,26 +2273,26 @@ public final class Common {
         return (Builder) super.clone();
       }
       public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.setField(field, value);
       }
       public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
       public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
       public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
       public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -2278,9 +2332,9 @@ public final class Common {
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
         cn.bif.protobuf.Common.LedgerUpgrade parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -2315,7 +2369,7 @@ public final class Common {
        * <code>optional int64 new_ledger_version = 1;</code>
        */
       public Builder setNewLedgerVersion(long value) {
-
+        
         newLedgerVersion_ = value;
         onChanged();
         return this;
@@ -2328,7 +2382,7 @@ public final class Common {
        * <code>optional int64 new_ledger_version = 1;</code>
        */
       public Builder clearNewLedgerVersion() {
-
+        
         newLedgerVersion_ = 0L;
         onChanged();
         return this;
@@ -2339,7 +2393,7 @@ public final class Common {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
           newValidatorList_ = new com.google.protobuf.LazyStringArrayList(newValidatorList_);
           bitField0_ |= 0x00000002;
-        }
+         }
       }
       /**
        * <pre>
@@ -2349,7 +2403,7 @@ public final class Common {
        * <code>repeated string new_validator_list = 2;</code>
        */
       public com.google.protobuf.ProtocolStringList
-      getNewValidatorListList() {
+          getNewValidatorListList() {
         return newValidatorList_.getUnmodifiableView();
       }
       /**
@@ -2380,7 +2434,7 @@ public final class Common {
        * <code>repeated string new_validator_list = 2;</code>
        */
       public com.google.protobuf.ByteString
-      getNewValidatorListBytes(int index) {
+          getNewValidatorListBytes(int index) {
         return newValidatorList_.getByteString(index);
       }
       /**
@@ -2391,11 +2445,11 @@ public final class Common {
        * <code>repeated string new_validator_list = 2;</code>
        */
       public Builder setNewValidatorList(
-              int index, java.lang.String value) {
+          int index, java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureNewValidatorListIsMutable();
+    throw new NullPointerException();
+  }
+  ensureNewValidatorListIsMutable();
         newValidatorList_.set(index, value);
         onChanged();
         return this;
@@ -2408,11 +2462,11 @@ public final class Common {
        * <code>repeated string new_validator_list = 2;</code>
        */
       public Builder addNewValidatorList(
-              java.lang.String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        ensureNewValidatorListIsMutable();
+    throw new NullPointerException();
+  }
+  ensureNewValidatorListIsMutable();
         newValidatorList_.add(value);
         onChanged();
         return this;
@@ -2425,10 +2479,10 @@ public final class Common {
        * <code>repeated string new_validator_list = 2;</code>
        */
       public Builder addAllNewValidatorList(
-              java.lang.Iterable<java.lang.String> values) {
+          java.lang.Iterable<java.lang.String> values) {
         ensureNewValidatorListIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, newValidatorList_);
+            values, newValidatorList_);
         onChanged();
         return this;
       }
@@ -2453,11 +2507,11 @@ public final class Common {
        * <code>repeated string new_validator_list = 2;</code>
        */
       public Builder addNewValidatorListBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
         ensureNewValidatorListIsMutable();
         newValidatorList_.add(value);
         onChanged();
@@ -2472,7 +2526,7 @@ public final class Common {
         java.lang.Object ref = chainCode_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
+              (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           chainCode_ = s;
           return s;
@@ -2484,12 +2538,12 @@ public final class Common {
        * <code>optional string chain_code = 3;</code>
        */
       public com.google.protobuf.ByteString
-      getChainCodeBytes() {
+          getChainCodeBytes() {
         java.lang.Object ref = chainCode_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b =
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                          (java.lang.String) ref);
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
           chainCode_ = b;
           return b;
         } else {
@@ -2500,11 +2554,11 @@ public final class Common {
        * <code>optional string chain_code = 3;</code>
        */
       public Builder setChainCode(
-              java.lang.String value) {
+          java.lang.String value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-
+    throw new NullPointerException();
+  }
+  
         chainCode_ = value;
         onChanged();
         return this;
@@ -2513,7 +2567,7 @@ public final class Common {
        * <code>optional string chain_code = 3;</code>
        */
       public Builder clearChainCode() {
-
+        
         chainCode_ = getDefaultInstance().getChainCode();
         onChanged();
         return this;
@@ -2522,23 +2576,23 @@ public final class Common {
        * <code>optional string chain_code = 3;</code>
        */
       public Builder setChainCodeBytes(
-              com.google.protobuf.ByteString value) {
+          com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-        checkByteStringIsUtf8(value);
-
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
         chainCode_ = value;
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
       public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
@@ -2557,12 +2611,12 @@ public final class Common {
     }
 
     private static final com.google.protobuf.Parser<LedgerUpgrade>
-            PARSER = new com.google.protobuf.AbstractParser<LedgerUpgrade>() {
+        PARSER = new com.google.protobuf.AbstractParser<LedgerUpgrade>() {
       public LedgerUpgrade parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        return new LedgerUpgrade(input, extensionRegistry);
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new LedgerUpgrade(input, extensionRegistry);
       }
     };
 
@@ -2582,8 +2636,8 @@ public final class Common {
   }
 
   public interface WsMessageOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protocol.WsMessage)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protocol.WsMessage)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <pre>
@@ -2617,9 +2671,9 @@ public final class Common {
    * Protobuf type {@code protocol.WsMessage}
    */
   public  static final class WsMessage extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:protocol.WsMessage)
-          WsMessageOrBuilder {
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.WsMessage)
+      WsMessageOrBuilder {
     // Use WsMessage.newBuilder() to construct.
     private WsMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
@@ -2637,9 +2691,9 @@ public final class Common {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private WsMessage(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -2682,21 +2736,21 @@ public final class Common {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
+        getDescriptor() {
       return cn.bif.protobuf.Common.internal_static_protocol_WsMessage_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
+        internalGetFieldAccessorTable() {
       return cn.bif.protobuf.Common.internal_static_protocol_WsMessage_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      cn.bif.protobuf.Common.WsMessage.class, cn.bif.protobuf.Common.WsMessage.Builder.class);
+          .ensureFieldAccessorsInitialized(
+              cn.bif.protobuf.Common.WsMessage.class, cn.bif.protobuf.Common.WsMessage.Builder.class);
     }
 
     public static final int TYPE_FIELD_NUMBER = 1;
@@ -2754,7 +2808,7 @@ public final class Common {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       if (type_ != 0L) {
         output.writeInt64(1, type_);
       }
@@ -2776,19 +2830,19 @@ public final class Common {
       size = 0;
       if (type_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, type_);
+          .computeInt64Size(1, type_);
       }
       if (request_ != false) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBoolSize(2, request_);
+          .computeBoolSize(2, request_);
       }
       if (sequence_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(3, sequence_);
+          .computeInt64Size(3, sequence_);
       }
       if (!data_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(4, data_);
+          .computeBytesSize(4, data_);
       }
       memoizedSize = size;
       return size;
@@ -2798,7 +2852,7 @@ public final class Common {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+       return true;
       }
       if (!(obj instanceof cn.bif.protobuf.Common.WsMessage)) {
         return super.equals(obj);
@@ -2807,13 +2861,13 @@ public final class Common {
 
       boolean result = true;
       result = result && (getType()
-              == other.getType());
+          == other.getType());
       result = result && (getRequest()
-              == other.getRequest());
+          == other.getRequest());
       result = result && (getSequence()
-              == other.getSequence());
+          == other.getSequence());
       result = result && getData()
-              .equals(other.getData());
+          .equals(other.getData());
       return result;
     }
 
@@ -2826,13 +2880,13 @@ public final class Common {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getType());
+          getType());
       hash = (37 * hash) + REQUEST_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-              getRequest());
+          getRequest());
       hash = (37 * hash) + SEQUENCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getSequence());
+          getSequence());
       hash = (37 * hash) + DATA_FIELD_NUMBER;
       hash = (53 * hash) + getData().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -2841,62 +2895,62 @@ public final class Common {
     }
 
     public static cn.bif.protobuf.Common.WsMessage parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.WsMessage parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.WsMessage parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.WsMessage parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.WsMessage parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.WsMessage parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.WsMessage parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.WsMessage parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.WsMessage parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.WsMessage parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -2908,12 +2962,12 @@ public final class Common {
     }
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
+          ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2921,19 +2975,19 @@ public final class Common {
      * Protobuf type {@code protocol.WsMessage}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protocol.WsMessage)
-            cn.bif.protobuf.Common.WsMessageOrBuilder {
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.WsMessage)
+        cn.bif.protobuf.Common.WsMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
+          getDescriptor() {
         return cn.bif.protobuf.Common.internal_static_protocol_WsMessage_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
+          internalGetFieldAccessorTable() {
         return cn.bif.protobuf.Common.internal_static_protocol_WsMessage_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        cn.bif.protobuf.Common.WsMessage.class, cn.bif.protobuf.Common.WsMessage.Builder.class);
+            .ensureFieldAccessorsInitialized(
+                cn.bif.protobuf.Common.WsMessage.class, cn.bif.protobuf.Common.WsMessage.Builder.class);
       }
 
       // Construct using cn.bif.protobuf.Common.WsMessage.newBuilder()
@@ -2942,7 +2996,7 @@ public final class Common {
       }
 
       private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -2965,7 +3019,7 @@ public final class Common {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
+          getDescriptorForType() {
         return cn.bif.protobuf.Common.internal_static_protocol_WsMessage_descriptor;
       }
 
@@ -2995,26 +3049,26 @@ public final class Common {
         return (Builder) super.clone();
       }
       public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.setField(field, value);
       }
       public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
       public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
       public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
       public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -3049,9 +3103,9 @@ public final class Common {
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
         cn.bif.protobuf.Common.WsMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -3085,7 +3139,7 @@ public final class Common {
        * <code>optional int64 type = 1;</code>
        */
       public Builder setType(long value) {
-
+        
         type_ = value;
         onChanged();
         return this;
@@ -3098,7 +3152,7 @@ public final class Common {
        * <code>optional int64 type = 1;</code>
        */
       public Builder clearType() {
-
+        
         type_ = 0L;
         onChanged();
         return this;
@@ -3123,7 +3177,7 @@ public final class Common {
        * <code>optional bool request = 2;</code>
        */
       public Builder setRequest(boolean value) {
-
+        
         request_ = value;
         onChanged();
         return this;
@@ -3136,7 +3190,7 @@ public final class Common {
        * <code>optional bool request = 2;</code>
        */
       public Builder clearRequest() {
-
+        
         request_ = false;
         onChanged();
         return this;
@@ -3153,7 +3207,7 @@ public final class Common {
        * <code>optional int64 sequence = 3;</code>
        */
       public Builder setSequence(long value) {
-
+        
         sequence_ = value;
         onChanged();
         return this;
@@ -3162,7 +3216,7 @@ public final class Common {
        * <code>optional int64 sequence = 3;</code>
        */
       public Builder clearSequence() {
-
+        
         sequence_ = 0L;
         onChanged();
         return this;
@@ -3180,9 +3234,9 @@ public final class Common {
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
-          throw new NullPointerException();
-        }
-
+    throw new NullPointerException();
+  }
+  
         data_ = value;
         onChanged();
         return this;
@@ -3191,18 +3245,18 @@ public final class Common {
        * <code>optional bytes data = 4;</code>
        */
       public Builder clearData() {
-
+        
         data_ = getDefaultInstance().getData();
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
       public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
@@ -3221,12 +3275,12 @@ public final class Common {
     }
 
     private static final com.google.protobuf.Parser<WsMessage>
-            PARSER = new com.google.protobuf.AbstractParser<WsMessage>() {
+        PARSER = new com.google.protobuf.AbstractParser<WsMessage>() {
       public WsMessage parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        return new WsMessage(input, extensionRegistry);
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new WsMessage(input, extensionRegistry);
       }
     };
 
@@ -3246,8 +3300,8 @@ public final class Common {
   }
 
   public interface PingOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protocol.Ping)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protocol.Ping)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>optional int64 nonce = 1;</code>
@@ -3262,9 +3316,9 @@ public final class Common {
    * Protobuf type {@code protocol.Ping}
    */
   public  static final class Ping extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:protocol.Ping)
-          PingOrBuilder {
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.Ping)
+      PingOrBuilder {
     // Use Ping.newBuilder() to construct.
     private Ping(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
@@ -3279,9 +3333,9 @@ public final class Common {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Ping(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -3309,21 +3363,21 @@ public final class Common {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
+        getDescriptor() {
       return cn.bif.protobuf.Common.internal_static_protocol_Ping_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
+        internalGetFieldAccessorTable() {
       return cn.bif.protobuf.Common.internal_static_protocol_Ping_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      cn.bif.protobuf.Common.Ping.class, cn.bif.protobuf.Common.Ping.Builder.class);
+          .ensureFieldAccessorsInitialized(
+              cn.bif.protobuf.Common.Ping.class, cn.bif.protobuf.Common.Ping.Builder.class);
     }
 
     public static final int NONCE_FIELD_NUMBER = 1;
@@ -3346,7 +3400,7 @@ public final class Common {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       if (nonce_ != 0L) {
         output.writeInt64(1, nonce_);
       }
@@ -3359,7 +3413,7 @@ public final class Common {
       size = 0;
       if (nonce_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, nonce_);
+          .computeInt64Size(1, nonce_);
       }
       memoizedSize = size;
       return size;
@@ -3369,7 +3423,7 @@ public final class Common {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+       return true;
       }
       if (!(obj instanceof cn.bif.protobuf.Common.Ping)) {
         return super.equals(obj);
@@ -3378,7 +3432,7 @@ public final class Common {
 
       boolean result = true;
       result = result && (getNonce()
-              == other.getNonce());
+          == other.getNonce());
       return result;
     }
 
@@ -3391,69 +3445,69 @@ public final class Common {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + NONCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getNonce());
+          getNonce());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
     public static cn.bif.protobuf.Common.Ping parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.Ping parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Ping parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.Ping parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Ping parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Ping parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Ping parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Ping parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Ping parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Ping parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -3465,12 +3519,12 @@ public final class Common {
     }
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
+          ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -3482,19 +3536,19 @@ public final class Common {
      * Protobuf type {@code protocol.Ping}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protocol.Ping)
-            cn.bif.protobuf.Common.PingOrBuilder {
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.Ping)
+        cn.bif.protobuf.Common.PingOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
+          getDescriptor() {
         return cn.bif.protobuf.Common.internal_static_protocol_Ping_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
+          internalGetFieldAccessorTable() {
         return cn.bif.protobuf.Common.internal_static_protocol_Ping_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        cn.bif.protobuf.Common.Ping.class, cn.bif.protobuf.Common.Ping.Builder.class);
+            .ensureFieldAccessorsInitialized(
+                cn.bif.protobuf.Common.Ping.class, cn.bif.protobuf.Common.Ping.Builder.class);
       }
 
       // Construct using cn.bif.protobuf.Common.Ping.newBuilder()
@@ -3503,7 +3557,7 @@ public final class Common {
       }
 
       private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -3520,7 +3574,7 @@ public final class Common {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
+          getDescriptorForType() {
         return cn.bif.protobuf.Common.internal_static_protocol_Ping_descriptor;
       }
 
@@ -3547,26 +3601,26 @@ public final class Common {
         return (Builder) super.clone();
       }
       public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.setField(field, value);
       }
       public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
       public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
       public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
       public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -3592,9 +3646,9 @@ public final class Common {
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
         cn.bif.protobuf.Common.Ping parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -3620,7 +3674,7 @@ public final class Common {
        * <code>optional int64 nonce = 1;</code>
        */
       public Builder setNonce(long value) {
-
+        
         nonce_ = value;
         onChanged();
         return this;
@@ -3629,18 +3683,18 @@ public final class Common {
        * <code>optional int64 nonce = 1;</code>
        */
       public Builder clearNonce() {
-
+        
         nonce_ = 0L;
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
       public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
@@ -3659,12 +3713,12 @@ public final class Common {
     }
 
     private static final com.google.protobuf.Parser<Ping>
-            PARSER = new com.google.protobuf.AbstractParser<Ping>() {
+        PARSER = new com.google.protobuf.AbstractParser<Ping>() {
       public Ping parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Ping(input, extensionRegistry);
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Ping(input, extensionRegistry);
       }
     };
 
@@ -3684,8 +3738,8 @@ public final class Common {
   }
 
   public interface PongOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:protocol.Pong)
-          com.google.protobuf.MessageOrBuilder {
+      // @@protoc_insertion_point(interface_extends:protocol.Pong)
+      com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>optional int64 nonce = 1;</code>
@@ -3700,9 +3754,9 @@ public final class Common {
    * Protobuf type {@code protocol.Pong}
    */
   public  static final class Pong extends
-          com.google.protobuf.GeneratedMessageV3 implements
-          // @@protoc_insertion_point(message_implements:protocol.Pong)
-          PongOrBuilder {
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:protocol.Pong)
+      PongOrBuilder {
     // Use Pong.newBuilder() to construct.
     private Pong(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
@@ -3717,9 +3771,9 @@ public final class Common {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Pong(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       try {
@@ -3747,21 +3801,21 @@ public final class Common {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-                e).setUnfinishedMessage(this);
+            e).setUnfinishedMessage(this);
       } finally {
         makeExtensionsImmutable();
       }
     }
     public static final com.google.protobuf.Descriptors.Descriptor
-    getDescriptor() {
+        getDescriptor() {
       return cn.bif.protobuf.Common.internal_static_protocol_Pong_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-    internalGetFieldAccessorTable() {
+        internalGetFieldAccessorTable() {
       return cn.bif.protobuf.Common.internal_static_protocol_Pong_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                      cn.bif.protobuf.Common.Pong.class, cn.bif.protobuf.Common.Pong.Builder.class);
+          .ensureFieldAccessorsInitialized(
+              cn.bif.protobuf.Common.Pong.class, cn.bif.protobuf.Common.Pong.Builder.class);
     }
 
     public static final int NONCE_FIELD_NUMBER = 1;
@@ -3784,7 +3838,7 @@ public final class Common {
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
-            throws java.io.IOException {
+                        throws java.io.IOException {
       if (nonce_ != 0L) {
         output.writeInt64(1, nonce_);
       }
@@ -3797,7 +3851,7 @@ public final class Common {
       size = 0;
       if (nonce_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-                .computeInt64Size(1, nonce_);
+          .computeInt64Size(1, nonce_);
       }
       memoizedSize = size;
       return size;
@@ -3807,7 +3861,7 @@ public final class Common {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-        return true;
+       return true;
       }
       if (!(obj instanceof cn.bif.protobuf.Common.Pong)) {
         return super.equals(obj);
@@ -3816,7 +3870,7 @@ public final class Common {
 
       boolean result = true;
       result = result && (getNonce()
-              == other.getNonce());
+          == other.getNonce());
       return result;
     }
 
@@ -3829,69 +3883,69 @@ public final class Common {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + NONCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-              getNonce());
+          getNonce());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
     public static cn.bif.protobuf.Common.Pong parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.Pong parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Pong parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static cn.bif.protobuf.Common.Pong parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Pong parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Pong parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Pong parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input);
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Pong parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static cn.bif.protobuf.Common.Pong parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input);
+          .parseWithIOException(PARSER, input);
     }
     public static cn.bif.protobuf.Common.Pong parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
-              .parseWithIOException(PARSER, input, extensionRegistry);
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -3903,12 +3957,12 @@ public final class Common {
     }
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
-              ? new Builder() : new Builder().mergeFrom(this);
+          ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -3920,19 +3974,19 @@ public final class Common {
      * Protobuf type {@code protocol.Pong}
      */
     public static final class Builder extends
-            com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:protocol.Pong)
-            cn.bif.protobuf.Common.PongOrBuilder {
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:protocol.Pong)
+        cn.bif.protobuf.Common.PongOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
-      getDescriptor() {
+          getDescriptor() {
         return cn.bif.protobuf.Common.internal_static_protocol_Pong_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internalGetFieldAccessorTable() {
+          internalGetFieldAccessorTable() {
         return cn.bif.protobuf.Common.internal_static_protocol_Pong_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                        cn.bif.protobuf.Common.Pong.class, cn.bif.protobuf.Common.Pong.Builder.class);
+            .ensureFieldAccessorsInitialized(
+                cn.bif.protobuf.Common.Pong.class, cn.bif.protobuf.Common.Pong.Builder.class);
       }
 
       // Construct using cn.bif.protobuf.Common.Pong.newBuilder()
@@ -3941,7 +3995,7 @@ public final class Common {
       }
 
       private Builder(
-              com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
@@ -3958,7 +4012,7 @@ public final class Common {
       }
 
       public com.google.protobuf.Descriptors.Descriptor
-      getDescriptorForType() {
+          getDescriptorForType() {
         return cn.bif.protobuf.Common.internal_static_protocol_Pong_descriptor;
       }
 
@@ -3985,26 +4039,26 @@ public final class Common {
         return (Builder) super.clone();
       }
       public Builder setField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.setField(field, value);
       }
       public Builder clearField(
-              com.google.protobuf.Descriptors.FieldDescriptor field) {
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
       public Builder clearOneof(
-              com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
       public Builder setRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              int index, Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
       public Builder addRepeatedField(
-              com.google.protobuf.Descriptors.FieldDescriptor field,
-              Object value) {
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -4030,9 +4084,9 @@ public final class Common {
       }
 
       public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
         cn.bif.protobuf.Common.Pong parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -4058,7 +4112,7 @@ public final class Common {
        * <code>optional int64 nonce = 1;</code>
        */
       public Builder setNonce(long value) {
-
+        
         nonce_ = value;
         onChanged();
         return this;
@@ -4067,18 +4121,18 @@ public final class Common {
        * <code>optional int64 nonce = 1;</code>
        */
       public Builder clearNonce() {
-
+        
         nonce_ = 0L;
         onChanged();
         return this;
       }
       public final Builder setUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
       public final Builder mergeUnknownFields(
-              final com.google.protobuf.UnknownFieldSet unknownFields) {
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
       }
 
@@ -4097,12 +4151,12 @@ public final class Common {
     }
 
     private static final com.google.protobuf.Parser<Pong>
-            PARSER = new com.google.protobuf.AbstractParser<Pong>() {
+        PARSER = new com.google.protobuf.AbstractParser<Pong>() {
       public Pong parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Pong(input, extensionRegistry);
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Pong(input, extensionRegistry);
       }
     };
 
@@ -4122,133 +4176,138 @@ public final class Common {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protocol_KeyPair_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_protocol_KeyPair_fieldAccessorTable;
+    internal_static_protocol_KeyPair_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_KeyPair_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protocol_Signature_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_protocol_Signature_fieldAccessorTable;
+    internal_static_protocol_Signature_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_Signature_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protocol_LedgerUpgrade_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_protocol_LedgerUpgrade_fieldAccessorTable;
+    internal_static_protocol_LedgerUpgrade_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_LedgerUpgrade_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protocol_WsMessage_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_protocol_WsMessage_fieldAccessorTable;
+    internal_static_protocol_WsMessage_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_WsMessage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protocol_Ping_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_protocol_Ping_fieldAccessorTable;
+    internal_static_protocol_Ping_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_Ping_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-          internal_static_protocol_Pong_descriptor;
-  private static final
-  com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internal_static_protocol_Pong_fieldAccessorTable;
+    internal_static_protocol_Pong_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_protocol_Pong_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
-  getDescriptor() {
+      getDescriptor() {
     return descriptor;
   }
   private static  com.google.protobuf.Descriptors.FileDescriptor
-          descriptor;
+      descriptor;
   static {
     java.lang.String[] descriptorData = {
-            "\n\014common.proto\022\010protocol\"6\n\007KeyPair\022\013\n\003k" +
-                    "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\022\017\n\007version\030\003 \001(\003" +
-                    "\"2\n\tSignature\022\022\n\npublic_key\030\001 \001(\t\022\021\n\tsig" +
-                    "n_data\030\002 \001(\014\"[\n\rLedgerUpgrade\022\032\n\022new_led" +
-                    "ger_version\030\001 \001(\003\022\032\n\022new_validator_list\030" +
-                    "\002 \003(\t\022\022\n\nchain_code\030\003 \001(\t\"J\n\tWsMessage\022\014" +
-                    "\n\004type\030\001 \001(\003\022\017\n\007request\030\002 \001(\010\022\020\n\010sequenc" +
-                    "e\030\003 \001(\003\022\014\n\004data\030\004 \001(\014\"\025\n\004Ping\022\r\n\005nonce\030\001" +
-                    " \001(\003\"\025\n\004Pong\022\r\n\005nonce\030\001 \001(\003*\246\t\n\tERRORCOD" +
-                    "E\022\023\n\017ERRCODE_SUCCESS\020\000\022\032\n\026ERRCODE_INTERN",
-            "AL_ERROR\020\001\022\035\n\031ERRCODE_INVALID_PARAMETER\020" +
-                    "\002\022\031\n\025ERRCODE_ALREADY_EXIST\020\003\022\025\n\021ERRCODE_" +
-                    "NOT_EXIST\020\004\022\026\n\022ERRCODE_TX_TIMEOUT\020\005\022\031\n\025E" +
-                    "RRCODE_ACCESS_DENIED\020\006\022\031\n\025ERRCODE_MATH_O" +
-                    "VERFLOW\020\007\022\'\n#ERRCODE_EXPR_CONDITION_RESU" +
-                    "LT_FALSE\020\024\022\'\n#ERRCODE_EXPR_CONDITION_SYN" +
-                    "TAX_ERROR\020\025\022\032\n\026ERRCODE_INVALID_PUBKEY\020Z\022" +
-                    "\032\n\026ERRCODE_INVALID_PRIKEY\020[\022\035\n\031ERRCODE_I" +
-                    "NVALID_SIGNATURE\020]\022\033\n\027ERRCODE_INVALID_AD" +
-                    "DRESS\020^\022\036\n\032ERRCODE_MISSING_OPERATIONS\020a\022",
-            "\037\n\033ERRCODE_TOO_MANY_OPERATIONS\020b\022\030\n\024ERRC" +
-                    "ODE_BAD_SEQUENCE\020c\022\037\n\033ERRCODE_ACCOUNT_LO" +
-                    "W_RESERVE\020d\022$\n ERRCODE_ACCOUNT_SOURCEDES" +
-                    "T_EQUAL\020e\022\036\n\032ERRCODE_ACCOUNT_DEST_EXIST\020" +
-                    "f\022\035\n\031ERRCODE_ACCOUNT_NOT_EXIST\020g\022$\n ERRC" +
-                    "ODE_ACCOUNT_INIT_LOW_RESERVE\020j\022\032\n\026ERRCOD" +
-                    "E_FEE_NOT_ENOUGH\020o\022\027\n\023ERRCODE_FEE_INVALI" +
-                    "D\020p\022\032\n\026ERRCODE_OUT_OF_TXCACHE\020r\022\034\n\030ERRCO" +
-                    "DE_WEIGHT_NOT_VALID\020x\022\037\n\033ERRCODE_THRESHO" +
-                    "LD_NOT_VALID\020y\022 \n\033ERRCODE_INVALID_DATAVE",
-            "RSION\020\220\001\022\034\n\027ERRCODE_TX_SIZE_TOO_BIG\020\222\001\022\"" +
-                    "\n\035ERRCODE_CONTRACT_EXECUTE_FAIL\020\227\001\022\"\n\035ER" +
-                    "RCODE_CONTRACT_SYNTAX_ERROR\020\230\001\022(\n#ERRCOD" +
-                    "E_CONTRACT_TOO_MANY_RECURSION\020\231\001\022+\n&ERRC" +
-                    "ODE_CONTRACT_TOO_MANY_TRANSACTIONS\020\232\001\022%\n" +
-                    " ERRCODE_CONTRACT_EXECUTE_EXPIRED\020\233\001\022\035\n\030" +
-                    "ERRCODE_INVALID_CONTRACT\020\234\001\022$\n\037ERRCODE_I" +
-                    "NVALID_CONTRACTVERSION\020\235\001\022!\n\034ERRCODE_TX_" +
-                    "INSERT_QUEUE_FAIL\020\240\001B\021\n\017cn.bif.protobufb" +
-                    "\006proto3"
+      "\n\014common.proto\022\010protocol\"6\n\007KeyPair\022\013\n\003k" +
+      "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\022\017\n\007version\030\003 \001(\003" +
+      "\"2\n\tSignature\022\022\n\npublic_key\030\001 \001(\t\022\021\n\tsig" +
+      "n_data\030\002 \001(\014\"[\n\rLedgerUpgrade\022\032\n\022new_led" +
+      "ger_version\030\001 \001(\003\022\032\n\022new_validator_list\030" +
+      "\002 \003(\t\022\022\n\nchain_code\030\003 \001(\t\"J\n\tWsMessage\022\014" +
+      "\n\004type\030\001 \001(\003\022\017\n\007request\030\002 \001(\010\022\020\n\010sequenc" +
+      "e\030\003 \001(\003\022\014\n\004data\030\004 \001(\014\"\025\n\004Ping\022\r\n\005nonce\030\001" +
+      " \001(\003\"\025\n\004Pong\022\r\n\005nonce\030\001 \001(\003*\371\n\n\tERRORCOD" +
+      "E\022\023\n\017ERRCODE_SUCCESS\020\000\022\032\n\026ERRCODE_INTERN",
+      "AL_ERROR\020\001\022\035\n\031ERRCODE_INVALID_PARAMETER\020" +
+      "\002\022\031\n\025ERRCODE_ALREADY_EXIST\020\003\022\025\n\021ERRCODE_" +
+      "NOT_EXIST\020\004\022\026\n\022ERRCODE_TX_TIMEOUT\020\005\022\031\n\025E" +
+      "RRCODE_ACCESS_DENIED\020\006\022\031\n\025ERRCODE_MATH_O" +
+      "VERFLOW\020\007\022\'\n#ERRCODE_EXPR_CONDITION_RESU" +
+      "LT_FALSE\020\024\022\'\n#ERRCODE_EXPR_CONDITION_SYN" +
+      "TAX_ERROR\020\025\022\032\n\026ERRCODE_INVALID_PUBKEY\020Z\022" +
+      "\032\n\026ERRCODE_INVALID_PRIKEY\020[\022\035\n\031ERRCODE_I" +
+      "NVALID_SIGNATURE\020]\022\033\n\027ERRCODE_INVALID_AD" +
+      "DRESS\020^\022\036\n\032ERRCODE_MISSING_OPERATIONS\020a\022",
+      "\037\n\033ERRCODE_TOO_MANY_OPERATIONS\020b\022\030\n\024ERRC" +
+      "ODE_BAD_SEQUENCE\020c\022\037\n\033ERRCODE_ACCOUNT_LO" +
+      "W_RESERVE\020d\022$\n ERRCODE_ACCOUNT_SOURCEDES" +
+      "T_EQUAL\020e\022\036\n\032ERRCODE_ACCOUNT_DEST_EXIST\020" +
+      "f\022\035\n\031ERRCODE_ACCOUNT_NOT_EXIST\020g\022$\n ERRC" +
+      "ODE_ACCOUNT_INIT_LOW_RESERVE\020j\022\032\n\026ERRCOD" +
+      "E_FEE_NOT_ENOUGH\020o\022\027\n\023ERRCODE_FEE_INVALI" +
+      "D\020p\022\032\n\026ERRCODE_OUT_OF_TXCACHE\020r\022\034\n\030ERRCO" +
+      "DE_WEIGHT_NOT_VALID\020x\022\037\n\033ERRCODE_THRESHO" +
+      "LD_NOT_VALID\020y\022 \n\033ERRCODE_INVALID_DATAVE",
+      "RSION\020\220\001\022\034\n\027ERRCODE_TX_SIZE_TOO_BIG\020\222\001\022\"" +
+      "\n\035ERRCODE_CONTRACT_EXECUTE_FAIL\020\227\001\022\"\n\035ER" +
+      "RCODE_CONTRACT_SYNTAX_ERROR\020\230\001\022(\n#ERRCOD" +
+      "E_CONTRACT_TOO_MANY_RECURSION\020\231\001\022+\n&ERRC" +
+      "ODE_CONTRACT_TOO_MANY_TRANSACTIONS\020\232\001\022%\n" +
+      " ERRCODE_CONTRACT_EXECUTE_EXPIRED\020\233\001\022\035\n\030" +
+      "ERRCODE_INVALID_CONTRACT\020\234\001\022$\n\037ERRCODE_I" +
+      "NVALID_CONTRACTVERSION\020\235\001\022!\n\034ERRCODE_TX_" +
+      "INSERT_QUEUE_FAIL\020\240\001\022\"\n\035ERRCODE_PRI_TX_S" +
+      "TORE_RAW_FAIL\020\241\001\022$\n\037ERRCODE_PRI_TX_RECEI",
+      "VE_RAW_FAIL\020\242\001\022\035\n\030ERRCODE_PRI_TX_SEND_FA" +
+      "IL\020\243\001\022 \n\033ERRCODE_PRI_TX_RECEIVE_FAIL\020\244\001\022" +
+      ")\n$ERRCODE_PRI_TX_DESTADDRESS_NOT_EMPTY\020" +
+      "\245\001\022\033\n\026ERROR_DOMAIN_NOT_EXIST\020\252\001B\021\n\017cn.bi" +
+      "f.protobufb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-            new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-              public com.google.protobuf.ExtensionRegistry assignDescriptors(
-                      com.google.protobuf.Descriptors.FileDescriptor root) {
-                descriptor = root;
-                return null;
-              }
-            };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
-            .internalBuildGeneratedFileFrom(descriptorData,
-                    new com.google.protobuf.Descriptors.FileDescriptor[] {
-                    }, assigner);
+      .internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {
+        }, assigner);
     internal_static_protocol_KeyPair_descriptor =
-            getDescriptor().getMessageTypes().get(0);
+      getDescriptor().getMessageTypes().get(0);
     internal_static_protocol_KeyPair_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_protocol_KeyPair_descriptor,
-            new java.lang.String[] { "Key", "Value", "Version", });
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_KeyPair_descriptor,
+        new java.lang.String[] { "Key", "Value", "Version", });
     internal_static_protocol_Signature_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_protocol_Signature_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_protocol_Signature_descriptor,
-            new java.lang.String[] { "PublicKey", "SignData", });
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_Signature_descriptor,
+        new java.lang.String[] { "PublicKey", "SignData", });
     internal_static_protocol_LedgerUpgrade_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_protocol_LedgerUpgrade_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_protocol_LedgerUpgrade_descriptor,
-            new java.lang.String[] { "NewLedgerVersion", "NewValidatorList", "ChainCode", });
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_LedgerUpgrade_descriptor,
+        new java.lang.String[] { "NewLedgerVersion", "NewValidatorList", "ChainCode", });
     internal_static_protocol_WsMessage_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_protocol_WsMessage_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_protocol_WsMessage_descriptor,
-            new java.lang.String[] { "Type", "Request", "Sequence", "Data", });
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_WsMessage_descriptor,
+        new java.lang.String[] { "Type", "Request", "Sequence", "Data", });
     internal_static_protocol_Ping_descriptor =
-            getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_protocol_Ping_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_protocol_Ping_descriptor,
-            new java.lang.String[] { "Nonce", });
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_Ping_descriptor,
+        new java.lang.String[] { "Nonce", });
     internal_static_protocol_Pong_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_protocol_Pong_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_protocol_Pong_descriptor,
-            new java.lang.String[] { "Nonce", });
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_protocol_Pong_descriptor,
+        new java.lang.String[] { "Nonce", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

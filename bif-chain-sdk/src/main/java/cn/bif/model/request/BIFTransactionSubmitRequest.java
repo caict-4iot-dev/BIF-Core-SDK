@@ -18,10 +18,15 @@
  */
 package cn.bif.model.request;
 
+import cn.bif.model.response.result.data.BIFSignature;
+
+import java.util.Arrays;
+
 public class BIFTransactionSubmitRequest {
     private String serialization;
     private String signData;
     private String publicKey;
+    private BIFSignature[] signatures;
 
     public String getSerialization() {
         return serialization;
@@ -45,5 +50,21 @@ public class BIFTransactionSubmitRequest {
 
     public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
+    }
+
+    public BIFSignature[] getSignatures() {
+        return signatures;
+    }
+
+    public void addSignature(String publicKey, String signData) {
+        if (null == signatures) {
+            signatures = new BIFSignature[1];
+        } else {
+            signatures = Arrays.copyOf(signatures, signatures.length + 1);
+        }
+        BIFSignature signature = new BIFSignature();
+        signature.setPublicKey(publicKey);
+        signature.setSignData(signData);
+        signatures[signatures.length - 1] = signature;
     }
 }

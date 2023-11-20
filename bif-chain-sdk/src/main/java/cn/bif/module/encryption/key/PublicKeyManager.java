@@ -283,6 +283,10 @@ public class PublicKeyManager {
             if (null == encAddress) {
                 throw new EncException("Invalid address");
             }
+            boolean startsWithDidBid = encAddress.startsWith("did:bid:");
+            if (!startsWithDidBid) {
+                throw new EncException("Invalid address");
+            }
             String[] items = encAddress.split(":");
             if (items.length != 3 && items.length != 4) {
                 throw new EncException("Invalid address");

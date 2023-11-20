@@ -47,7 +47,7 @@ public enum SdkError {
     /*
      * INVALID_INITBALANCE_ERROR
      */
-    INVALID_INITBALANCE_ERROR(11004, "InitBalance must be between 0 and Long.MAX_VALUE"),
+    INVALID_INITBALANCE_ERROR(11004, "InitBalance must be between 1 and Long.MAX_VALUE"),
     /*
      * SOURCEADDRESS_EQUAL_DESTADDRESS_ERROR
      */
@@ -60,7 +60,6 @@ public enum SdkError {
      * CONNECTNETWORK_ERROR
      */
     CONNECTNETWORK_ERROR(11007, "Failed to connect to the network"),
-
     /*
      * NO_METADATAS_ERROR
      */
@@ -101,7 +100,6 @@ public enum SdkError {
      * INVALID_TYPE_THRESHOLD_ERROR
      */
     INVALID_TYPE_THRESHOLD_ERROR(11020, "TypeThreshold must be between 0 and Long.MAX_VALUE"),
-
     /*
      * INVALID_CONTRACT_HASH_ERROR
      */
@@ -110,7 +108,6 @@ public enum SdkError {
      * INVALID_GAS_AMOUNT_ERROR
      */
     INVALID_GAS_AMOUNT_ERROR(11026, "bifAmount must be between 0 and Long.MAX_VALUE"),
-
    /*
      * INVALID_CONTRACTADDRESS_ERROR
      */
@@ -119,7 +116,6 @@ public enum SdkError {
      * CONTRACTADDRESS_NOT_CONTRACTACCOUNT_ERROR
      */
     CONTRACTADDRESS_NOT_CONTRACTACCOUNT_ERROR(11038, "contractAddress is not a contract account"),
-
     /*
      * SOURCEADDRESS_EQUAL_CONTRACTADDRESS_ERROR
      */
@@ -140,7 +136,6 @@ public enum SdkError {
      * PAYLOAD_EMPTY_ERROR
      */
     PAYLOAD_EMPTY_ERROR(11044, "Payload cannot be empty"),
-
     /*
      * INVALID_CONTRACT_TYPE_ERROR
      */
@@ -217,11 +212,11 @@ public enum SdkError {
      * GET_ALLOWANCE_ERROR
      */
     GET_ALLOWANCE_ERROR(11065, "Failed to get allowance"),
-
     /*
      * SIGNATURE_EMPTY_ERROR
      */
     SIGNATURE_EMPTY_ERROR(11067, "The signatures cannot be empty"),
+
     OPERATIONS_INVALID_ERROR(11068, "Operations length must be between 1 and 100"),
     /*
      * 操作类型为空
@@ -243,30 +238,26 @@ public enum SdkError {
      * INVALID_CONTRACTBALANCE_ERROR
      */
     INVALID_CONTRACTBALANCE_ERROR(12002, "ContractBalance must be between 1 and Long.MAX_VALUE"),
-
     /*
      * INVALID_PRITX_FROM_ERROR
      */
     INVALID_PRITX_FROM_ERROR(12003, "Invalid Private Transaction Sender"),
-
     /*
      * INVALID_PRITX_PAYLAOD_ERROR
      */
     INVALID_PRITX_PAYLAOD_ERROR(12004, "Invalid Private Transaction payload"),
-
     /*
      * INVALID_PRITX_TO_ERROR
      */
     INVALID_PRITX_TO_ERROR(12005, "Invalid Private Transaction recipient list"),
     /*
-     * INVALID_PROTOCOL_ERROR
-     */
-    INVALID_PROTOCOL_ERROR(12007, "Invalid protocol"),
-
-    /*
      * INVALID_PRITX_HASH_ERROR
      */
     INVALID_PRITX_HASH_ERROR(12006, "Invalid Private Transaction Hash"),
+    /*
+     * INVALID_DOMAINID_ERROR
+     */
+    INVALID_DOMAINID_ERROR(12007, "Domainid must be equal to or greater than 0"),
     ;
 
 

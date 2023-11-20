@@ -20,6 +20,16 @@ package cn.bif.model.request;
 
 public class BIFBlockGetInfoRequest {
     private Long blockNumber;
+    private Boolean withLeader;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     /**
      * @Method getBlockNumber
@@ -37,5 +47,13 @@ public class BIFBlockGetInfoRequest {
      */
     public void setBlockNumber(Long blockNumber) {
         this.blockNumber = blockNumber;
+    }
+
+    public Boolean getWithLeader() {
+        return withLeader;
+    }
+
+    public void setWithLeader(Boolean withLeader) {
+        this.withLeader = withLeader;
     }
 }

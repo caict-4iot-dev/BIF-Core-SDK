@@ -22,8 +22,19 @@ import cn.bif.model.response.result.data.BIFTransactionCacheInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BIFTransactionCacheResult {
+    @JsonProperty(value =  "total_count")
+    private Long totalCount;
+
     @JsonProperty(value =  "transactions")
     private BIFTransactionCacheInfo[] transactions;
+
+    public Long getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Long totalCount) {
+        this.totalCount = totalCount;
+    }
 
     public BIFTransactionCacheInfo[] getTransactions() {
         return transactions;

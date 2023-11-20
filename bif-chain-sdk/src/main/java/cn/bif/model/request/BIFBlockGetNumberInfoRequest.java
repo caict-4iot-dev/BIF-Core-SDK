@@ -18,8 +18,7 @@
  */
 package cn.bif.model.request;
 
-public class BIFTransactionGetInfoRequest {
-    private String hash;
+public class BIFBlockGetNumberInfoRequest {
     private Integer domainId;
 
     public Integer getDomainId() {
@@ -28,23 +27,5 @@ public class BIFTransactionGetInfoRequest {
 
     public void setDomainId(Integer domainId) {
         this.domainId = domainId;
-    }
-
-    /**
-     * @Method getHash
-     * @Params []
-     * @Return java.lang.String
-     */
-    public String getHash() {
-        return hash;
-    }
-
-    /**
-     * @Method setHash
-     * @Params [hash]
-     * @Return void
-     */
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 }

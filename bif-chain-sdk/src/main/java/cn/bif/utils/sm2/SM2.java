@@ -18,6 +18,7 @@
  */
 package cn.bif.utils.sm2;
 
+import cn.bif.exception.EncException;
 import cn.bif.module.encryption.model.KeyMember;
 import cn.bif.utils.hash.SM3Digest;
 import org.bouncycastle.crypto.params.ECDomainParameters;
@@ -187,10 +188,10 @@ public class SM2 {
         byte[] idaBytes = IDA.getBytes();
         int entlenA = idaBytes.length * 8;
         byte[] ENTLA = new byte[]{(byte) (entlenA & 0xFF00), (byte) (entlenA & 0x00FF)};
-        byte[] ZA = sm3hash(ENTLA, idaBytes, bytesLenFrom33To32(a.toByteArray()), bytesLenFrom33To32(b.toByteArray()),
-                bytesLenFrom33To32(gx.toByteArray()), bytesLenFrom33To32(gy.toByteArray()),
-                bytesLenFrom33To32(aPublicKey.getXCoord().toBigInteger().toByteArray()),
-                bytesLenFrom33To32(aPublicKey.getYCoord().toBigInteger().toByteArray()));
+        byte[] ZA = sm3hash(ENTLA, idaBytes, bytesLenTo32(a.toByteArray()), bytesLenTo32(b.toByteArray()),
+                bytesLenTo32(gx.toByteArray()), bytesLenTo32(gy.toByteArray()),
+                bytesLenTo32(aPublicKey.getXCoord().toBigInteger().toByteArray()),
+                bytesLenTo32(aPublicKey.getYCoord().toBigInteger().toByteArray()));
         return ZA;
     }
 
@@ -334,15 +335,23 @@ public class SM2 {
         return bytes;
     }
 
-    private static byte[] bytesLenFrom33To32(byte[] bytes) {
-        if (bytes.length == 33) {
+    private static byte[] bytesLenTo32(byte[] bytes) {
+        if (bytes.length > 33) {
+            throw new EncException("The length of bytes must be less than or equal to 33");
+        }else if (bytes.length == 33) {
             byte[] rBytesWithLen32 = new byte[32];
             System.arraycopy(bytes, 1, rBytesWithLen32, 0, 32);
+            bytes = rBytesWithLen32;
+        }else{
+            byte[] rBytesWithLen32 = new byte[32];
+            for(int i=0;i<rBytesWithLen32.length-bytes.length;i++){
+                rBytesWithLen32[i]=0;
+            }
+            System.arraycopy(bytes, 0, rBytesWithLen32, (rBytesWithLen32.length-bytes.length), bytes.length);
             bytes = rBytesWithLen32;
         }
         return bytes;
     }
-
     public static BigInteger bigIntegerPreHandle(BigInteger bigInteger) {
         if (bigInteger.signum() == -1) {
             byte[] rBytesWithLen33 = new byte[33];
@@ -365,6 +374,7 @@ public class SM2 {
         if (pubKeyYBytes.length == 33)
             System.arraycopy(pubKeyYBytes, 1, pubKeyBytes, 33, 32);
         else
+           // System.arraycopy(pubKeyYBytes, 0, pubKeyBytes, 33, 32);
             System.arraycopy(pubKeyYBytes, 0, pubKeyBytes,  (pubKeyBytes.length-pubKeyYBytes.length),pubKeyYBytes.length);
         return pubKeyBytes;
     }

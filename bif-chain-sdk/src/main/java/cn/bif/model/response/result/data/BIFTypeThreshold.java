@@ -64,24 +64,33 @@ public class BIFTypeThreshold {
      *
      */
     public void setType(Integer type) {
+
         this.type = type;
     }
     public void setType(String type) {
-        switch (type){
-            case "UNKNOWN": this.type = 0;
+         switch (type){
+            case "UNKNOWN": this.type = 0;break;
             case "CREATE_ACCOUNT": this.type = 1;break;
             case "SET_METADATA":  this.type = 4;break;
+            case "SET_SIGNER_WEIGHT":  this.type = 5;break;
             case "SET_THRESHOLD": this.type = 6;break;
             case "PAY_COIN":   this.type = 7;break;
             case "LOG":   this.type = 8;break;
             case "SET_PRIVILEGE": this.type = 9;break;
+            case "UPGRADE_CONTRACT": this.type = 10;break;
+            case "SET_CONTROLLED_AREA": this.type = 11;break;
+            case "AUTHORIZE_TRANSFER": this.type = 12;break;
             case "1": this.type = 1;break;
-            case "4": this.type = 4;break;
+            case "4":  this.type = 4;break;
+            case "5":  this.type = 5;break;
             case "6": this.type = 6;break;
-            case "7": this.type = 7;break;
-            case "8": this.type = 8;break;
+            case "7":   this.type = 7;break;
+            case "8":   this.type = 8;break;
             case "9": this.type = 9;break;
-            default: this.type = 0;
+            case "10": this.type = 10;break;
+            case "11": this.type = 11;break;
+            case "12": this.type = 12;break;
+            default: this.type = 0;break;
         }
     }
     /**

@@ -47,9 +47,9 @@ public interface BIFTransactionService {
      *
      * @return
      */
-    String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, BIFBaseOperation operation, Long ceilLedgerSeq, String remarks, String privateKey);
-    String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFContractInvokeOperation> operations, Long ceilLedgerSeq, String remarks, String privateKey);
-    String radioGasTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFGasSendOperation> operations, Long ceilLedgerSeq, String remarks, String privateKey);
+    String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, BIFBaseOperation operation, Long ceilLedgerSeq, String remarks, String privateKey,Integer domainId);
+    String radioTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFContractInvokeOperation> operations, Long ceilLedgerSeq, String remarks, String privateKey, Integer domainId);
+    String radioGasTransaction(String senderAddress, Long feeLimit, Long gasPrice, List<BIFGasSendOperation> operations, Long ceilLedgerSeq, String remarks, String privateKey, Integer domainId);
     /**
      * @Method getInfo
      * @Params [transactionGetInfoRequest]
@@ -69,21 +69,6 @@ public interface BIFTransactionService {
      * @return
      */
     BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest request);
-    /**
-     * 私有化交易-合约调用
-     * @param request
-     * @return
-     */
-    @Deprecated
-    BIFTransactionPrivateContractCallResponse privateContractCall(BIFTransactionPrivateContractCallRequest request);
-
-    /**
-     * 私有化交易-合约创建
-     * @param request
-     * @return
-     */
-    @Deprecated
-    BIFTransactionPrivateContractCreateResponse privateContractCreate(BIFTransactionPrivateContractCreateRequest request);
 
     /**
      * 交易的费用评估
@@ -92,6 +77,18 @@ public interface BIFTransactionService {
      */
     BIFTransactionEvaluateFeeResponse evaluateFee(BIFTransactionEvaluateFeeRequest BIFTransactionEvaluateFeeRequest);
 
+    /**
+     * 批量交易的费用评估
+     * @param BIFTransactionEvaluateFeeRequest
+     * @return
+     */
+    BIFTransactionEvaluateFeeResponse batchEvaluateFee(BIFTransactionEvaluateFeeRequest BIFTransactionEvaluateFeeRequest);
+
+    /**
+     * 获取交易池中交易条数
+     * @return
+     */
+    BIFTransactionGetTxCacheSizeResponse getTxCacheSize(Integer domainId);
     /**
      * 获取交易池中交易条数
      * @return
@@ -109,6 +106,6 @@ public interface BIFTransactionService {
      * @return
      */
     BIFTransactionParseBlobResponse parseBlob(String blob);
-    BIFTransactionGetBidResponse getBidByHash(String hash);
 
+    BIFTransactionGetBidResponse getBidByHash(BIFTransactionGetInfoRequest request);
 }

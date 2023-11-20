@@ -47,7 +47,13 @@ public class BIFContractInfo {
     public void setType(Integer type) {
         this.type = type;
     }
-
+    public void setType(String type) {
+        switch (type){
+            case "EVM": this.type = 1;break;
+            case "1": this.type = 1;break;
+            default: this.type = 0;
+        }
+    }
     /**
      * @Method getPayload
      * @Params []

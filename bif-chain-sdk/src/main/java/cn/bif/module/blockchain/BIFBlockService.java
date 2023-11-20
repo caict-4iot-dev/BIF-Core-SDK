@@ -18,9 +18,7 @@
  */
 package cn.bif.module.blockchain;
 
-import cn.bif.model.request.BIFBlockGetInfoRequest;
-import cn.bif.model.request.BIFBlockGetTransactionsRequest;
-import cn.bif.model.request.BIFBlockGetValidatorsRequest;
+import cn.bif.model.request.*;
 import cn.bif.model.response.*;
 
 public interface BIFBlockService {
@@ -29,7 +27,7 @@ public interface BIFBlockService {
      * @Params []
      * @Return BlockGetNumberResponse
      */
-    BIFBlockGetNumberResponse getBlockNumber();
+    BIFBlockGetNumberResponse getBlockNumber(BIFBlockGetNumberInfoRequest request);
 
     /**
      * @Method getTransactions
@@ -50,7 +48,7 @@ public interface BIFBlockService {
      * @Params []
      * @Return BlockGetLatestInfoResponse
      */
-    BIFBlockGetLatestInfoResponse getBlockLatestInfo();
+    BIFBlockGetLatestInfoResponse getBlockLatestInfo(BIFBlockGetLatestInfoRequest request);
 
     /**
      * @Method getValidators
@@ -64,5 +62,5 @@ public interface BIFBlockService {
      * @Params []
      * @Return BlockGetLatestValidatorsResponse
      */
-    BIFBlockGetLatestValidatorsResponse getLatestValidators();
+    BIFBlockGetLatestValidatorsResponse getLatestValidators(BIFBlockGetLatestValidatorsRequest request);
 }

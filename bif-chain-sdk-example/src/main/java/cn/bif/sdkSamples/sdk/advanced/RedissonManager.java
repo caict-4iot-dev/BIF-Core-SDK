@@ -9,7 +9,7 @@ public class RedissonManager {
     private static Redisson redisson = null;
     //实例化redisson
     static{
-        config.useSingleServer().setAddress("redis://127.0.0.1:6379");
+        config.useSingleServer().setAddress("redis://172.17.16.113:6379");
         config.useSingleServer().setPassword("bif8888");
         //得到redisson对象
         redisson = (Redisson) Redisson.create(config);

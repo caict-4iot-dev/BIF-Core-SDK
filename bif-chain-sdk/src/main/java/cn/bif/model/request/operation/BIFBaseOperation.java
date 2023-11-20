@@ -24,6 +24,15 @@ public class BIFBaseOperation {
     protected OperationType operationType;
     private String sourceAddress;
     private String metadata;
+    private Integer domainId;
+
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
 
     /**
      * @Method getOperationType

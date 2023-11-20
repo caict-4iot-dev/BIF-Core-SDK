@@ -42,78 +42,60 @@ public class General {
         return url;
     }
 
-    public String accountGetInfoUrl(String address) throws UnsupportedEncodingException {
-        return url + "/getAccountBase?address=" + URLEncoder.encode(address, "utf8");
+    public String accountGetInfoUrl(String address,Integer domainId) throws UnsupportedEncodingException {
+        return url + "/getAccountBase?address=" + URLEncoder.encode(address, "utf8")
+                + (Tools.isEmpty(domainId) ? "" : "&domainid=" +  domainId);
     }
-    public String accountGetMetadataUrl(String address, String key) throws UnsupportedEncodingException {
-        return url + "/getAccount?address=" + URLEncoder.encode(address, "utf8") + (Tools.isEmpty(key) ? "" : "&key=" + URLEncoder.encode(key, "utf8"));
+    public String accountGetMetadataUrl(String address, String key,Integer domainId) throws UnsupportedEncodingException {
+        return url + "/getAccount?address=" + URLEncoder.encode(address, "utf8") + (Tools.isEmpty(key) ? "" : "&key=" + URLEncoder.encode(key, "utf8"))
+                + (Tools.isEmpty(domainId) ? "" : "&domainid=" + domainId);
     }
 
     public String contractCallUrl() {
         return url + "/callContract";
     }
 
-    public String privatecontractCallUrl() {
-        return url + "/callPrivateContract";
-    }
-
-
     public String transactionSubmitUrl() {
         return url + "/submitTransaction";
     }
 
-    public String transactionGetInfoUrl(String hash) throws UnsupportedEncodingException {
-        return url + "/getTransactionHistory?hash=" + URLEncoder.encode(hash, "utf8");
+    public String transactionGetInfoUrl(String hash,Integer domainId) throws UnsupportedEncodingException {
+        return url + "/getTransactionHistory?hash=" + URLEncoder.encode(hash, "utf8")+ (Tools.isEmpty(domainId) ? "" : "&domainid=" + domainId);
     }
 
-    public String blockGetNumberUrl() {
-        return url + "/getLedger";
+    public String blockGetNumberUrl(Integer domainId) {
+        return url + "/getLedger"+ (Tools.isEmpty(domainId) ? "" : "?domainid=" +  domainId);
     }
 
-    public String blockGetTransactionsUrl(Long blockNumber) {
-        return url + "/getTransactionHistory?ledger_seq=" + blockNumber;
+    public String blockGetTransactionsUrl(Long blockNumber,Integer domainId)  {
+        return url + "/getTransactionHistory?ledger_seq=" + blockNumber + (Tools.isEmpty(domainId) ? "" : "&domainid=" + domainId);
     }
 
-    public String blockGetInfoUrl(Long blockNumber) {
-        return url + "/getLedger?seq=" + blockNumber;
+    public String blockGetInfoUrl(Long blockNumber,Integer domainId,Boolean withLeader) {
+        return url + "/getLedger?seq=" + blockNumber  + (Tools.isEmpty(domainId) ? "" : "&domainid=" +  domainId) + (withLeader ? "&with_leader=" +  withLeader : "");
     }
 
-    public String blockGetLatestInfoUrl() {
-        return url + "/getLedger";
+    public String blockGetLatestInfoUrl(Integer domainId) {
+        return url + "/getLedger" + (Tools.isEmpty(domainId) ? "" : "?domainid=" +  domainId);
     }
 
-    public String blockGetValidatorsUrl(Long blockNumber) {
-        return url + "/getLedger?seq=" + blockNumber + "&with_validator=true";
+    public String blockGetValidatorsUrl(Long blockNumber,Integer domainId) {
+        return url + "/getLedger?seq=" + blockNumber + "&with_validator=true" + (Tools.isEmpty(domainId) ? "" : "&domainid=" + domainId);
     }
 
-    public String blockGetLatestValidatorsUrl() {
-        return url + "/getLedger?with_validator=true";
-    }
-
-    public String priTxStoreRaw() {
-        return url + "/priTxStoreRaw";
-    }
-
-    public String priTxReceiveRaw(String priTxHash) {
-        return url + "/priTxReceiveRaw?pri_tx_hash=" + priTxHash;
-    }
-
-    public String priTxSend() {
-        return url + "/priTxSend";
-    }
-
-    public String priTxReceive(String priTxHash) {
-        return url + "/priTxReceive?pri_tx_hash=" + priTxHash;
+    public String blockGetLatestValidatorsUrl(Integer domainId) {
+        return url + "/getLedger?with_validator=true"+ (Tools.isEmpty(domainId) ? "" : "&domainid=" +  domainId);
     }
 
     public String transactionEvaluationFee() {
         return url + "/testTransaction";
     }
 
-    public String getTxCacheSize() {
-        return url + "/getTxCacheSize";
+    public String getTxCacheSize(Integer domainId) {
+        return url + "/getTxCacheSize"+ (Tools.isEmpty(domainId) ? "" : "?domainid=" +  domainId);
     }
-    public String getTxCacheData(String hash) throws UnsupportedEncodingException {
-        return url + "/getTransactionCache"+(Tools.isEmpty(hash) ? "" : "?hash=" +  URLEncoder.encode(hash, "utf8"));
+
+    public String getTxCacheData(Integer domainId,String hash) throws UnsupportedEncodingException {
+        return url + "/getTransactionCache?domainid="+domainId + (Tools.isEmpty(hash) ? "" : "&hash=" +  URLEncoder.encode(hash, "utf8"));
     }
 }

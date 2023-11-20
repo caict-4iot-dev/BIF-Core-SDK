@@ -16,26 +16,30 @@
  * © COPYRIGHT 2021 Corporation CAICT All rights reserved.
  * http://www.caict.ac.cn
  */
-package cn.bif.model.request;
+package cn.bif.module.encryption.crypto.slip10;
 
-public class BIFPrivateTransactionReceiveRawRequest {
-    private String priTxHash;
+public class Keys {
+    private String key;
+    private String chainCode;
 
-    /**
-     * @Method getPriTxHash
-     * @Params []
-     * @Return java.lang.String
-     */
-    public String getPriTxHash() {
-        return priTxHash;
+    public Keys(String keyHex, String chainCodeHex) {
+        this.key = keyHex;
+        this.chainCode = chainCodeHex;
     }
 
-    /**
-     * @Method setPriTxHash
-     * @Params [priTxHash]
-     * @Return void
-     */
-    public void setPriTxHash(String priTxHash) {
-        this.priTxHash = priTxHash;
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getChainCode() {
+        return chainCode;
+    }
+
+    public void setChainCode(String chainCode) {
+        this.chainCode = chainCode;
     }
 }
