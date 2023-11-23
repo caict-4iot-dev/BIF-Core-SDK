@@ -239,7 +239,7 @@ public class PublicKeyManager {
             KeyType type = null;
             byte[] buffPKey = HexFormat.hexToByte(encPublicKey);
 
-            if (buffPKey.length < 3 || buffPKey[0] != (byte) 0xB0 || buffPKey[1] != KeyType.ED25519_VALUE || buffPKey[1] != KeyType.SM2_VALUE) {
+            if (buffPKey.length < 3 || buffPKey[0] != (byte)0xB0 || (buffPKey[1] != (byte)0x65 && buffPKey[1] != (byte)0x7A) || buffPKey[2] != (byte)0x66) {
                 throw new EncException("Invalid publicKey");
             }
 
