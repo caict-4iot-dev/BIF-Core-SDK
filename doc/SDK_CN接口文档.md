@@ -381,7 +381,7 @@ BIFCreateAccountResponse createAccount(BIFCreateAccountRequest);
 | senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String  | 选填，用户自定义给交易的备注                                 |
+| remarks       | String  | 选填，用户自定义给交易的备注，长度[0,256k]                   |
 | destAddress   | String  | 必填，目标账户地址                                           |
 | initBalance   | Long    | 必填，初始化星火令，单位glowstone，1 星火令(XHT) = 10^8 星火萤(glowstone)，大小(0, Long.MAX_VALUE] |
 | gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
@@ -611,9 +611,9 @@ BIFAccountSetMetadatasResponse setMetadatas(BIFAccountSetMetadatasRequest);
 | senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String  | 选填，用户自定义给交易的备注                                 |
-| key           | String  | 必填，metadatas的关键词，长度限制[1, 1024]                   |
-| value         | String  | 必填，metadatas的内容，长度限制[0, 256000]                   |
+| remarks       | String  | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
+| key           | String  | 必填，metadatas的关键词，长度限制[1, 1024Byte]               |
+| value         | String  | 必填，metadatas的内容，长度限制[0, 256KB]                    |
 | version       | Long    | 选填，metadatas的版本                                        |
 | deleteFlag    | Boolean | 选填，是否删除remarks                                        |
 | gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
@@ -749,7 +749,7 @@ BIFAccountSetPrivilegeResponse setPrivilege(BIFAccountSetPrivilegeRequest);
 | senderAddress           | string  | 必填，交易源账号，即交易的发起方                             |
 | privateKey              | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq           | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks                 | String  | 选填，用户自定义给交易的备注                                 |
+| remarks                 | String  | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
 | signers                 | list    | 选填，签名者权重列表                                         |
 | signers.address         | String  | 签名者区块链账户地址                                         |
 | signers.weight          | Long    | 为签名者设置权重值                                           |
@@ -961,7 +961,7 @@ BIFContractCreateResponse contractCreate(BIFContractCreateRequest);
 | feeLimit      | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L      |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String  | 选填，用户自定义给交易的备注                                 |
+| remarks       | String  | 选填，用户自定义给交易的备注，长度限制[0,256k]                    |
 | initBalance   | Long    | 选填，给合约账户的初始化星火令，单位glowstone，1 星火令(XHT) = 10^8 星火萤(glowstone), 大小限制[1, Long.MAX_VALUE] |
 | type          | Integer | 选填，合约的类型，默认是0 , 0: javascript，1 :evm 。         |
 | payload       | String  | 必填，对应语种的合约代码                                     |
@@ -1213,7 +1213,7 @@ BIFContractInvokeResponse contractInvoke(BIFContractInvokeRequest);
 | feeLimit        | Long    | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey      | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq   | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks         | String  | 选填，用户自定义给交易的备注                                 |
+| remarks         | String  | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
 | contractAddress | String  | 必填，合约账户地址                                           |
 | BIFAmount       | Long    | 必填，转账金额                                               |
 | input           | String  | 选填，待触发的合约的main()入参                               |
@@ -1287,7 +1287,7 @@ BIFContractInvokeResponse batchContractInvoke(BIFBatchContractInvokeRequest);
 | feeLimit      | Long                             | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String                           | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                             | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String                           | 选填，用户自定义给交易的备注                                 |
+| remarks       | String                           | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
 | domainId      | Integer                          | 选填，指定域ID，默认主共识域id(0)                            |
 | operations    | List<BIFContractInvokeOperation> | 必填，合约调用集合                                           |
 
@@ -1398,7 +1398,7 @@ BIFTransactionGasSendResponse gasSend(BIFTransactionGasSendRequest);
 | senderAddress | string  | 必填，交易源账号，即交易的发起方                             |
 | privateKey    | String  | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long    | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String  | 选填，用户自定义给交易的备注                                 |
+| remarks       | String  | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
 | destAddress   | String  | 必填，发起方地址                                             |
 | amount        | Long    | 必填，转账金额                                               |
 | gasPrice      | Long    | 选填，打包费用 (单位是glowstone)，默认100L                   |
@@ -1532,7 +1532,7 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
 | 参数            | 类型                            | 描述                                                         |
 | --------------- | ------------------------------- | ------------------------------------------------------------ |
 | signatureNumber | Integer                         | 选填，待签名者的数量，默认是1，大小限制[1, Integer.MAX_VALUE] |
-| remarks         | String                          | 选填，用户自定义给交易的备注                                 |
+| remarks         | String                          | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
 | operation       | [BaseOperation](#BaseOperation) | 必填，待提交的操作，不能为空                                 |
 | gasPrice        | Long                            | 必填，打包费用 (单位是glowstone) ，默认100L                  |
 | feeLimit        | Long                            | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
@@ -1618,7 +1618,7 @@ BIFTransactionGetInfoResponse evaluateFee(BIFTransactionEvaluateFeeRequest);
         }
 ```
 
-### 1.5.4 BIFSubmit(v1.0.3)
+### 1.5.4 BIFSubmit
 
 > 接口说明
 
@@ -1772,7 +1772,7 @@ BIFTransactionEvaluateFeeResponse batchEvaluateFee(BIFTransactionEvaluateFeeRequ
 | 参数            | 类型                            | 描述                                                         |
 | --------------- | ------------------------------- | ------------------------------------------------------------ |
 | signatureNumber | Integer                         | 选填，待签名者的数量，默认是1，大小限制[1, Integer.MAX_VALUE] |
-| remarks         | String                          | 选填，用户自定义给交易的备注                                 |
+| remarks         | String                          | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
 | operation       | [BaseOperation](#BaseOperation) | 必填，待提交的操作，不能为空                                 |
 | gasPrice        | Long                            | 必填，打包费用 (单位是glowstone) ，默认100L                  |
 | feeLimit        | Long                            | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
@@ -1992,7 +1992,7 @@ BIFTransactionGasSendResponse batchGasSend(BIFBatchGasSendRequest);
 | feeLimit      | Long                      | 选填，交易花费的手续费(单位是glowstone)，默认1000000L        |
 | privateKey    | String                    | 必填，交易源账户私钥                                         |
 | ceilLedgerSeq | Long                      | 选填，区块高度限制, 如果大于0，则交易只有在该区块高度之前（包括该高度）才有效 |
-| remarks       | String                    | 选填，用户自定义给交易的备注                                 |
+| remarks       | String                    | 选填，用户自定义给交易的备注，长度限制[0,256k]               |
 | domainId      | Integer                   | 选填，指定域ID，默认主共识域id(0)                            |
 | operations    | List<BIFGasSendOperation> | 必填，转账操作集合                                           |
 
@@ -2177,7 +2177,7 @@ if (0 == response.getErrorCode()) {
 }
 ```
 
-### 1.6.3 getBlockInfo(v1.0.3)
+### 1.6.3 getBlockInfo
 
 > 接口说明
 
