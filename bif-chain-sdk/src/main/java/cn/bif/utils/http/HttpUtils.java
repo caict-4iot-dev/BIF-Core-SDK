@@ -1,101 +1,191 @@
 package cn.bif.utils.http;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.util.EntityUtils;
+
+import javax.net.ssl.*;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 public class HttpUtils {
 
-    public static int connectTimeOut = 15000;
-    public static int readTimeOut = 15000;
+    public static int connectTimeOut = 25000;
+    public static int readTimeOut = 25000;
+    private static final String DEFAULT_CHARSET = "UTF-8";
 
-    //Http协议GET请求
-    public static String httpGet(String url) throws Exception{
-        if(url.startsWith("https:")){
-            return httpsGet(url);
+    /**
+     * @param url
+     * @return
+     * @throws NoSuchProviderException
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws KeyManagementException
+     */
+    public static String get(String url,Boolean https) throws NoSuchAlgorithmException, NoSuchProviderException, IOException, KeyManagementException {
+        StringBuffer bufferRes = null;
+        TrustManager[] tm = { new MyX509TrustManager() };
+        SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
+        sslContext.init(null, tm, new java.security.SecureRandom());
+        SSLSocketFactory ssf = sslContext.getSocketFactory();
+
+        URL urlGet = new URL(url);
+        HttpsURLConnection http = (HttpsURLConnection) urlGet.openConnection();
+        http.setConnectTimeout(connectTimeOut);
+        http.setReadTimeout(readTimeOut);
+        http.setRequestMethod("GET");
+        http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+        http.setSSLSocketFactory(ssf);
+        http.setHostnameVerifier(new Verifier());
+        http.setDoOutput(true);
+        http.setDoInput(true);
+        http.connect();
+
+        InputStream in = http.getInputStream();
+        BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+        String valueString = null;
+        bufferRes = new StringBuffer();
+        while ((valueString = read.readLine()) != null){
+            bufferRes.append(valueString);
         }
-        //初始化HttpClient
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        //创建HttpGet
-        HttpGet httpGet = new HttpGet(url);
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(connectTimeOut).setConnectionRequestTimeout(readTimeOut).setSocketTimeout(connectTimeOut).build();
-        httpGet.setConfig(requestConfig);
-        //发起请求，获取response对象
-        CloseableHttpResponse response = httpClient.execute(httpGet);
-        //获取请求状态码
-        //response.getStatusLine().getStatusCode();
-        //获取返回数据实体对象
-        HttpEntity entity = response.getEntity();
-        //转为字符串
-        String result = EntityUtils.toString(entity,"UTF-8");
-        return result;
-
-    }
-
-    //Http协议Post请求
-    public static String httpPost (String url,String json) throws Exception{
-        if(url.startsWith("https:")){
-            return httpsPost(url,json);
+        in.close();
+        if (http != null) {
+            http.disconnect();
         }
-        //初始HttpClient
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        //创建Post对象
-        HttpPost httpPost = new HttpPost(url);
-        //设置Content-Type
-        httpPost.setHeader("Content-Type","application/json");
-        //写入JSON数据
-        httpPost.setEntity(new StringEntity(json));
-        //发起请求，获取response对象
-        CloseableHttpResponse response = httpClient.execute(httpPost);
-        //获取请求码
-        //response.getStatusLine().getStatusCode();
-        //获取返回数据实体对象
-        HttpEntity entity = response.getEntity();
-        //转为字符串
-        String result = EntityUtils.toString(entity,"UTF-8");
-        return result;
-
+        return bufferRes.toString();
     }
 
-    //Https协议Get请求
-    public static String httpsGet(String url) throws Exception{
-        CloseableHttpClient hp = createSSLClientDefault();
-        HttpGet hg = new HttpGet(url);
-        CloseableHttpResponse response = hp.execute(hg);
-        HttpEntity entity = response.getEntity();
-        String content = EntityUtils.toString(entity,"UTF-8");
-        hp.close();
-        return content;
+    /**
+     * @param url
+     * @return
+     * @throws NoSuchProviderException
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws KeyManagementException
+     */
+    public static String httpGet(String url) throws NoSuchAlgorithmException, NoSuchProviderException, IOException, KeyManagementException {
+        if(url.startsWith("https:")){
+            return get(url,true);
+        }else{
+            StringBuffer bufferRes = null;
+            URL urlGet = new URL(url);
+            HttpURLConnection http = (HttpURLConnection) urlGet.openConnection();
+            http.setConnectTimeout(connectTimeOut);
+            http.setReadTimeout(readTimeOut);
+            http.setRequestMethod("GET");
+            http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            http.setDoOutput(true);
+            http.setDoInput(true);
+            http.connect();
+
+            InputStream in = http.getInputStream();
+            BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+            String valueString = null;
+            bufferRes = new StringBuffer();
+            while ((valueString = read.readLine()) != null){
+                bufferRes.append(valueString);
+            }
+            in.close();
+            if (http != null) {
+                http.disconnect();
+            }
+            return bufferRes.toString();
+        }
     }
-    //Https协议Post请求
-    public static String httpsPost(String url, String json) throws Exception{
+    /**
+     * @param url
+     * @param params
+     * @return
+     * @throws IOException
+     * @throws NoSuchProviderException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+    public static String post(String url, String params,Boolean https) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
+        StringBuffer bufferRes = null;
+        TrustManager[] tm = { new MyX509TrustManager() };
+        SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
+        sslContext.init(null, tm, new java.security.SecureRandom());
+        SSLSocketFactory ssf = sslContext.getSocketFactory();
 
-        CloseableHttpClient hp = createSSLClientDefault();
-        HttpPost httpPost = new HttpPost(url);
-        httpPost.setHeader("Content-Type","application/json");
-        httpPost.setEntity(new StringEntity(json));
-        CloseableHttpResponse response = hp.execute(httpPost);
-        HttpEntity entity = response.getEntity();
-        String content = EntityUtils.toString(entity,"UTF-8");
-        hp.close();
-        return content;
+        URL urlGet = new URL(url);
+        HttpsURLConnection http = (HttpsURLConnection) urlGet.openConnection();
+        http.setConnectTimeout(50000);
+        http.setReadTimeout(50000);
+        http.setRequestMethod("POST");
+        http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+        http.setSSLSocketFactory(ssf);
+        http.setHostnameVerifier(new Verifier());
+        http.setDoOutput(true);
+        http.setDoInput(true);
+        http.connect();
+
+        OutputStream out = http.getOutputStream();
+        out.write(params.getBytes("UTF-8"));
+        out.flush();
+        out.close();
+
+        InputStream in = http.getInputStream();
+        BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+        String valueString = null;
+        bufferRes = new StringBuffer();
+        while ((valueString = read.readLine()) != null){
+            bufferRes.append(valueString);
+        }
+        in.close();
+        if (http != null) {
+            http.disconnect();
+        }
+        return bufferRes.toString();
+    }
+    public static String httpPost(String url, String params) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
+        if(url.startsWith("https:")){
+            return post(url,params,true);
+        }else{
+            StringBuffer bufferRes = null;
+            URL urlGet = new URL(url);
+            HttpURLConnection http = (HttpURLConnection) urlGet.openConnection();
+            http.setConnectTimeout(50000);
+            http.setReadTimeout(50000);
+            http.setRequestMethod("POST");
+            http.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            http.setDoOutput(true);
+            http.setDoInput(true);
+            http.connect();
+
+            OutputStream out = http.getOutputStream();
+            out.write(params.getBytes("UTF-8"));
+            out.flush();
+            out.close();
+
+            InputStream in = http.getInputStream();
+            BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+            String valueString = null;
+            bufferRes = new StringBuffer();
+            while ((valueString = read.readLine()) != null){
+                bufferRes.append(valueString);
+            }
+            in.close();
+            if (http != null) {
+                http.disconnect();
+            }
+            return bufferRes.toString();
+        }
+    }
+}
+class MyX509TrustManager implements X509TrustManager {
+
+    public X509Certificate[] getAcceptedIssuers() {
+        return null;
     }
 
+    public void checkClientTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException {
+    }
 
-    public static CloseableHttpClient createSSLClientDefault() throws Exception{
-        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-                SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build(),
-                NoopHostnameVerifier.INSTANCE);
-        return HttpClients.custom().setSSLSocketFactory(sslsf).build();
-
+    public void checkServerTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException {
     }
 }

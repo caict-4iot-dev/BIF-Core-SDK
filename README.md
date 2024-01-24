@@ -43,7 +43,7 @@ mvn install： 构建当前的maven工程，并且安装到本地中，可以直
 <dependency>
     <groupId>bif.chain</groupId>
     <artifactId>bif-chain-sdk</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.3.3</version>
 </dependency>
 ```
 
