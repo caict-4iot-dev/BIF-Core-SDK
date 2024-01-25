@@ -38,7 +38,7 @@
         <dependency>
             <groupId>cn.bitfactory</groupId>
             <artifactId>bif-chain-sdk</artifactId>
-            <version>1.0.3.2-SNAPSHOT</version>
+            <version>1.0.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
